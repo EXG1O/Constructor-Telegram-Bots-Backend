@@ -51,7 +51,7 @@ class TelegramBot(models.Model):
     username = models.CharField('@username', max_length=32)
     api_token = models.CharField(
         _('API-токен'),
-        max_length=50,
+        max_length=64,
         unique=True,
         validators=[validate_api_token],
         error_messages={
