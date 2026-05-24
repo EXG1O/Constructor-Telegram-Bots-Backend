@@ -20,21 +20,20 @@ else:
 class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
     def get_freest(self) -> TelegramBotsHub | None:
         return (
-            sorted(hubs, key=lambda hub: hub.client.get_telegram_bot_ids())[0]
+            sorted(hubs, key=lambda hub: hub.client.get_bot_ids())[0]
             if (hubs := self.all())
             else None
         )
 
-    def get_telegram_bot_hub(self, telegram_bot_id: int) -> TelegramBotsHub | None:
+    def get_bot_hub(self, bot_id: int) -> TelegramBotsHub:
         for hub in self.all():
-            if telegram_bot_id in hub.client.get_telegram_bot_ids():
+            if bot_id in hub.client.get_bot_ids():
                 return hub
-
-        return None
+        raise TelegramBotsHub.DoesNotExist()
 
 
 class TelegramBotsHub(models.Model):
-    url = models.URLField(_('URL-адрес'), unique=True)
+    url = models.CharField(_('URL-адрес'), max_length=255, unique=True)
     service_token = models.CharField(
         _('Токен сервиса'), max_length=64, primary_key=True
     )
@@ -63,6 +62,4 @@ class TelegramBotsHub(models.Model):
         if settings.TEST:
             return telegram_bot_modal.objects.all()
 
-        return telegram_bot_modal.objects.filter(
-            id__in=self.client.get_telegram_bot_ids()
-        )
+        return telegram_bot_modal.objects.filter(id__in=self.client.get_bot_ids())

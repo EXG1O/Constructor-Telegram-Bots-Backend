@@ -32,27 +32,23 @@ def start_telegram_bot(telegram_bot_id: int) -> None:
         hub: TelegramBotsHub | None = get_telegram_bots_hub_modal().objects.get_freest()
 
         if not hub:
-            return
+            # FIXME: In the future, we plan to deploy a microservice if no free hub is ...
+            # found, which will eliminate the need for this `raise`.
+            raise RuntimeError()
 
-        hub.client.start_telegram_bot(telegram_bot.id, telegram_bot.api_token)
+        hub.client.start_bot(telegram_bot.id, telegram_bot.api_token)
 
 
 @shared_task
 def restart_telegram_bot(telegram_bot_id: int) -> None:
     with telegram_bot_processing(telegram_bot_id) as telegram_bot:
-        if not telegram_bot.hub:
-            return
-
-        telegram_bot.hub.client.restart_telegram_bot(telegram_bot.id)
+        telegram_bot.hub.client.restart_bot(telegram_bot.id)
 
 
 @shared_task
 def stop_telegram_bot(telegram_bot_id: int) -> None:
     with telegram_bot_processing(telegram_bot_id) as telegram_bot:
-        if not telegram_bot.hub:
-            return
-
-        telegram_bot.hub.client.stop_telegram_bot(telegram_bot.id)
+        telegram_bot.hub.client.stop_bot(telegram_bot.id)
 
 
 @shared_task
