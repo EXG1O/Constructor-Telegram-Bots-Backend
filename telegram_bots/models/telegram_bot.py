@@ -167,8 +167,8 @@ class TelegramBot(models.Model):
         return self.storage_size - self.used_storage_size
 
     @cached_property
-    def hub(self) -> TelegramBotsHub | None:
-        return TelegramBotsHub.objects.get_telegram_bot_hub(self.id)
+    def hub(self) -> TelegramBotsHub:
+        return TelegramBotsHub.objects.get_bot_hub(self.id)
 
     @property
     def is_enabled(self) -> bool:
