@@ -76,12 +76,12 @@ class UserViewSet(RetrieveModelMixin, GenericViewSet[User]):
     @action(detail=True, methods=['POST'])
     def logout(self, request: Request, pk: str | None = None) -> Response:
         user_logout(request, request.auth)  # type: ignore[arg-type]
-        return Response()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, url_path='logout-all', methods=['POST'])
     def logout_all(self, request: Request, pk: str | None = None) -> Response:
         user_logout_all(request, request.user)  # type: ignore[arg-type]
-        return Response()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=True,
@@ -105,7 +105,7 @@ class UserViewSet(RetrieveModelMixin, GenericViewSet[User]):
         user.terms_accepted_date = timezone.now()
         user.save(update_fields=['accepted_terms', 'terms_accepted_date'])
 
-        return Response()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def destroy(self, request: Request, pk: str | None = None) -> Response:
         user: User = request.user  # type: ignore [assignment]
