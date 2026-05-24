@@ -99,7 +99,7 @@ class UserViewSetTests(UserMixin, TestCase):
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
         response = view(request)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertTrue(self.user_refresh_token.is_blacklisted)
 
     def test_logout_all(self) -> None:
@@ -117,7 +117,7 @@ class UserViewSetTests(UserMixin, TestCase):
         second_refresh_token: RefreshToken = RefreshToken.for_user(self.user)
 
         response = view(request)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertTrue(self.user_refresh_token.is_blacklisted)
         self.assertTrue(second_refresh_token.is_blacklisted)
 
@@ -167,7 +167,7 @@ class UserViewSetTests(UserMixin, TestCase):
         self.user.save(update_fields=['accepted_terms', 'terms_accepted_date'])
 
         response = view(request)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertTrue(self.user.accepted_terms)
         self.assertIsNotNone(self.user.terms_accepted_date)
 
