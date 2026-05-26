@@ -1,4 +1,6 @@
 from django.db import models
+from django.http import HttpRequest
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from django_stubs_ext.db.models import TypedModelMeta
@@ -76,6 +78,13 @@ class TriggerWebhook(models.Model):
 
     def __str__(self) -> str:
         return str(self.id)
+
+    def get_webhook_url(self, request: HttpRequest | None) -> str:
+        url: str = reverse(
+            'api:webhooks:trigger', kwargs={'id': self.id, 'token': self.token}
+        )
+        return request.build_absolute_uri(url) if request else url
+
 
 class Trigger(AbstractBlock):
     telegram_bot = models.ForeignKey(
