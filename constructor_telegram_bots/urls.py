@@ -20,6 +20,7 @@ urlpatterns: list[URLPattern | URLResolver] = [
                 [
                     path('languages/', include('languages.urls')),
                     path('users/', include('users.urls')),
+                    path('webhooks/', include('webhooks.urls')),
                     path('telegram-bots/', include('telegram_bots.urls')),
                     path(
                         'telegram-bots-hub/telegram-bots/',
