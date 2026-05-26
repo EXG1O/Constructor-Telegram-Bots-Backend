@@ -1,4 +1,6 @@
 from django.db import models
+from django.http import HttpRequest
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from django_stubs_ext.db.models import TypedModelMeta
@@ -6,6 +8,7 @@ from django_stubs_ext.db.models import TypedModelMeta
 from .base import AbstractBlock
 
 from typing import TYPE_CHECKING
+import secrets
 
 
 class TriggerCommand(models.Model):
@@ -53,6 +56,29 @@ class TriggerMessage(models.Model):
         return (self.text or 'NULL')[:128]
 
 
+def _generate_webhook_token() -> str:
+    return secrets.token_urlsafe(32)
+
+
+class TriggerWebhook(models.Model):
+    trigger = models.OneToOneField(
+        'Trigger',
+        on_delete=models.CASCADE,
+        related_name='webhook',
+        verbose_name=_('Триггер'),
+    )
+    token = models.CharField(_('Токен'), max_length=64, default=_generate_webhook_token)
+
+    is_authenticated = True  # Stub for IsAuthenticated permission
+
+    class Meta(TypedModelMeta):
+        db_table = 'telegram_bot_trigger_webhook'
+        verbose_name = _('Webhook триггер')
+        verbose_name_plural = _('Webhook триггеры')
+
+    def __str__(self) -> str:
+        return str(self.id)
+
 class Trigger(AbstractBlock):
     telegram_bot = models.ForeignKey(
         'TelegramBot',
@@ -64,6 +90,7 @@ class Trigger(AbstractBlock):
     if TYPE_CHECKING:
         command: TriggerCommand
         message: TriggerMessage
+        webhook: TriggerWebhook
 
     class Meta(TypedModelMeta):
         db_table = 'telegram_bot_trigger'
