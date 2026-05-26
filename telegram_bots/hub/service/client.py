@@ -1,6 +1,9 @@
 from requests_unixsocket import Session
 from yarl import URL
 
+from ...models import Trigger
+from ..serializers import TriggerSerializer
+
 from requests import Response
 
 from http import HTTPMethod
@@ -37,3 +40,12 @@ class ServiceClient:
 
     def stop_bot(self, bot_id: int) -> Response:
         return self._request(HTTPMethod.POST, f'bots/{bot_id}/stop/')
+
+    def send_trigger(
+        self, bot_id: int, trigger: Trigger, payload: Any | None = None
+    ) -> Response:
+        return self._request(
+            HTTPMethod.POST,
+            f'bots/{bot_id}/webhooks/trigger/',
+            data={'trigger': TriggerSerializer(trigger).data, 'payload': payload},
+        )

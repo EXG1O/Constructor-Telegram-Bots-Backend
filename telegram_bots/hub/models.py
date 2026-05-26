@@ -6,15 +6,8 @@ from django.utils.translation import gettext_lazy as _
 
 from django_stubs_ext.db.models import TypedModelMeta
 
-from ..utils import get_telegram_bot_modal
+from ..models import TelegramBot
 from .service.client import ServiceClient
-
-from typing import TYPE_CHECKING, Any
-
-if TYPE_CHECKING:
-    from ..models import TelegramBot
-else:
-    TelegramBot = Any
 
 
 class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
@@ -57,9 +50,6 @@ class TelegramBotsHub(models.Model):
 
     @property
     def telegram_bots(self) -> QuerySet[TelegramBot]:
-        telegram_bot_modal = get_telegram_bot_modal()
-
         if settings.TEST:
-            return telegram_bot_modal.objects.all()
-
-        return telegram_bot_modal.objects.filter(id__in=self.client.get_bot_ids())
+            return TelegramBot.objects.all()
+        return TelegramBot.objects.filter(id__in=self.client.get_bot_ids())

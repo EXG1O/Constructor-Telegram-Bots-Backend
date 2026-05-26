@@ -10,7 +10,7 @@ from django_stubs_ext.db.models import TypedModelMeta
 from utils.storage import force_get_file_size
 
 from .. import tasks
-from ..hub.models import TelegramBotsHub
+from ..hub.utils import get_telegram_bots_hub_modal
 from .api_request import APIRequest
 from .background_task import BackgroundTask
 from .condition import Condition
@@ -31,6 +31,11 @@ from collections.abc import Collection, Iterable
 from contextlib import suppress
 from typing import TYPE_CHECKING, Any
 import re
+
+if TYPE_CHECKING:
+    from ..hub.models import TelegramBotsHub
+else:
+    TelegramBotsHub = Any
 
 
 def validate_api_token(api_token: str) -> None:
@@ -168,7 +173,7 @@ class TelegramBot(models.Model):
 
     @cached_property
     def hub(self) -> TelegramBotsHub:
-        return TelegramBotsHub.objects.get_bot_hub(self.id)
+        return get_telegram_bots_hub_modal().objects.get_bot_hub(self.id)
 
     @property
     def is_enabled(self) -> bool:
