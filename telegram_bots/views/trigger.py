@@ -22,7 +22,7 @@ class TriggerViewSet(IDLookupMixin, TelegramBotMixin, ModelViewSet[Trigger]):
         triggers: QuerySet[Trigger] = self.telegram_bot.triggers.all()
 
         if self.action in ['list', 'retrieve']:
-            return triggers.select_related('command', 'message')
+            return triggers.select_related('command', 'message', 'webhook')
 
         return triggers
 
