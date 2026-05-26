@@ -94,6 +94,7 @@ INSTALLED_APPS: Final[list[str]] = [
     'adminsortable2',
     'languages',
     'users',
+    'webhooks',
     'telegram_bots',
     'telegram_bots.hub',
     'instruction',
