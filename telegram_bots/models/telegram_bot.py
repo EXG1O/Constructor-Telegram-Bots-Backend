@@ -37,10 +37,12 @@ if TYPE_CHECKING:
 else:
     TelegramBotsHub = Any
 
+TELEGRAM_BOT_TOKEN_PATTERN: re.Pattern[str] = re.compile(r'^\d+:.+$')
+
 
 def validate_api_token(api_token: str) -> None:
     if not settings.TEST and (
-        not re.fullmatch(r'^\d+:.+$', api_token)
+        not TELEGRAM_BOT_TOKEN_PATTERN.fullmatch(api_token)
         or not requests.get(f'https://api.telegram.org/bot{api_token}/getMe').ok
     ):
         raise ValidationError(_('Этот API-токен является недействительным.'))
