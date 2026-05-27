@@ -102,7 +102,7 @@ class TriggerSerializer(TelegramBotMixin, serializers.ModelSerializer[Trigger]):
                 self.create_command(trigger, command_data)
             if message_data:
                 self.create_message(trigger, message_data)
-            if webhook_data:
+            if webhook_data is not None:
                 self.create_webhook(trigger, webhook_data)
 
         return trigger
