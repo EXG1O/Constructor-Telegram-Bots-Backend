@@ -177,7 +177,10 @@ class TelegramBot(models.Model):
 
     @property
     def is_enabled(self) -> bool:
-        return self.must_be_enabled and bool(self.hub)
+        try:
+            return bool(self.must_be_enabled and self.hub)
+        except get_telegram_bots_hub_modal().DoesNotExist:
+            return False
 
     def start(self, save: bool = True) -> None:
         self.must_be_enabled = True
