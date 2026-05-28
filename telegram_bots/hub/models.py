@@ -9,6 +9,8 @@ from django_stubs_ext.db.models import TypedModelMeta
 from ..models import TelegramBot
 from .service.client import ServiceClient
 
+import secrets
+
 
 class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
     def get_freest(self) -> TelegramBotsHub | None:
@@ -25,12 +27,21 @@ class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
         raise TelegramBotsHub.DoesNotExist()
 
 
+def _generate_token() -> str:
+    return secrets.token_hex(32)
+
+
 class TelegramBotsHub(models.Model):
     url = models.CharField(_('URL-адрес'), max_length=255, unique=True)
-    service_token = models.CharField(
-        _('Токен сервиса'), max_length=64, primary_key=True
+    telegram_token = models.CharField(
+        _('Telegram токен'), max_length=64, unique=True, default=_generate_token
     )
-    microservice_token = models.CharField(_('Токен микросервиса'), max_length=64)
+    service_token = models.CharField(
+        _('Токен сервиса'), max_length=64, unique=True, default=_generate_token
+    )
+    microservice_token = models.CharField(
+        _('Токен микросервиса'), max_length=64, unique=True, default=_generate_token
+    )
 
     is_authenticated = True  # Stub for IsAuthenticated permission
 
