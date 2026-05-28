@@ -7,11 +7,11 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.test import APIRequestFactory, force_authenticate
 
+from constructor_telegram_bots.utils.tests import assert_view_basic_protected
 from users.tests.mixins import UserMixin
 
 from ..jwt.tokens import RefreshToken
 from ..models import User
-from ..utils.tests import assert_view_basic_protected
 from ..views import UserViewSet
 
 from contextlib import suppress
