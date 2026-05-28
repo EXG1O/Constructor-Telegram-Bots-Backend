@@ -1,6 +1,6 @@
 from rest_framework import fields, serializers
 
-from utils.deep_merge import deep_merge_data
+from constructor_telegram_bots.utils.deep_merge import deep_merge_data
 
 from ...models import DatabaseRecord
 from ...serializers.mixins import TelegramBotMixin

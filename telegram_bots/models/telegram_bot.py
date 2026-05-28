@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 from django_stubs_ext.db.models import TypedModelMeta
 
-from utils.storage import force_get_file_size
+from constructor_telegram_bots.utils.storage import force_get_file_size
 
 from .. import tasks
 from ..hub.utils import get_telegram_bots_hub_modal
