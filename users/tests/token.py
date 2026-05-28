@@ -6,8 +6,9 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.test import APIRequestFactory, force_authenticate
 
+from constructor_telegram_bots.utils.tests import assert_view_basic_protected
+
 from ..models import Token
-from ..utils.tests import assert_view_basic_protected
 from ..views import TokenViewSet
 from .mixins import UserMixin
 

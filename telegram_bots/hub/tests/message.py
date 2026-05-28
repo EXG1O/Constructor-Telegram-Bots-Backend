@@ -6,13 +6,13 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.test import APIRequestFactory, force_authenticate
 
+from constructor_telegram_bots.utils.tests import assert_view_basic_protected
 from users.tests.mixins import UserMixin
 
 from ...models import MessageKeyboard
 from ...tests.mixins import MessageMixin, TelegramBotMixin
 from ..views import MessageKeyboardButtonViewSet, MessageViewSet
 from .mixins import HubMixin
-from .utils import assert_view_basic_protected
 
 from typing import TYPE_CHECKING
 

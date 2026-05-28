@@ -7,11 +7,9 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.test import APIRequestFactory, force_authenticate
 
+from constructor_telegram_bots.utils.tests import assert_view_basic_protected
 from users.tests.mixins import UserMixin
-from users.utils.tests import (
-    assert_view_basic_protected,
-    assert_view_requires_terms_acceptance,
-)
+from users.utils.tests import assert_view_requires_terms_acceptance
 
 from ..models import Message
 from ..views import DiagramMessageViewSet, MessageViewSet
