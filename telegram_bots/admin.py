@@ -4,7 +4,7 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
-from constructor_telegram_bots.utils import format_html_link
+from constructor_telegram_bots.utils.html import format_html_link
 
 from .models import TelegramBot, User
 

@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 
 from rest_framework import serializers
 
-from utils.storage import force_get_file_size
+from constructor_telegram_bots.utils.storage import force_get_file_size
 
 from ..models import (
     Message,

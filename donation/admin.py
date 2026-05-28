@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from adminsortable2.admin import SortableAdminMixin
 from modeltranslation.admin import TranslationAdmin
 
-from constructor_telegram_bots.utils import format_html_link
+from constructor_telegram_bots.utils.html import format_html_link
 
 from .models import Donation, Method, Section
 
