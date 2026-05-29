@@ -16,7 +16,7 @@ from .mixins import HubMixin
 from typing import TYPE_CHECKING
 
 
-class TelegramBotViewSetTests(TelegramBotMixin, UserMixin, HubMixin, TestCase):
+class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
     list_url: str = reverse('api:telegram-bots-hub:telegram-bot-list')
 
     def setUp(self) -> None:

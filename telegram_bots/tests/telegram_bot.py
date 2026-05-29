@@ -10,15 +10,19 @@ from constructor_telegram_bots.utils.tests import assert_view_basic_protected
 from users.tests.mixins import UserMixin
 from users.utils.tests import assert_view_requires_terms_acceptance
 
+from ..hub.tests.mixins import HubMixin
 from ..models import TelegramBot
 from ..views import TelegramBotViewSet
 from .mixins import TelegramBotMixin
 
+import requests
+
 from contextlib import suppress
 from typing import TYPE_CHECKING, Any
+from unittest.mock import patch
 
 
-class TelegramBotViewSetTests(TelegramBotMixin, UserMixin, TestCase):
+class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
     list_url: str = reverse('api:telegram-bots:telegram-bot-list')
 
     def setUp(self) -> None:
@@ -86,13 +90,18 @@ class TelegramBotViewSetTests(TelegramBotMixin, UserMixin, TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         request = self.factory.post(
-            self.list_url, {'api_token': 'Bye!', 'is_private': False}, format='json'
+            self.list_url,
+            {'api_token': '123456789:token', 'is_private': False},
+            format='json',
         )
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
         old_telegram_bot_count: int = self.user.telegram_bots.count()
 
-        response = view(request)
+        with patch.object(requests, 'get') as mock_requests_get:
+            mock_requests_get.return_value.ok = True
+            response = view(request)
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(self.user.telegram_bots.count(), old_telegram_bot_count + 1)
 
@@ -171,6 +180,8 @@ class TelegramBotViewSetTests(TelegramBotMixin, UserMixin, TestCase):
         request = self.factory.post(self.restart_true_url)
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
+        self.mock_hub_client.get_bot_ids.return_value = [self.telegram_bot.id]
+
         response = view(request, id=self.telegram_bot.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -197,6 +208,8 @@ class TelegramBotViewSetTests(TelegramBotMixin, UserMixin, TestCase):
 
         request = self.factory.post(self.stop_true_url)
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
+
+        self.mock_hub_client.get_bot_ids.return_value = [self.telegram_bot.id]
 
         response = view(request, id=self.telegram_bot.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -235,7 +248,10 @@ class TelegramBotViewSetTests(TelegramBotMixin, UserMixin, TestCase):
         )
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
-        response = view(request, id=self.telegram_bot.id)
+        with patch.object(requests, 'get') as mock_requests_get:
+            mock_requests_get.return_value.ok = True
+            response = view(request, id=self.telegram_bot.id)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.telegram_bot.refresh_from_db()
@@ -275,7 +291,10 @@ class TelegramBotViewSetTests(TelegramBotMixin, UserMixin, TestCase):
         )
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
-        response = view(request, id=self.telegram_bot.id)
+        with patch.object(requests, 'get') as mock_requests_get:
+            mock_requests_get.return_value.ok = True
+            response = view(request, id=self.telegram_bot.id)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.telegram_bot.refresh_from_db()

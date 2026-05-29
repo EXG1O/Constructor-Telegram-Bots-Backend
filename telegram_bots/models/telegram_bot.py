@@ -41,7 +41,7 @@ TELEGRAM_BOT_TOKEN_PATTERN: re.Pattern[str] = re.compile(r'^\d+:.+$')
 
 
 def validate_api_token(api_token: str) -> None:
-    if not settings.TEST and (
+    if (
         not TELEGRAM_BOT_TOKEN_PATTERN.fullmatch(api_token)
         or not requests.get(f'https://api.telegram.org/bot{api_token}/getMe').ok
     ):
@@ -104,8 +104,9 @@ class TelegramBot(models.Model):
         using: str | None = None,
         update_fields: Iterable[str] | None = None,
     ) -> None:
-        if not settings.TEST and (
-            self._state.adding or self.api_token != self._loaded_values['api_token']
+        if self._state.adding or (
+            hasattr(self, '_loaded_values')
+            and self.api_token != self._loaded_values['api_token']
         ):
             self.update_username()
 
@@ -128,7 +129,7 @@ class TelegramBot(models.Model):
     def delete(
         self, using: str | None = None, keep_parents: bool = False
     ) -> tuple[int, dict[str, int]]:
-        if not settings.TEST and not self._state.adding and self.is_enabled:
+        if not self._state.adding and self.is_enabled:
             self.stop(save=False)
 
         return super().delete(using, keep_parents)
@@ -211,10 +212,6 @@ class TelegramBot(models.Model):
         tasks.stop_telegram_bot.delay(telegram_bot_id=self.id)
 
     def update_username(self) -> None:
-        if settings.TEST:
-            self.username = f'{self.api_token.split(":")[0]}_test_telegram_bot'
-            return
-
         response: Response = requests.get(
             f'https://api.telegram.org/bot{self.api_token}/getMe'
         )

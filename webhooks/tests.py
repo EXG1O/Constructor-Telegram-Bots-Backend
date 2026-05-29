@@ -15,17 +15,15 @@ from users.tests.mixins import UserMixin
 from .views import TelegramAPIView, TriggerWebhookAPIView
 
 from typing import TYPE_CHECKING, Any
-from unittest.mock import MagicMock, patch
 import json
 
 
-class TelegramAPIViewTests(TelegramBotMixin, UserMixin, HubMixin, TestCase):
+class TelegramAPIViewTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
         self.factory = APIRequestFactory()
 
-    @patch('telegram_bots.hub.models.TelegramBotsHub.client')
-    def test_post(self, mock_client: MagicMock) -> None:
+    def test_post(self) -> None:
         view = TelegramAPIView.as_view()
         data: dict[str, Any] = {'key': 'value'}
 
@@ -41,12 +39,12 @@ class TelegramAPIViewTests(TelegramBotMixin, UserMixin, HubMixin, TestCase):
 
         response: Response = view(request, bot_id=self.telegram_bot.id)
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        mock_client.forward_telegram_data.assert_called_once_with(
+        self.mock_hub_client.forward_telegram_data.assert_called_once_with(
             bot_id=self.telegram_bot.id, data=json.dumps(data).encode()
         )
 
 
-class TriggerWebhookAPIViewTests(TelegramBotMixin, UserMixin, TestCase):
+class TriggerWebhookAPIViewTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 
@@ -59,6 +57,7 @@ class TriggerWebhookAPIViewTests(TelegramBotMixin, UserMixin, TestCase):
 
     def test_post(self) -> None:
         view = TriggerWebhookAPIView.as_view()
+        data: str = 'Test string.'
 
         if TYPE_CHECKING:
             response: Response
@@ -70,7 +69,9 @@ class TriggerWebhookAPIViewTests(TelegramBotMixin, UserMixin, TestCase):
                     'id': self.trigger_webhook.id,
                     'token': self.trigger_webhook.token,
                 },
-            )
+            ),
+            data='Test string.',
+            content_type='text/plain',
         )
 
         response = view(request, id=None, token=None)
@@ -81,10 +82,12 @@ class TriggerWebhookAPIViewTests(TelegramBotMixin, UserMixin, TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        self.telegram_bot.must_be_enabled = True
-        self.telegram_bot.save(update_fields=['must_be_enabled'])
+        self.mock_hub_client.get_bot_ids.return_value = [self.telegram_bot.id]
 
         response = view(
             request, id=self.trigger_webhook.id, token=self.trigger_webhook.token
         )
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.mock_hub_client.send_trigger.assert_called_once_with(
+            bot_id=self.telegram_bot.id, trigger=self.trigger, payload=data
+        )

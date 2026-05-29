@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING
 
 
 class ConditionViewSetTests(
-    ConditionMixin, TelegramBotMixin, UserMixin, HubMixin, TestCase
+    ConditionMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:
         super().setUp()

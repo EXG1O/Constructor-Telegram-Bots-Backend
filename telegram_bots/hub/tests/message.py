@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING
 
 
 class MessageViewSetTests(
-    MessageMixin, TelegramBotMixin, UserMixin, HubMixin, TestCase
+    MessageMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:
         super().setUp()
@@ -103,7 +103,7 @@ class MessageViewSetTests(
 
 
 class MessageKeyboardButtonViewSetTests(
-    MessageMixin, TelegramBotMixin, UserMixin, HubMixin, TestCase
+    MessageMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:
         super().setUp()
