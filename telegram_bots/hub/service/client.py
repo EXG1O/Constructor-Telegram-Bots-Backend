@@ -41,6 +41,11 @@ class ServiceClient:
     def stop_bot(self, bot_id: int) -> Response:
         return self._request(HTTPMethod.POST, f'bots/{bot_id}/stop/')
 
+    def forward_telegram_data(self, bot_id: int, data: Any) -> Response:
+        return self._request(
+            HTTPMethod.POST, f'bots/{bot_id}/webhooks/telegram/', data=data
+        )
+
     def send_trigger(
         self, bot_id: int, trigger: Trigger, payload: Any | None = None
     ) -> Response:
