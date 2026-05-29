@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING
 
 
 class TemporaryVariableViewSetTests(
-    TemporaryVariableMixin, TelegramBotMixin, UserMixin, HubMixin, TestCase
+    TemporaryVariableMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:
         super().setUp()

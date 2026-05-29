@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, Any
 
 
 class DatabaseRecordViewSetTests(
-    DatabaseRecordMixin, TelegramBotMixin, UserMixin, HubMixin, TestCase
+    DatabaseRecordMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:
         super().setUp()

@@ -22,7 +22,7 @@ os.makedirs(LOGS_DIR, exist_ok=True)
 
 SECRET_KEY: Final[str] = os.environ['SECRET_KEY']
 
-TEST: Final[bool] = bool(len(sys.argv) >= 2 and sys.argv[1] == 'test')
+TEST: Final[bool] = 'test' in sys.argv
 DEBUG: Final[bool] = os.getenv('DEBUG', 'True') == 'True'
 ENABLE_TELEGRAM_AUTH: Final[bool] = os.getenv('ENABLE_TELEGRAM_AUTH', 'True') == 'True'
 
@@ -78,6 +78,10 @@ CELERY_BEAT_SCHEDULE: Final[dict[str, dict[str, Any]]] = {
         'schedule': 86400,  # 24h
     },
 }
+
+if TEST:
+    CELERY_TASK_ALWAYS_EAGER = True
+    CELERY_TASK_EAGER_PROPAGATES = True
 
 
 INSTALLED_APPS: Final[list[str]] = [

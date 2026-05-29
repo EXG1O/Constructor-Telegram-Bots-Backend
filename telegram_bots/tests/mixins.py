@@ -22,6 +22,7 @@ from ..models import (
 from ..models import User as BotUser
 
 from typing import TYPE_CHECKING
+from unittest.mock import patch
 
 
 class TelegramBotMixin:
@@ -30,7 +31,15 @@ class TelegramBotMixin:
 
     def setUp(self) -> None:
         super().setUp()  # type: ignore [misc]
+
+        self.patcher_bot_update_username = patch.object(TelegramBot, 'update_username')
+        self.mock_bot_update_username = self.patcher_bot_update_username.start()
+
         self.telegram_bot: TelegramBot = self.user.telegram_bots.create(api_token='Hi!')
+
+    def tearDown(self) -> None:
+        super().tearDown()  # type: ignore [misc]
+        self.patcher_bot_update_username.stop()
 
 
 class TriggerMixin:

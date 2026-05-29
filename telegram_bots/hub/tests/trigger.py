@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING
 
 
 class TriggerViewSetTests(
-    TriggerMixin, TelegramBotMixin, UserMixin, HubMixin, TestCase
+    TriggerMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:
         super().setUp()

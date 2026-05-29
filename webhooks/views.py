@@ -1,5 +1,3 @@
-from django.conf import settings
-
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -38,17 +36,13 @@ class TriggerWebhookAPIView(APIView):
         trigger: Trigger = webhook.trigger
         telegram_bot: TelegramBot = trigger.telegram_bot
 
-        if settings.TEST:
-            if not telegram_bot.must_be_enabled:
-                raise TelegramBotDisabledError()
-        else:
-            try:
-                hub: TelegramBotsHub = telegram_bot.hub
-            except TelegramBotsHub.DoesNotExist as error:
-                raise TelegramBotDisabledError() from error
+        try:
+            hub: TelegramBotsHub = telegram_bot.hub
+        except TelegramBotsHub.DoesNotExist as error:
+            raise TelegramBotDisabledError() from error
 
-            hub.client.send_trigger(
-                bot_id=telegram_bot.id, trigger=trigger, payload=request.data
-            )
+        hub.client.send_trigger(
+            bot_id=telegram_bot.id, trigger=trigger, payload=request.data
+        )
 
         return Response(status=status.HTTP_202_ACCEPTED)

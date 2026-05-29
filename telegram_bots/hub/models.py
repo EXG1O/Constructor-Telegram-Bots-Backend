@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db import models
 from django.db.models import QuerySet
 from django.utils.functional import cached_property
@@ -61,6 +60,4 @@ class TelegramBotsHub(models.Model):
 
     @property
     def telegram_bots(self) -> QuerySet[TelegramBot]:
-        if settings.TEST:
-            return TelegramBot.objects.all()
         return TelegramBot.objects.filter(id__in=self.client.get_bot_ids())

@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING
 
 
 class BackgroundTaskViewSetTests(
-    BackgroundTaskMixin, TelegramBotMixin, UserMixin, HubMixin, TestCase
+    BackgroundTaskMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:
         super().setUp()
