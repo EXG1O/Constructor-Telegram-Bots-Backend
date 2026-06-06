@@ -4,29 +4,16 @@ from django.utils.datastructures import MultiValueDict
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework.exceptions import ParseError
-from rest_framework.parsers import BaseParser, DataAndFiles, MultiPartParser
+from rest_framework.parsers import DataAndFiles, MultiPartParser
 
-from collections.abc import Mapping
 from json import JSONDecodeError
-from typing import IO, Any
+from typing import Any
 import json
 import re
 
 MEDIA_DATA_FIELD_PATTERN: re.Pattern[str] = re.compile(
     r'^(?P<name>\w+)(:(?P<index>\d+))?:data$', re.IGNORECASE
 )
-
-
-class BinaryParser(BaseParser):
-    media_type = '*/*'
-
-    def parse(  # type: ignore [override]
-        self,
-        stream: IO[Any],
-        media_type: str | None = None,
-        parser_context: Mapping[str, Any] | None = None,
-    ) -> bytes:
-        return stream.read()
 
 
 class MultiPartJSONParser(MultiPartParser):

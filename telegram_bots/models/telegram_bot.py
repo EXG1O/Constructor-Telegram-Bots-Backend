@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.base import ModelBase
+from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
@@ -27,15 +27,8 @@ from .variable import Variable
 from requests import Response
 import requests
 
-from collections.abc import Collection, Iterable
-from contextlib import suppress
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 import re
-
-if TYPE_CHECKING:
-    from ..hub.models import TelegramBotsHub
-else:
-    TelegramBotsHub = Any
 
 TELEGRAM_BOT_TOKEN_PATTERN: re.Pattern[str] = re.compile(r'^\d+:.+$')
 
@@ -73,8 +66,16 @@ class TelegramBot(models.Model):
     is_loading = models.BooleanField(_('Загружается'), default=False)
     added_date = models.DateTimeField(_('Добавлен'), auto_now_add=True)
 
+    hub = models.ForeignKey(
+        'telegram_bots_hub.TelegramBotsHub',
+        on_delete=models.SET_NULL,
+        related_name='bots',
+        verbose_name=_('Хаб'),
+        blank=True,
+        null=True,
+    )
+
     if TYPE_CHECKING:
-        _loaded_values: dict[str, Any]
         connections: models.Manager[Connection]
         triggers: models.Manager[Trigger]
         messages: models.Manager[Message]
@@ -95,59 +96,6 @@ class TelegramBot(models.Model):
 
     def __str__(self) -> str:
         return f'@{self.username}'
-
-    def save(
-        self,
-        *,
-        force_insert: bool | tuple[ModelBase, ...] = False,
-        force_update: bool = False,
-        using: str | None = None,
-        update_fields: Iterable[str] | None = None,
-    ) -> None:
-        if self._state.adding or (
-            hasattr(self, '_loaded_values')
-            and self.api_token != self._loaded_values['api_token']
-        ):
-            self.update_username()
-
-            if not self._state.adding and self.is_enabled:
-                self.restart(save=False)
-                should_update_fields: list[str] = ['must_be_enabled', 'is_loading']
-                update_fields = (
-                    (list(update_fields) + should_update_fields)
-                    if update_fields
-                    else should_update_fields
-                )
-
-        super().save(
-            force_insert=force_insert,
-            force_update=force_update,
-            using=using,
-            update_fields=update_fields,
-        )
-
-    def delete(
-        self, using: str | None = None, keep_parents: bool = False
-    ) -> tuple[int, dict[str, int]]:
-        if not self._state.adding and self.is_enabled:
-            self.stop(save=False)
-
-        return super().delete(using, keep_parents)
-
-    @classmethod
-    def from_db(
-        cls, db: str | None, field_names: Collection[str], values: Collection[Any]
-    ) -> TelegramBot:
-        telegram_bot: TelegramBot = super().from_db(db, field_names, values)
-        telegram_bot._loaded_values = dict(
-            zip(
-                field_names,
-                (value for value in values if value is not models.DEFERRED),
-                strict=False,
-            )
-        )
-
-        return telegram_bot
 
     @cached_property
     def used_storage_size(self) -> int:
@@ -174,9 +122,14 @@ class TelegramBot(models.Model):
     def remaining_storage_size(self) -> int:
         return self.storage_size - self.used_storage_size
 
-    @cached_property
-    def hub(self) -> TelegramBotsHub:
-        return get_telegram_bots_hub_modal().objects.get_bot_hub(self.id)
+    @property
+    def webhook_url(self) -> str:
+        return str(
+            settings.SELF_URL
+            / reverse('api:webhooks:telegram', kwargs={'bot_id': self.id}).removeprefix(
+                '/'
+            )
+        )
 
     @property
     def is_enabled(self) -> bool:
@@ -185,6 +138,17 @@ class TelegramBot(models.Model):
         except get_telegram_bots_hub_modal().DoesNotExist:
             return False
 
+    def update_username(self, save: bool = True) -> None:
+        response: Response = requests.get(
+            f'https://api.telegram.org/bot{self.api_token}/getMe'
+        )
+        response.raise_for_status()
+
+        self.username = response.json()['result']['username']
+
+        if save:
+            self.save(update_fields=['username'])
+
     def start(self, save: bool = True) -> None:
         self.must_be_enabled = True
         self.is_loading = True
@@ -192,7 +156,9 @@ class TelegramBot(models.Model):
         if save:
             self.save(update_fields=['must_be_enabled', 'is_loading'])
 
-        tasks.start_telegram_bot.delay(telegram_bot_id=self.id)
+        tasks.start_telegram_bot.delay(
+            id=self.id, token=self.api_token, webhook_url=self.webhook_url
+        )
 
     def restart(self, save: bool = True) -> None:
         self.is_loading = True
@@ -200,7 +166,9 @@ class TelegramBot(models.Model):
         if save:
             self.save(update_fields=['is_loading'])
 
-        tasks.restart_telegram_bot.delay(telegram_bot_id=self.id)
+        tasks.restart_telegram_bot.delay(
+            id=self.id, token=self.api_token, webhook_url=self.webhook_url
+        )
 
     def stop(self, save: bool = True) -> None:
         self.must_be_enabled = False
@@ -209,15 +177,4 @@ class TelegramBot(models.Model):
         if save:
             self.save(update_fields=['must_be_enabled', 'is_loading'])
 
-        tasks.stop_telegram_bot.delay(telegram_bot_id=self.id)
-
-    def update_username(self) -> None:
-        response: Response = requests.get(
-            f'https://api.telegram.org/bot{self.api_token}/getMe'
-        )
-
-        if not response.ok:
-            return
-
-        with suppress(KeyError):
-            self.username = response.json()['result']['username']
+        tasks.stop_telegram_bot.delay(id=self.id)

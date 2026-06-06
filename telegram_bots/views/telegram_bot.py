@@ -60,6 +60,9 @@ class TelegramBotViewSet(IDLookupMixin, ModelViewSet[TelegramBot]):
             )
         )
 
+        if telegram_bot.is_enabled:
+            telegram_bot.stop(save=False)
+
         super().perform_destroy(telegram_bot)
 
         for file_name in file_names:

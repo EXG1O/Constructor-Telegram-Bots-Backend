@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 import django_stubs_ext
 
 from dotenv import load_dotenv
+from yarl import URL
 
 from datetime import timedelta
 from pathlib import Path
@@ -16,8 +17,10 @@ load_dotenv()
 
 BASE_DIR: Final[Path] = Path(__file__).resolve().parent.parent
 LOGS_DIR: Final[Path] = BASE_DIR / 'logs'
+SOCKETS_DIR: Final[Path] = BASE_DIR / 'sockets'
 
 os.makedirs(LOGS_DIR, exist_ok=True)
+os.makedirs(SOCKETS_DIR, exist_ok=True)
 
 
 SECRET_KEY: Final[str] = os.environ['SECRET_KEY']
@@ -26,9 +29,25 @@ TEST: Final[bool] = 'test' in sys.argv
 DEBUG: Final[bool] = os.getenv('DEBUG', 'True') == 'True'
 ENABLE_TELEGRAM_AUTH: Final[bool] = os.getenv('ENABLE_TELEGRAM_AUTH', 'True') == 'True'
 
+FRONTEND_PATH: Final[Path] = Path(os.environ['FRONTEND_PATH'])
+
+TELEGRAM_BOTS_HUB_PATH: Final[Path] = Path(os.environ['TELEGRAM_BOTS_HUB_PATH'])
+TELEGRAM_BOTS_HUB_TAG: Final[str] = os.getenv(
+    'TELEGRAM_BOTS_HUB_TAG', 'telegram-bots-hub-microservice'
+)
+TELEGRAM_BOTS_HUB_REDIS_URL: Final[str] = os.getenv(
+    'TELEGRAM_BOTS_HUB_REDIS_URL', 'redis://host.docker.internal:6379/1'
+)
+
 TELEGRAM_BOT_TOKEN: Final[str] = os.environ['TELEGRAM_BOT_TOKEN']
 
-FRONTEND_PATH: Final[Path] = Path(os.environ['FRONTEND_PATH'])
+SELF_URL: Final[URL] = URL(os.environ['SELF_URL'])
+SELF_UNIX_SOCK: Final[Path | None] = (
+    Path(path) if (path := os.getenv('SELF_UNIX_SOCK')) else None
+)
+
+if not (SELF_URL or SELF_UNIX_SOCK):
+    raise ValueError('Either SELF_URL or SELF_UNIX_SOCK must be set.')
 
 POSTGRESQL_DATABASE_NAME: Final[str] = os.environ['POSTGRESQL_DATABASE_NAME']
 POSTGRESQL_DATABASE_USER: Final[str] = os.environ['POSTGRESQL_DATABASE_USER']
@@ -58,6 +77,9 @@ TELEGRAM_BOT_MAX_TEMPORARY_VARIABLES: Final[int] = 1000
 TELEGRAM_BOT_MAX_VARIABLES: Final[int] = 100
 TELEGRAM_BOT_MAX_DATABASE_RECORDS: Final[int] = 1000
 
+TELEGRAM_BOTS_HUB_MAX_BOTS: Final[int] = 200
+TELEGRAM_BOTS_HUB_IDLE_TIMEOUT: Final[timedelta] = timedelta(minutes=30)
+
 
 JWT_REFRESH_TOKEN_LIFETIME: Final[timedelta] = timedelta(weeks=4)
 JWT_ACCESS_TOKEN_LIFETIME: Final[timedelta] = timedelta(minutes=15)
@@ -76,6 +98,10 @@ CELERY_BEAT_SCHEDULE: Final[dict[str, dict[str, Any]]] = {
     'delete_users_not_accepted_terms_schedule': {
         'task': 'users.tasks.delete_users_not_accepted_terms',
         'schedule': 86400,  # 24h
+    },
+    'delete_expired_telegram_bots_hubs_schedule': {
+        'task': 'telegram_bots.hub.tasks.delete_expired_telegram_bots_hubs',
+        'schedule': TELEGRAM_BOTS_HUB_IDLE_TIMEOUT.total_seconds(),
     },
 }
 
@@ -220,31 +246,27 @@ LOGGING: Final[dict[str, Any]] = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
-        'django_info_file': {
+        'info_file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOGS_DIR / 'django_info.log',
+            'filename': LOGS_DIR / 'app_info.log',
             'maxBytes': 10485760,
             'backupCount': 10,
             'formatter': 'verbose',
         },
-        'django_error_file': {
+        'error_file': {
             'level': 'WARNING',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOGS_DIR / 'django_error.log',
+            'filename': LOGS_DIR / 'app_error.log',
             'maxBytes': 10485760,
             'backupCount': 10,
             'formatter': 'verbose',
         },
     },
     'loggers': {
-        'django': {
-            'handlers': [
-                'console',
-                'django_info_file',
-                'django_error_file',
-            ],
-            'propagate': True,
-        },
+        'root': {
+            'handlers': ['console', 'info_file', 'error_file'],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+        }
     },
 }
