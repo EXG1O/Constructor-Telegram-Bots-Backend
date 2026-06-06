@@ -105,7 +105,7 @@ class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
 
 
 class TelegramBotsHub(models.Model):
-    container_id = models.CharField('Container ID', max_length=255, unique=True)
+    container_id = models.CharField(_('ID контейнера'), max_length=255, unique=True)
     telegram_token = models.CharField(
         _('Telegram токен'), max_length=64, unique=True, default=_generate_token
     )
@@ -128,8 +128,8 @@ class TelegramBotsHub(models.Model):
 
     class Meta(TypedModelMeta):
         db_table = 'telegram_bots_hub'
-        verbose_name = _('Центр')
-        verbose_name_plural = _('Центра')
+        verbose_name = _('Хаб')
+        verbose_name_plural = _('Хабы')
 
     def __str__(self) -> str:
         return self.container_id

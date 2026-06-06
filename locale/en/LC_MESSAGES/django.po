@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-26 23:24+0000\n"
+"POT-Creation-Date: 2026-06-06 07:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -206,14 +206,17 @@ msgstr "14 days"
 msgid "28 дней"
 msgstr "28 days"
 
-msgid "Центр Telegram ботов"
-msgstr "Telegram Bots Hub"
+msgid "Хабы Telegram ботов"
+msgstr "Hubs of Telegram Bots"
 
 msgid "Недействительный токен."
 msgstr "Invalid token."
 
-msgid "URL-адрес"
-msgstr "URL"
+msgid "ID контейнера"
+msgstr "Container ID"
+
+msgid "Telegram токен"
+msgstr "Telegram token"
 
 msgid "Токен сервиса"
 msgstr "Service token"
@@ -221,14 +224,20 @@ msgstr "Service token"
 msgid "Токен микросервиса"
 msgstr "Microservice token"
 
-msgid "Центр"
+msgid "Дата начала простоя"
+msgstr "Idle start date"
+
+msgid "Хаб"
 msgstr "Hub"
 
-msgid "Центра"
+msgid "Хабы"
 msgstr "Hubs"
 
 msgid "Telegram бот"
 msgstr "Telegram bot"
+
+msgid "URL-адрес"
+msgstr "URL"
 
 msgid "Метод"
 msgstr "Method"
