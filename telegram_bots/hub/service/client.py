@@ -46,8 +46,7 @@ class ServiceClient:
                     extensions={'timeout': {'connect': 4.0, 'pool': 8.0}},
                 )
 
-                status = HTTPStatus(response.status)
-                if status.is_client_error or status.is_server_error:
+                if response.status >= 400:
                     raise HTTPError(response)  # noqa: TRY301
             except (ConnectError, TimeoutError, HTTPError) as error:
                 if attempt >= max_retries:
