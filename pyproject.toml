@@ -19,7 +19,8 @@ dependencies = [
     "pillow>=12,<13",
     "django-admin-sortable2>=2.3,<2.4",
     "requests>=2.32,<2.33",
-    "requests-unixsocket>=0.4,<0.5",
+    "docker>=7.1,<7.2",
+    "httpcore>=1.0,<1.1",
 ]
 
 [dependency-groups]

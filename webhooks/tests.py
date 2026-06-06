@@ -84,6 +84,9 @@ class TriggerWebhookAPIViewTests(HubMixin, TelegramBotMixin, UserMixin, TestCase
 
         self.mock_hub_client.get_bot_ids.return_value = [self.telegram_bot.id]
 
+        self.telegram_bot.hub = self.hub
+        self.telegram_bot.save(update_fields=['hub'])
+
         response = view(
             request, id=self.trigger_webhook.id, token=self.trigger_webhook.token
         )

@@ -8,3 +8,4 @@ celerybeat-schedule
 .coverage
 .env
 *.mo
+sockets/

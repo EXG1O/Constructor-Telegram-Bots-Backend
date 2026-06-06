@@ -10,6 +10,7 @@ from constructor_telegram_bots.utils.tests import assert_view_basic_protected
 from users.tests.mixins import UserMixin
 from users.utils.tests import assert_view_requires_terms_acceptance
 
+from ..hub.models import TelegramBotsHub, TelegramBotsHubManager
 from ..hub.tests.mixins import HubMixin
 from ..models import TelegramBot
 from ..views import TelegramBotViewSet
@@ -154,7 +155,17 @@ class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
         response = view(request, id=self.telegram_bot.id)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.mock_docker_containers.run.assert_not_called()
+
+        with patch.object(TelegramBotsHubManager, 'get_freest') as mock_get_freest:
+            mock_get_freest.side_effect = TelegramBotsHub.objects.create_with_container
+            response = view(request, id=self.telegram_bot.id)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.mock_docker_containers.run.assert_called_once()
+        self.mock_hub_client.start_bot.assert_called()
 
     def test_restart(self) -> None:
         view = TelegramBotViewSet.as_view({'post': 'restart'})
@@ -182,8 +193,12 @@ class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
 
         self.mock_hub_client.get_bot_ids.return_value = [self.telegram_bot.id]
 
+        self.telegram_bot.hub = self.hub
+        self.telegram_bot.save(update_fields=['hub'])
+
         response = view(request, id=self.telegram_bot.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.mock_hub_client.restart_bot.assert_called_once()
 
     def test_stop(self) -> None:
         view = TelegramBotViewSet.as_view({'post': 'stop'})
@@ -211,8 +226,12 @@ class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
 
         self.mock_hub_client.get_bot_ids.return_value = [self.telegram_bot.id]
 
+        self.telegram_bot.hub = self.hub
+        self.telegram_bot.save(update_fields=['hub'])
+
         response = view(request, id=self.telegram_bot.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.mock_hub_client.stop_bot.assert_called_once()
 
     def test_update(self) -> None:
         view = TelegramBotViewSet.as_view({'put': 'update'})
@@ -248,6 +267,11 @@ class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
         )
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
+        self.mock_hub_client.get_bot_ids.return_value = [self.telegram_bot.id]
+
+        self.telegram_bot.hub = self.hub
+        self.telegram_bot.save(update_fields=['hub'])
+
         with patch.object(requests, 'get') as mock_requests_get:
             mock_requests_get.return_value.ok = True
             response = view(request, id=self.telegram_bot.id)
@@ -256,6 +280,7 @@ class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
 
         self.telegram_bot.refresh_from_db()
         self.assertEqual(self.telegram_bot.api_token, new_api_token)
+        self.mock_hub_client.restart_bot.assert_called_once()
 
     def test_partial_update(self) -> None:
         view = TelegramBotViewSet.as_view({'patch': 'partial_update'})
@@ -291,6 +316,11 @@ class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
         )
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
+        self.mock_hub_client.get_bot_ids.return_value = [self.telegram_bot.id]
+
+        self.telegram_bot.hub = self.hub
+        self.telegram_bot.save(update_fields=['hub'])
+
         with patch.object(requests, 'get') as mock_requests_get:
             mock_requests_get.return_value.ok = True
             response = view(request, id=self.telegram_bot.id)
@@ -299,6 +329,7 @@ class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
 
         self.telegram_bot.refresh_from_db()
         self.assertEqual(self.telegram_bot.api_token, new_api_token)
+        self.mock_hub_client.restart_bot.assert_called_once()
 
     def test_destroy(self) -> None:
         view = TelegramBotViewSet.as_view({'delete': 'destroy'})
@@ -324,6 +355,12 @@ class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
         request = self.factory.delete(self.detail_true_url)
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
+        self.mock_hub_client.get_bot_ids.return_value = [self.telegram_bot.id]
+
+        self.telegram_bot.must_be_enabled = True
+        self.telegram_bot.hub = self.hub
+        self.telegram_bot.save(update_fields=['must_be_enabled', 'hub'])
+
         response = view(request, id=self.telegram_bot.id)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -332,3 +369,5 @@ class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
             raise self.failureException(
                 'Telegram bot has not been deleted from database!'
             )
+
+        self.mock_hub_client.stop_bot.assert_called_once()

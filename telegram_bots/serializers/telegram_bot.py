@@ -51,15 +51,22 @@ class TelegramBotSerializer(serializers.ModelSerializer[TelegramBot]):
         return request.user
 
     def create(self, validated_data: dict[str, Any]) -> TelegramBot:
-        return self.site_user.telegram_bots.create(**validated_data)
+        bot = TelegramBot(owner=self.site_user, **validated_data)
+        bot.update_username(save=False)
+        bot.save()
+        return bot
 
-    def update(
-        self, telegram_bot: TelegramBot, validated_data: dict[str, Any]
-    ) -> TelegramBot:
-        telegram_bot.api_token = validated_data.get('api_token', telegram_bot.api_token)
-        telegram_bot.is_private = validated_data.get(
-            'is_private', telegram_bot.is_private
-        )
-        telegram_bot.save(update_fields=['api_token', 'is_private'])
+    def update(self, bot: TelegramBot, validated_data: dict[str, Any]) -> TelegramBot:
+        old_token: str = bot.api_token
+        new_token: str = validated_data.get('api_token', old_token)
 
-        return telegram_bot
+        bot.api_token = new_token
+        bot.is_private = validated_data.get('is_private', bot.is_private)
+        bot.update_username(save=False)
+
+        if old_token != new_token:
+            bot.restart(save=False)
+
+        bot.save(update_fields=['username', 'api_token', 'is_private'])
+
+        return bot

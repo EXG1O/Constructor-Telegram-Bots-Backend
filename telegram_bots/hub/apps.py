@@ -6,4 +6,4 @@ class TelegramBotsHubConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'telegram_bots.hub'
     label = 'telegram_bots_hub'
-    verbose_name = _('Центр Telegram ботов')
+    verbose_name = _('Хабы Telegram ботов')
