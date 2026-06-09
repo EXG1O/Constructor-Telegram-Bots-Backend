@@ -4,7 +4,7 @@ __pycache__/
 media/
 logs/
 env/
-celerybeat-schedule
+celerybeat-schedule*
 .coverage
 .env
 *.mo
