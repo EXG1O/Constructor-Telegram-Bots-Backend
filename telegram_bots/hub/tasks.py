@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db.models import QuerySet
+from django.db.models import Count, QuerySet
 from django.utils import timezone
 
 from celery import shared_task
@@ -24,6 +24,13 @@ logger: logging.Logger = logging.getLogger(__name__)
 def _delete_hub_docker_container(id: str) -> None:
     docker_client.containers.get(id).remove(force=True)
     os.remove(settings.SOCKETS_DIR / f'{id[:12]}.sock')
+
+
+@shared_task
+def ensure_idle_telegram_bots_hubs() -> None:
+    TelegramBotsHub.objects.annotate(bot_count=Count('bots')).filter(
+        bot_count=0, idle_start_date__isnull=True
+    ).update(idle_start_date=timezone.now())
 
 
 @shared_task
