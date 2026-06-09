@@ -99,6 +99,10 @@ CELERY_BEAT_SCHEDULE: Final[dict[str, dict[str, Any]]] = {
         'task': 'users.tasks.delete_users_not_accepted_terms',
         'schedule': 86400,  # 24h
     },
+    'ensure_idle_telegram_bots_hubs_schedule': {
+        'task': 'telegram_bots.hub.tasks.ensure_idle_telegram_bots_hubs',
+        'schedule': 3600,  # 1h
+    },
     'delete_expired_telegram_bots_hubs_schedule': {
         'task': 'telegram_bots.hub.tasks.delete_expired_telegram_bots_hubs',
         'schedule': TELEGRAM_BOTS_HUB_IDLE_TIMEOUT.total_seconds(),

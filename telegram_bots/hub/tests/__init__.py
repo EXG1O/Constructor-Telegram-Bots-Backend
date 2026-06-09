@@ -5,6 +5,7 @@ from .database_operation import DatabaseOperationViewSetTests
 from .database_record import DatabaseRecordViewSetTests
 from .invoice import InvoiceViewSetTests
 from .message import MessageKeyboardButtonViewSetTests, MessageViewSetTests
+from .tasks import EnsureIdleTelegramBotsHubsTaskTests
 from .telegram_bot import TelegramBotViewSetTests
 from .temporary_variable import TemporaryVariableViewSetTests
 from .trigger import TriggerViewSetTests
@@ -25,4 +26,5 @@ __all__ = [
     'VariableViewSetTests',
     'UserViewSetTests',
     'DatabaseRecordViewSetTests',
+    'EnsureIdleTelegramBotsHubsTaskTests',
 ]
