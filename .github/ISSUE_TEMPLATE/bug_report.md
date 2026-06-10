@@ -23,7 +23,7 @@ What should have happened?
 What actually happened?
 
 ## Environment
-- **Python version**: 3.11.x
+- **Python version**: 3.14.x
 - **PostgreSQL version**: x.x.x
 - **Redis version**: x.x.x
 - **Celery version**: x.x.x
