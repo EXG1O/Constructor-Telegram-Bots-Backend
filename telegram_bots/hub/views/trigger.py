@@ -34,6 +34,9 @@ class TriggerFilter(FilterSet):
     has_message_text = BooleanFilter(
         field_name='message__text', method='filter_has_field'
     )
+    has_source_connections = BooleanFilter(
+        field_name='source_connections', method='filter_has_field'
+    )
     has_target_connections = BooleanFilter(
         field_name='target_connections', method='filter_has_field'
     )
@@ -51,6 +54,7 @@ class TriggerFilter(FilterSet):
             'has_command_payload',
             'has_message',
             'has_message_text',
+            'has_source_connections',
             'has_target_connections',
         ]
 
