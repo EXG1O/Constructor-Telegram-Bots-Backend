@@ -161,7 +161,7 @@ wheels = [
 ]
 
 [[package]]
-name = "constructor-telegram-bots"
+name = "constructor-telegram-bots-backend"
 version = "4.3.0"
 source = { virtual = "." }
 dependencies = [
