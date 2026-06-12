@@ -10,13 +10,16 @@ on:
 
 env:
   SECRET_KEY: test_secret_key
-  FRONTEND_PATH: ''
-  TELEGRAM_BOTS_HUB_PATH: ''
   TELEGRAM_BOT_TOKEN: 12345:test
   SELF_URL: 'http://localhost'
+  FRONTEND_PATH: ''
   POSTGRESQL_DATABASE_NAME: postgres
   POSTGRESQL_DATABASE_USER: postgres
   POSTGRESQL_DATABASE_PASSWORD: postgres
+  POSTGRESQL_DATABASE_HOST: localhost
+  POSTGRESQL_DATABASE_PORT: 5432
+  REDIS_URL: redis://localhost:6379
+  TELEGRAM_BOTS_HUB_REDIS_URL: redis://localhost:6379/1
 
 jobs:
   code-quality:

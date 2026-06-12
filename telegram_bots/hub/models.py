@@ -55,7 +55,7 @@ class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
                 detach=True,
                 restart_policy={'Name': 'on-failure', 'MaximumRetryCount': 3},
                 environment={
-                    'DEBUG': settings.DEBUG,
+                    'MODE': settings.MODE,
                     'REDIS_URL': settings.TELEGRAM_BOTS_HUB_REDIS_URL,
                     'SELF_TOKEN': microservice_token,
                     'TELEGRAM_TOKEN': telegram_token,
@@ -69,8 +69,22 @@ class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
                     else None
                 ),
                 volumes={
-                    str(settings.SOCKETS_DIR): {'bind': '/app/sockets', 'mode': 'rw'}
+                    (
+                        settings.TELEGRAM_BOTS_HUB_SOCKETS_VOLUME
+                        or str(settings.SOCKETS_DIR)
+                    ): {
+                        'bind': '/app/sockets',
+                        'mode': 'rw',
+                    },
+                    (
+                        settings.TELEGRAM_BOTS_HUB_LOGS_VOLUME
+                        or str(settings.LOGS_DIR / settings.TELEGRAM_BOTS_HUB_TAG)
+                    ): {
+                        'bind': '/app/logs',
+                        'mode': 'rw',
+                    },
                 },
+                network=settings.TELEGRAM_BOTS_HUB_NETWORK,
             )
 
             try:

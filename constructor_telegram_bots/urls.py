@@ -7,6 +7,8 @@ import django_stubs_ext
 
 from rest_framework.generics import GenericAPIView
 
+from .enums import Mode
+
 django_stubs_ext.monkeypatch(extra_classes=[GenericAPIView])
 
 
@@ -37,7 +39,7 @@ urlpatterns: list[URLPattern | URLResolver] = [
     ),
 ]
 
-if not settings.TEST and settings.DEBUG:
+if settings.MODE == Mode.DEBUG:
     from django.conf.urls.static import static
 
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -5,6 +5,8 @@ import django_stubs_ext
 from dotenv import load_dotenv
 from yarl import URL
 
+from .enums import Mode
+
 from datetime import timedelta
 from pathlib import Path
 from typing import Any, Final
@@ -25,18 +27,28 @@ os.makedirs(SOCKETS_DIR, exist_ok=True)
 
 SECRET_KEY: Final[str] = os.environ['SECRET_KEY']
 
-TEST: Final[bool] = 'test' in sys.argv
-DEBUG: Final[bool] = os.getenv('DEBUG', 'True') == 'True'
-ENABLE_TELEGRAM_AUTH: Final[bool] = os.getenv('ENABLE_TELEGRAM_AUTH', 'True') == 'True'
+MODE: Final[Mode] = (
+    Mode.TEST if 'test' in sys.argv else Mode(os.getenv('MODE', 'debug').lower())
+)
+ENABLE_TELEGRAM_AUTH: Final[bool] = os.getenv('ENABLE_TELEGRAM_AUTH', 'true') == 'true'
 
 FRONTEND_PATH: Final[Path] = Path(os.environ['FRONTEND_PATH'])
 
-TELEGRAM_BOTS_HUB_PATH: Final[Path] = Path(os.environ['TELEGRAM_BOTS_HUB_PATH'])
+TELEGRAM_BOTS_HUB_PATH: Final[Path] = (
+    Path(path)
+    if (path := os.getenv('TELEGRAM_BOTS_HUB_PATH'))
+    else BASE_DIR / 'telegram-bots-hub'
+)
 TELEGRAM_BOTS_HUB_TAG: Final[str] = os.getenv(
     'TELEGRAM_BOTS_HUB_TAG', 'telegram-bots-hub-microservice'
 )
-TELEGRAM_BOTS_HUB_REDIS_URL: Final[str] = os.getenv(
-    'TELEGRAM_BOTS_HUB_REDIS_URL', 'redis://host.docker.internal:6379/1'
+TELEGRAM_BOTS_HUB_NETWORK: Final[str | None] = os.getenv('TELEGRAM_BOTS_HUB_NETWORK')
+TELEGRAM_BOTS_HUB_REDIS_URL: Final[str] = os.environ['TELEGRAM_BOTS_HUB_REDIS_URL']
+TELEGRAM_BOTS_HUB_SOCKETS_VOLUME: Final[str | None] = os.getenv(
+    'TELEGRAM_BOTS_HUB_SOCKETS_VOLUME'
+)
+TELEGRAM_BOTS_HUB_LOGS_VOLUME: Final[str | None] = os.getenv(
+    'TELEGRAM_BOTS_HUB_LOGS_VOLUME'
 )
 
 TELEGRAM_BOT_TOKEN: Final[str] = os.environ['TELEGRAM_BOT_TOKEN']
@@ -52,9 +64,15 @@ if not (SELF_URL or SELF_UNIX_SOCK):
 POSTGRESQL_DATABASE_NAME: Final[str] = os.environ['POSTGRESQL_DATABASE_NAME']
 POSTGRESQL_DATABASE_USER: Final[str] = os.environ['POSTGRESQL_DATABASE_USER']
 POSTGRESQL_DATABASE_PASSWORD: Final[str] = os.environ['POSTGRESQL_DATABASE_PASSWORD']
+POSTGRESQL_DATABASE_HOST: Final[str] = os.environ['POSTGRESQL_DATABASE_HOST']
+POSTGRESQL_DATABASE_PORT: Final[str] = os.environ['POSTGRESQL_DATABASE_PORT']
+
+REDIS_URL: Final[str] = os.environ['REDIS_URL']
 
 
-ALLOWED_HOSTS: Final[list[str]] = ['*'] if DEBUG else ['constructor.exg1o.org']
+ALLOWED_HOSTS: Final[list[str]] = (
+    ['constructor.exg1o.org'] if MODE == Mode.PRODUCTION else ['*']
+)
 CSRF_TRUSTED_ORIGINS: Final[list[str]] = ['https://*.exg1o.org']
 
 
@@ -85,8 +103,8 @@ JWT_REFRESH_TOKEN_LIFETIME: Final[timedelta] = timedelta(weeks=4)
 JWT_ACCESS_TOKEN_LIFETIME: Final[timedelta] = timedelta(minutes=15)
 
 
-CELERY_BROKER_URL: Final[str] = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND: Final[str] = 'redis://127.0.0.1:6379'
+CELERY_BROKER_URL: Final[str] = REDIS_URL
+CELERY_RESULT_BACKEND: Final[str] = REDIS_URL
 CELERY_ACCEPT_CONTENT: Final[list[str]] = ['application/json']
 CELERY_RESULT_SERIALIZER: Final[str] = 'json'
 CELERY_TASK_SERIALIZER: Final[str] = 'json'
@@ -109,7 +127,7 @@ CELERY_BEAT_SCHEDULE: Final[dict[str, dict[str, Any]]] = {
     },
 }
 
-if TEST:
+if MODE == Mode.TEST:
     CELERY_TASK_ALWAYS_EAGER = True
     CELERY_TASK_EAGER_PROPAGATES = True
 
@@ -137,7 +155,7 @@ INSTALLED_APPS: Final[list[str]] = [
     'terms_of_service',
 ]
 
-if not TEST and DEBUG:
+if MODE == Mode.DEBUG:
     INSTALLED_APPS.append('silk')
 
 REST_FRAMEWORK: Final[dict[str, Any]] = {
@@ -156,7 +174,7 @@ MIDDLEWARE: Final[list[str]] = [
     'django.middleware.locale.LocaleMiddleware',
 ]
 
-if not TEST and DEBUG:
+if MODE == Mode.DEBUG:
     MIDDLEWARE.append('silk.middleware.SilkyMiddleware')
 
 
@@ -186,7 +204,7 @@ WSGI_APPLICATION: Final[str] = 'constructor_telegram_bots.wsgi.application'
 CACHES: Final[dict[str, dict[str, Any]]] = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379',
+        'LOCATION': REDIS_URL,
     }
 }
 
@@ -197,8 +215,8 @@ DATABASES: Final[dict[str, dict[str, Any]]] = {
         'NAME': POSTGRESQL_DATABASE_NAME,
         'USER': POSTGRESQL_DATABASE_USER,
         'PASSWORD': POSTGRESQL_DATABASE_PASSWORD,
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'HOST': POSTGRESQL_DATABASE_HOST,
+        'PORT': POSTGRESQL_DATABASE_PORT,
     },
 }
 DEFAULT_AUTO_FIELD: Final[str] = 'django.db.models.BigAutoField'
@@ -270,7 +288,7 @@ LOGGING: Final[dict[str, Any]] = {
     'loggers': {
         'root': {
             'handlers': ['console', 'info_file', 'error_file'],
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            'level': 'DEBUG' if MODE == Mode.DEBUG else 'INFO',
         }
     },
 }
