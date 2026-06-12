@@ -1,0 +1,13 @@
+.git/
+.github/
+.vscode/
+.mypy_cache/
+.ruff_cache/
+.venv/
+__pycache__/
+logs/
+media/
+sockets/
+static/
+celerybeat-schedule*
+.env
