@@ -1,5 +1,6 @@
 from .api_request import APIRequestViewSet
 from .background_task import BackgroundTaskViewSet
+from .chat import ChatViewSet
 from .condition import ConditionViewSet
 from .database_operation import DatabaseOperationViewSet
 from .database_record import DatabaseRecordViewSet
@@ -23,6 +24,7 @@ __all__ = [
     'InvoiceViewSet',
     'TemporaryVariableViewSet',
     'VariableViewSet',
+    'ChatViewSet',
     'UserViewSet',
     'DatabaseRecordViewSet',
 ]

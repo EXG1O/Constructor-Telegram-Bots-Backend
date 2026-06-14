@@ -3,6 +3,7 @@ from rest_framework.routers import SimpleRouter
 from .views import (
     APIRequestViewSet,
     BackgroundTaskViewSet,
+    ChatViewSet,
     ConditionViewSet,
     DatabaseOperationViewSet,
     DatabaseRecordViewSet,
@@ -70,6 +71,11 @@ router.register(
     f'{base_path}/variables',
     VariableViewSet,
     basename=f'{base_name}-variable',
+)
+router.register(
+    f'{base_path}/chats',
+    ChatViewSet,
+    basename=f'{base_name}-chat',
 )
 router.register(
     f'{base_path}/users',

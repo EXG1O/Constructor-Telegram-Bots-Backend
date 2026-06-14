@@ -3,6 +3,8 @@ from django.utils.translation import gettext_lazy as _
 
 from django_stubs_ext.db.models import TypedModelMeta
 
+from .chat import Chat
+
 
 class User(models.Model):
     telegram_bot = models.ForeignKey(
@@ -25,6 +27,10 @@ class User(models.Model):
         _('Дата последней активности'), auto_now_add=True
     )
     activated_date = models.DateTimeField(_('Дата активации'), auto_now_add=True)
+
+    chats = models.ManyToManyField(
+        Chat, related_name='users', verbose_name=_('Чаты'), blank=True
+    )
 
     class Meta(TypedModelMeta):
         db_table = 'telegram_bot_user'

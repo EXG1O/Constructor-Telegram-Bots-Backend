@@ -13,6 +13,7 @@ from .. import tasks
 from ..hub.utils import get_telegram_bots_hub_modal
 from .api_request import APIRequest
 from .background_task import BackgroundTask
+from .chat import Chat
 from .condition import Condition
 from .connection import Connection
 from .database_operation import DatabaseOperation
@@ -86,6 +87,7 @@ class TelegramBot(models.Model):
         invoices: models.Manager[Invoice]
         temporary_variables: models.Manager[TemporaryVariable]
         variables: models.Manager[Variable]
+        chats: models.Manager[Chat]
         users: models.Manager[User]
         database_records: models.Manager[DatabaseRecord]
 

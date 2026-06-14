@@ -1,5 +1,6 @@
 from .api_request import APIRequestViewSetTests
 from .background_task import BackgroundTaskViewSetTests
+from .chat import ChatViewSetTests
 from .condition import ConditionViewSetTests
 from .database_operation import DatabaseOperationViewSetTests
 from .database_record import DatabaseRecordViewSetTests
@@ -24,6 +25,7 @@ __all__ = [
     'InvoiceViewSetTests',
     'TemporaryVariableViewSetTests',
     'VariableViewSetTests',
+    'ChatViewSetTests',
     'UserViewSetTests',
     'DatabaseRecordViewSetTests',
     'EnsureIdleTelegramBotsHubsTaskTests',
