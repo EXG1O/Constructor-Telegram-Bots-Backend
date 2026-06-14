@@ -43,7 +43,7 @@ def create_chats(apps: Apps, schema_editor: BaseDatabaseSchemaEditor) -> None:
             ],
             batch_size=batch_size,
         )
-        chat_user_through_model.objects.bulk_create(
+        chat_user_through_model.objects.bulk_create(  # type: ignore [attr-defined]
             [
                 chat_user_through_model(user=user, chat=chat)
                 for user, chat in zip(user_batch, chats)
