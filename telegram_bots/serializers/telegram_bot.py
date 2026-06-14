@@ -67,6 +67,6 @@ class TelegramBotSerializer(serializers.ModelSerializer[TelegramBot]):
         if old_token != new_token:
             bot.restart(save=False)
 
-        bot.save(update_fields=['username', 'api_token', 'is_private'])
+        bot.save(update_fields=['username', 'api_token', 'is_private', 'is_loading'])
 
         return bot
