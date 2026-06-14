@@ -1,6 +1,6 @@
 from users.models import User
 
-from ..enums import ConditionPartOperatorType, ConditionPartType
+from ..enums import ChatType, ConditionPartOperatorType, ConditionPartType
 from ..models import (
     APIRequest,
     BackgroundTask,
@@ -19,6 +19,7 @@ from ..models import (
     TriggerCommand,
     Variable,
 )
+from ..models import Chat as BotChat
 from ..models import User as BotUser
 
 from typing import TYPE_CHECKING
@@ -158,6 +159,19 @@ class VariableMixin:
         super().setUp()  # type: ignore [misc]
         self.variable: Variable = self.telegram_bot.variables.create(
             name='Test name', value='The test value :)', description='The test variable'
+        )
+
+
+class BotChatMixin:
+    if TYPE_CHECKING:
+        telegram_bot: TelegramBot
+
+    def setUp(self) -> None:
+        super().setUp()  # type: ignore [misc]
+        self.bot_chat: BotChat = self.telegram_bot.chats.create(
+            telegram_id=123456789,
+            type=ChatType.PRIVATE,
+            title='Test Chat',
         )
 
 

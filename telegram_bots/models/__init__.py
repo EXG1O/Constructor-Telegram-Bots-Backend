@@ -1,5 +1,6 @@
 from .api_request import APIRequest
 from .background_task import BackgroundTask
+from .chat import Chat
 from .condition import Condition, ConditionPart
 from .connection import Connection
 from .database_operation import (
@@ -48,6 +49,7 @@ __all__ = [
     'InvoicePrice',
     'TemporaryVariable',
     'Variable',
+    'Chat',
     'User',
     'DatabaseRecord',
 ]

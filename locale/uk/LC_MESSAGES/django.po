@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-06 07:30+0000\n"
+"POT-Creation-Date: 2026-06-14 12:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -209,6 +209,18 @@ msgstr "14 днів"
 msgid "28 дней"
 msgstr "28 днів"
 
+msgid "Приватный"
+msgstr "Приватний"
+
+msgid "Группа"
+msgstr "Група"
+
+msgid "Супергруппа"
+msgstr "Супергрупа"
+
+msgid "Канал"
+msgstr "Канал"
+
 msgid "Хабы Telegram ботов"
 msgstr "Хаби Telegram ботів"
 
@@ -235,6 +247,12 @@ msgstr "Хаб"
 
 msgid "Хабы"
 msgstr "Хаби"
+
+msgid "Укажите значение для полей 'id' или 'telegram_id'."
+msgstr "Вкажіть значення для полів 'id' або 'telegram_id'."
+
+msgid "Пользователи не найдены."
+msgstr "Користувачів не знайдено."
 
 msgid "Telegram бот"
 msgstr "Telegram бот"
@@ -271,6 +289,24 @@ msgstr "З URL-адресу"
 
 msgid "Тип"
 msgstr "Тип"
+
+msgid "Имя"
+msgstr "Ім'я"
+
+msgid "Фамилия"
+msgstr "Прізвище"
+
+msgid "Форум"
+msgstr "Форум"
+
+msgid "Прямые сообщения"
+msgstr "Приватні повідомлення"
+
+msgid "Чат"
+msgstr "Чат"
+
+msgid "Чаты"
+msgstr "Чати"
 
 msgid "Первое значение"
 msgstr "Перше значення"
@@ -434,9 +470,6 @@ msgstr "API-токен"
 msgid "Telegram бот с таким API-токеном уже существует."
 msgstr "Telegram бот з таким API-токеном вже існує."
 
-msgid "Приватный"
-msgstr "Приватний"
-
 msgid "Должен быть включен"
 msgstr "Повинен бути увімкнений"
 
@@ -484,12 +517,6 @@ msgstr "Тригери"
 
 msgid "Имя пользователя"
 msgstr "Ім'я користувача"
-
-msgid "Имя"
-msgstr "Ім'я"
-
-msgid "Фамилия"
-msgstr "Прізвище"
 
 msgid "Бот"
 msgstr "Бот"

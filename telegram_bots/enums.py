@@ -107,3 +107,10 @@ class BackgroundTaskInterval(IntegerChoices):
     DAYS_7 = 7, _('7 дней')
     DAYS_14 = 14, _('14 дней')
     DAYS_28 = 28, _('28 дней')
+
+
+class ChatType(TextChoices):
+    PRIVATE = 'private', _('Приватный')
+    GROUP = 'group', _('Группа')
+    SUPERGROUP = 'supergroup', _('Супергруппа')
+    CHANNEL = 'channel', _('Канал')
