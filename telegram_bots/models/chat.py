@@ -27,6 +27,8 @@ class Chat(models.Model):
     last_name = models.CharField(_('Фамилия'), max_length=64, blank=True, null=True)
     is_forum = models.BooleanField(_('Форум'), default=False)
     is_direct_messages = models.BooleanField(_('Прямые сообщения'), default=False)
+    is_allowed = models.BooleanField(_('Разрешён'), default=False)
+    is_blocked = models.BooleanField(_('Заблокирован'), default=False)
 
     if TYPE_CHECKING:
         from django.db.models.fields.related_descriptors import ManyRelatedManager

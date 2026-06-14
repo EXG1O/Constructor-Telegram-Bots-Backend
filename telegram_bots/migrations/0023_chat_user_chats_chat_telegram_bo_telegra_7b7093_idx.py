@@ -38,6 +38,8 @@ def create_chats(apps: Apps, schema_editor: BaseDatabaseSchemaEditor) -> None:
                     username=user.username,
                     first_name=user.first_name,
                     last_name=user.last_name,
+                    is_allowed=user.is_allowed,
+                    is_blocked=user.is_blocked,
                 )
                 for user in user_batch
             ],
@@ -109,6 +111,14 @@ class Migration(migrations.Migration):
                 (
                     'is_direct_messages',
                     models.BooleanField(default=False, verbose_name='Прямые сообщения'),
+                ),
+                (
+                    'is_allowed',
+                    models.BooleanField(default=False, verbose_name='Разрешён'),
+                ),
+                (
+                    'is_blocked',
+                    models.BooleanField(default=False, verbose_name='Заблокирован'),
                 ),
                 (
                     'telegram_bot',
