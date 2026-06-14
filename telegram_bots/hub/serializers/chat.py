@@ -34,8 +34,11 @@ class ChatSerializer(TelegramBotMixin, serializers.ModelSerializer[Chat]):
             'last_name',
             'is_forum',
             'is_direct_messages',
+            'is_allowed',
+            'is_blocked',
             'users',
         ]
+        read_only_fields = ['is_allowed', 'is_blocked']
 
     def validate_users(self, data: list[dict[str, Any]]) -> list[User]:
         ids: set[int] = set()
