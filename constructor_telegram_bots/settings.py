@@ -30,6 +30,7 @@ SECRET_KEY: Final[str] = os.environ['SECRET_KEY']
 MODE: Final[Mode] = (
     Mode.TEST if 'test' in sys.argv else Mode(os.getenv('MODE', 'debug').lower())
 )
+DEBUG: Final[bool] = MODE == Mode.DEBUG
 ENABLE_TELEGRAM_AUTH: Final[bool] = os.getenv('ENABLE_TELEGRAM_AUTH', 'true') == 'true'
 
 FRONTEND_PATH: Final[Path] = Path(os.environ['FRONTEND_PATH'])
