@@ -45,7 +45,10 @@ class TriggerWebhookAPIView(APIView):
             raise TelegramBotDisabledError()
 
         hub.client.send_trigger(
-            bot_id=telegram_bot.id, trigger=trigger, payload=request.data
+            bot_id=telegram_bot.id,
+            trigger=trigger,
+            trigger_has_target_connections=trigger.target_connections.exists(),
+            payload=request.data,
         )
 
         return Response(status=status.HTTP_202_ACCEPTED)
