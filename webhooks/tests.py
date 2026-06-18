@@ -92,5 +92,8 @@ class TriggerWebhookAPIViewTests(HubMixin, TelegramBotMixin, UserMixin, TestCase
         )
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.mock_hub_client.send_trigger.assert_called_once_with(
-            bot_id=self.telegram_bot.id, trigger=self.trigger, payload=data
+            bot_id=self.telegram_bot.id,
+            trigger=self.trigger,
+            trigger_has_target_connections=False,
+            payload=data,
         )

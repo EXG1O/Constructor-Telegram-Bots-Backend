@@ -97,10 +97,18 @@ class ServiceClient:
         )
 
     def send_trigger(
-        self, bot_id: int, trigger: Trigger, payload: Any | None = None
+        self,
+        bot_id: int,
+        trigger: Trigger,
+        trigger_has_target_connections: bool,
+        payload: Any | None = None,
     ) -> Response:
         return self._request(
             HTTPMethod.POST,
             f'bots/{bot_id}/webhooks/trigger/',
-            data={'trigger': TriggerSerializer(trigger).data, 'payload': payload},
+            data={
+                'trigger': TriggerSerializer(trigger).data,
+                'trigger_has_target_connections': trigger_has_target_connections,
+                'payload': payload,
+            },
         )
