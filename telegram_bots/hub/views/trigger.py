@@ -44,7 +44,12 @@ class TriggerFilter(FilterSet):
     def filter_has_field(
         self, queryset: QuerySet[Trigger], name: str, value: bool
     ) -> QuerySet[Trigger]:
-        return queryset.filter(**{f'{name}__isnull': not value})
+        queryset = queryset.filter(**{f'{name}__isnull': not value})
+
+        if name in ['source_connections', 'target_connections']:
+            queryset = queryset.distinct('id')
+
+        return queryset
 
     class Meta:
         model = Trigger
