@@ -1,6 +1,6 @@
 from .api_request import APIRequestSerializer
 from .background_task import BackgroundTaskSerializer
-from .chat import ChatSerializer
+from .chat import ChatSerializer, ChatUserSerializer
 from .condition import (
     ConditionPartSerializer,
     ConditionSerializer,
@@ -56,6 +56,7 @@ __all__ = [
     'TemporaryVariableSerializer',
     'VariableSerializer',
     'ChatSerializer',
+    'ChatUserSerializer',
     'UserSerializer',
     'DatabaseRecordSerializer',
 ]

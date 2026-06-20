@@ -1,7 +1,11 @@
 from django.db.models import QuerySet
 
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
@@ -10,10 +14,12 @@ from constructor_telegram_bots.filters import NumberInFilter
 from constructor_telegram_bots.mixins import IDLookupMixin
 from constructor_telegram_bots.pagination import LimitOffsetPagination
 
-from ...models import Chat
+from ...models import Chat, User
 from ..authentication import TokenAuthentication
-from ..serializers import ChatSerializer
+from ..serializers import ChatSerializer, ChatUserSerializer
 from .mixins import TelegramBotMixin
+
+from typing import cast
 
 
 class ChatFilter(FilterSet):
@@ -40,3 +46,14 @@ class ChatViewSet(
 
     def get_queryset(self) -> QuerySet[Chat]:
         return self.telegram_bot.chats.all()
+
+    @action(detail=True, methods=['POST'])
+    def users(self, request: Request, telegram_bot_id: int, id: int) -> Response:
+        chat: Chat = self.get_object()
+
+        serializer = ChatUserSerializer(data=request.data, many=True, allow_empty=False)
+        serializer.is_valid(raise_exception=True)
+
+        chat.users.add(*cast(QuerySet[User], serializer.validated_data).only('id'))
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
