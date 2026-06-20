@@ -101,7 +101,7 @@ class ServiceClient:
         bot_id: int,
         trigger: Trigger,
         trigger_has_target_connections: bool,
-        payload: Any | None = None,
+        payload: str,
     ) -> Response:
         return self._request(
             HTTPMethod.POST,
