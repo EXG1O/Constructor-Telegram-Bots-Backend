@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.utils.translation import gettext as _
 
 from rest_framework import serializers
@@ -9,19 +9,7 @@ from ...serializers.mixins import TelegramBotMixin
 from typing import Any
 
 
-class ChatUserSerializer(serializers.ModelSerializer[User]):
-    class Meta:
-        model = User
-        fields = ['id', 'telegram_id']
-        extra_kwargs = {
-            'id': {'read_only': False, 'required': False},
-            'telegram_id': {'required': False},
-        }
-
-
 class ChatSerializer(TelegramBotMixin, serializers.ModelSerializer[Chat]):
-    users = ChatUserSerializer(many=True, write_only=True)
-
     class Meta:
         model = Chat
         fields = [
@@ -36,39 +24,11 @@ class ChatSerializer(TelegramBotMixin, serializers.ModelSerializer[Chat]):
             'is_direct_messages',
             'is_allowed',
             'is_blocked',
-            'users',
         ]
         read_only_fields = ['is_allowed', 'is_blocked']
 
-    def validate_users(self, data: list[dict[str, Any]]) -> list[User]:
-        ids: set[int] = set()
-        telegram_ids: set[int] = set()
-
-        for item in data:
-            if id := item.get('id'):
-                ids.add(id)
-            elif telegram_id := item.get('telegram_id'):
-                telegram_ids.add(telegram_id)
-
-        if not (ids or telegram_ids):
-            raise serializers.ValidationError(
-                _("Укажите значение для полей 'id' или 'telegram_id'.")
-            )
-
-        users: list[User] = list(
-            User.objects.filter(Q(id__in=ids) | Q(telegram_id__in=telegram_ids))
-        )
-
-        if not users:
-            raise serializers.ValidationError(
-                _('Пользователи не найдены.'), code='not_found'
-            )
-
-        return users
-
     def create(self, validated_data: dict[str, Any]) -> Chat:
         telegram_id: int = validated_data.pop('telegram_id')
-        users: list[User] = validated_data.pop('users')
 
         chat, created = self.telegram_bot.chats.get_or_create(
             telegram_id=telegram_id, defaults=validated_data
@@ -96,6 +56,46 @@ class ChatSerializer(TelegramBotMixin, serializers.ModelSerializer[Chat]):
                 ]
             )
 
-        chat.users.add(*users)
-
         return chat
+
+
+class ChatUserListSerializer(serializers.ListSerializer[User]):
+    def validate(self, data: list[dict[str, Any]]) -> QuerySet[User]:
+        ids: set[int] = set()
+        telegram_ids: set[int] = set()
+        errors: dict[str, str] = {}
+
+        for index, item in enumerate(data):
+            if id := item.get('id'):
+                ids.add(id)
+            elif telegram_id := item.get('telegram_id'):
+                telegram_ids.add(telegram_id)
+            else:
+                errors[str(index)] = _(
+                    "Укажите значение для полей 'id' или 'telegram_id'."
+                )
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
+        users: QuerySet[User] = User.objects.filter(
+            Q(id__in=ids) | Q(telegram_id__in=telegram_ids)
+        )
+
+        if not users.exists():
+            raise serializers.ValidationError(
+                _('Пользователи не найдены.'), code='not_found'
+            )
+
+        return users
+
+
+class ChatUserSerializer(serializers.ModelSerializer[User]):
+    class Meta:
+        model = User
+        fields = ['id', 'telegram_id']
+        extra_kwargs = {
+            'id': {'read_only': False, 'required': False},
+            'telegram_id': {'required': False},
+        }
+        list_serializer_class = ChatUserListSerializer
