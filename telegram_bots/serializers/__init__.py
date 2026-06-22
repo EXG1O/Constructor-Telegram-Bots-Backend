@@ -1,5 +1,6 @@
 from .api_request import APIRequestSerializer, DiagramAPIRequestSerializer
 from .background_task import BackgroundTaskSerializer, DiagramBackgroundTaskSerializer
+from .chat import ChatSerializer
 from .condition import (
     ConditionPartSerializer,
     ConditionSerializer,
@@ -78,6 +79,7 @@ __all__ = [
     'TemporaryVariableSerializer',
     'DiagramTemporaryVariableSerializer',
     'VariableSerializer',
+    'ChatSerializer',
     'UserSerializer',
     'DatabaseRecordSerializer',
 ]

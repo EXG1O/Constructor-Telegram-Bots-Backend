@@ -5,6 +5,7 @@ from rest_framework.routers import SimpleRouter
 from .views import (
     APIRequestViewSet,
     BackgroundTaskViewSet,
+    ChatViewSet,
     ConditionViewSet,
     ConnectionViewSet,
     DatabaseOperationViewSet,
@@ -134,6 +135,7 @@ router.register(
     VariableViewSet,
     basename=f'{base_name}-variable',
 )
+router.register(f'{base_path}/chats', ChatViewSet, basename=f'{base_name}-chat')
 router.register(f'{base_path}/users', UserViewSet, basename=f'{base_name}-user')
 router.register(
     f'{base_path}/database-records',
