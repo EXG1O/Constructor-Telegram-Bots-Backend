@@ -3,6 +3,7 @@ from .background_task import (
     BackgroundTaskViewSetTests,
     DiagramBackgroundTaskViewSetTests,
 )
+from .chat import ChatViewSetTests
 from .condition import ConditionViewSetTests, DiagramConditionViewSetTests
 from .connection import ConnectionViewSetTests
 from .database_operation import (
@@ -43,6 +44,7 @@ __all__ = [
     'TemporaryVariableViewSetTests',
     'DiagramTemporaryVariableViewSetTests',
     'VariableViewSetTests',
+    'ChatViewSetTests',
     'UserViewSetTests',
     'DatabaseRecordViewSetTests',
 ]

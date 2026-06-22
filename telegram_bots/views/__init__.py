@@ -1,5 +1,6 @@
 from .api_request import APIRequestViewSet, DiagramAPIRequestViewSet
 from .background_task import BackgroundTaskViewSet, DiagramBackgroundTaskViewSet
+from .chat import ChatViewSet
 from .condition import ConditionViewSet, DiagramConditionViewSet
 from .connection import ConnectionViewSet
 from .database_operation import (
@@ -40,6 +41,7 @@ __all__ = [
     'TemporaryVariableViewSet',
     'DiagramTemporaryVariableViewSet',
     'VariableViewSet',
+    'ChatViewSet',
     'UserViewSet',
     'DatabaseRecordViewSet',
 ]
