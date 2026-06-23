@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 12:56+0000\n"
+"POT-Creation-Date: 2026-06-23 12:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -299,6 +299,12 @@ msgstr "Forum"
 msgid "Прямые сообщения"
 msgstr "Direct messages"
 
+msgid "Разрешён"
+msgstr "Allowed"
+
+msgid "Заблокирован"
+msgstr "Blocked"
+
 msgid "Чат"
 msgstr "Chat"
 
@@ -458,6 +464,9 @@ msgstr "Messages"
 msgid "Этот API-токен является недействительным."
 msgstr "This API token is invalid."
 
+msgid "Произошла непредвиденная ошибка сети при проверки этого API-токена."
+msgstr "An unexpected network error occurred while checking this API token."
+
 msgid "Владелец"
 msgstr "Owner"
 
@@ -520,12 +529,6 @@ msgstr "Bot"
 
 msgid "Премиум"
 msgstr "Premium"
-
-msgid "Разрешён"
-msgstr "Allowed"
-
-msgid "Заблокирован"
-msgstr "Blocked"
 
 msgid "Дата последней активности"
 msgstr "Last activity date"
