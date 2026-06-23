@@ -2,9 +2,10 @@ from django.conf import settings
 
 from httpcore import ConnectError, ConnectionPool, Response
 
+from constructor_telegram_bots.http.exceptions import HTTPError
+
 from ...models import Trigger
 from ..serializers import TriggerSerializer
-from .exceptions import HTTPError
 from .schemas import BotCredentials
 
 from http import HTTPMethod, HTTPStatus
@@ -16,7 +17,10 @@ import time
 class ServiceClient:
     def __init__(self, container_id: str, access_token: str) -> None:
         self.pool = ConnectionPool(
-            uds=str(settings.SOCKETS_DIR / f'{container_id[:12]}.sock')
+            max_connections=4,
+            max_keepalive_connections=2,
+            keepalive_expiry=3,
+            uds=str(settings.SOCKETS_DIR / f'{container_id[:12]}.sock'),
         )
         self.headers: dict[str | bytes, str | bytes] = {
             'X-API-KEY': access_token,
