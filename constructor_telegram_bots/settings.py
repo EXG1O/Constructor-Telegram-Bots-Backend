@@ -31,7 +31,6 @@ MODE: Final[Mode] = (
     Mode.TEST if 'test' in sys.argv else Mode(os.getenv('MODE', 'debug').lower())
 )
 DEBUG: Final[bool] = MODE == Mode.DEBUG
-ENABLE_TELEGRAM_AUTH: Final[bool] = os.getenv('ENABLE_TELEGRAM_AUTH', 'true') == 'true'
 
 FRONTEND_PATH: Final[Path] = Path(os.environ['FRONTEND_PATH'])
 
@@ -52,7 +51,8 @@ TELEGRAM_BOTS_HUB_LOGS_VOLUME: Final[str | None] = os.getenv(
     'TELEGRAM_BOTS_HUB_LOGS_VOLUME'
 )
 
-TELEGRAM_BOT_TOKEN: Final[str] = os.environ['TELEGRAM_BOT_TOKEN']
+TELEGRAM_LOGIN_CLIENT_ID: Final[int] = int(os.environ['TELEGRAM_LOGIN_CLIENT_ID'])
+TELEGRAM_LOGIN_CLIENT_SECRET: Final[str] = os.environ['TELEGRAM_LOGIN_CLIENT_SECRET']
 
 SELF_URL: Final[URL] = URL(os.environ['SELF_URL'])
 SELF_UNIX_SOCK: Final[Path | None] = (

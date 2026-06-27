@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-23 12:07+0000\n"
+"POT-Creation-Date: 2026-06-27 16:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -680,15 +680,6 @@ msgstr "Terms of Service"
 
 msgid "Telegram ботов"
 msgstr "Telegram bots"
-
-msgid "Пользователь не может быть аутентифицирован."
-msgstr "The user cannot be authenticated."
-
-msgid "Срок действия данных аутентификации от Telegram истёк."
-msgstr "The Telegram authentication data has expired."
-
-msgid "Данные аутентификации Telegram являются подделкой."
-msgstr "The Telegram authentication data is forged."
 
 msgid "Токен обновления"
 msgstr "Refresh token"

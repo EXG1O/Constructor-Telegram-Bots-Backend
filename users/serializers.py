@@ -21,10 +21,8 @@ class UserSerializer(serializers.ModelSerializer[User]):
 
 
 class UserLoginSerializer(serializers.Serializer[User]):
-    id = serializers.IntegerField()
-    first_name = serializers.CharField(min_length=1, max_length=64)
-    auth_date = serializers.IntegerField()
-    hash = serializers.CharField(min_length=64, max_length=64)
+    code = serializers.CharField()
+    redirect_uri = serializers.URLField()
 
 
 class UserTokenRefreshSerializer(serializers.Serializer[User]):

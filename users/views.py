@@ -5,6 +5,7 @@ from django.views.decorators.cache import cache_page
 
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.filters import OrderingFilter
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
@@ -32,7 +33,10 @@ from .utils.auth import login as user_login
 from .utils.auth import logout as user_logout
 from .utils.auth import logout_all as user_logout_all
 
-from typing import Any, cast
+from typing import cast
+import base64
+import hashlib
+import secrets
 
 
 class StatsAPIView(APIView):
@@ -53,17 +57,41 @@ class UserViewSet(RetrieveModelMixin, GenericViewSet[User]):
         return self.request.user  # type: ignore [return-value]
 
     @action(
+        detail=False,
+        methods=['POST'],
+        url_path='login-init',
+        authentication_classes=[],
+        permission_classes=[],
+    )
+    def login_init(self, request: Request) -> Response:
+        code_verifier: str = secrets.token_urlsafe(32)
+        code_challenge: str = (
+            base64.urlsafe_b64encode(hashlib.sha256(code_verifier.encode()).digest())
+            .decode()
+            .rstrip('=')
+        )
+
+        request.session['telegram_login_code_verifier'] = code_verifier
+
+        return Response({'code_challenge': code_challenge})
+
+    @action(
         detail=False, methods=['POST'], authentication_classes=[], permission_classes=[]
     )
     def login(self, request: Request) -> Response:
-        data: dict[str, Any] = request.data.copy()
-
-        serializer = UserLoginSerializer(data=data)
+        serializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user: User = TelegramBackend().authenticate(
-            request, hash=data.pop('hash'), raise_exception=True, **data
+        user: User | None = TelegramBackend().authenticate(
+            request,
+            code=serializer.validated_data['code'],
+            redirect_uri=serializer.validated_data['redirect_uri'],
+            raise_exception=True,
         )
+
+        if not user:
+            raise AuthenticationFailed()
+
         refresh_token: RefreshToken = user_login(request, user)
 
         return Response(
