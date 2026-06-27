@@ -10,8 +10,9 @@ on:
 
 env:
   SECRET_KEY: test_secret_key
-  TELEGRAM_BOT_TOKEN: 12345:test
   SELF_URL: 'http://localhost'
+  TELEGRAM_LOGIN_CLIENT_ID: 123456789
+  TELEGRAM_LOGIN_CLIENT_SECRET: test_secret
   FRONTEND_PATH: ''
   POSTGRESQL_DATABASE_NAME: postgres
   POSTGRESQL_DATABASE_USER: postgres

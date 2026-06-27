@@ -1,97 +1,143 @@
 from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
 from django.http import HttpRequest
-from django.utils.translation import gettext as _
 
-from rest_framework.exceptions import APIException, PermissionDenied, ValidationError
+from httpcore import ConnectionPool, Response
+from jwt.types import Options
+import jwt
+
+from constructor_telegram_bots.http.exceptions import HTTPError
 
 from .models import User
 
-from typing import Any, Literal, overload
-import hashlib
-import hmac
-import time
+from http import HTTPMethod
+from typing import Any
+import base64
+import json
+import urllib.parse
+
+TELEGRAM_LOGIN_HTTP_POOL = ConnectionPool(
+    max_connections=100, max_keepalive_connections=20, keepalive_expiry=6
+)
 
 
 class TelegramBackend(ModelBackend):
-    @overload  # type: ignore [override]
-    def authenticate(
-        self,
-        request: HttpRequest,
-        hash: str,
-        raise_exception: Literal[False],
-        **data: Any,
-    ) -> User | None: ...
+    TOKEN_URL: str = 'https://oauth.telegram.org/token'
+    JWKS_URL: str = 'https://oauth.telegram.org/.well-known/jwks.json'
+    ISSUER: str = 'https://oauth.telegram.org'
 
-    @overload
-    def authenticate(
-        self,
-        request: HttpRequest,
-        hash: str,
-        raise_exception: Literal[True],
-        **data: Any,
-    ) -> User: ...
+    def _get_id_token(
+        self, code: str, code_verifier: str, redirect_uri: str
+    ) -> str | None:
+        response: Response = TELEGRAM_LOGIN_HTTP_POOL.request(
+            HTTPMethod.POST,
+            self.TOKEN_URL,
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': (
+                    'Basic '
+                    + base64.b64encode(
+                        f'{settings.TELEGRAM_LOGIN_CLIENT_ID}:{settings.TELEGRAM_LOGIN_CLIENT_SECRET}'.encode()
+                    ).decode()
+                ),
+            },
+            content=urllib.parse.urlencode(
+                {
+                    'grant_type': 'authorization_code',
+                    'client_id': settings.TELEGRAM_LOGIN_CLIENT_ID,
+                    'code': code,
+                    'code_verifier': code_verifier,
+                    'redirect_uri': redirect_uri,
+                }
+            ).encode(),
+        )
 
-    def authenticate(
-        self,
-        request: HttpRequest,
-        hash: str,
-        raise_exception: bool = False,
-        **data: Any,
+        if response.status != 200:
+            return None
+
+        return json.loads(response.content)['id_token']
+
+    def _get_jwk(self, algorithm: str, key_id: str) -> jwt.PyJWK | None:
+        response = TELEGRAM_LOGIN_HTTP_POOL.request(HTTPMethod.GET, self.JWKS_URL)
+
+        if response.status != 200:
+            raise HTTPError(response)
+
+        keys: list[dict[str, Any]] = json.loads(response.content)['keys']
+
+        for key in keys:
+            if key.get('kid') == key_id and key.get('alg') == algorithm:
+                return jwt.PyJWK(key)
+
+        return None
+
+    def authenticate(  # type: ignore [override]
+        self, request: HttpRequest, code: str, redirect_uri: str, **kwargs: Any
     ) -> User | None:
-        telegram_id: int = data['id']
-        first_name: str = data['first_name']
+        code_verifier: str | None = request.session.get('telegram_login_code_verifier')
 
-        if settings.ENABLE_TELEGRAM_AUTH:
-            try:
-                self._validate_auth_date(int(data['auth_date']))
-                self._validate_auth_data(data, hash)
-            except APIException as error:
-                if raise_exception:
-                    raise error
+        if not code_verifier:
+            return None
 
-                return None
+        id_token: str | None = self._get_id_token(
+            code=code, code_verifier=code_verifier, redirect_uri=redirect_uri
+        )
 
-        last_name: str | None = data.get('last_name')
+        if not id_token:
+            return None
+
+        unverified_header: dict[str, Any] = jwt.get_unverified_header(id_token)
+        header_alg: str = unverified_header['alg']
+
+        if header_alg not in ('RS256', 'RS384', 'RS512'):
+            return None
+
+        jwk: jwt.PyJWK | None = self._get_jwk(
+            algorithm=header_alg, key_id=unverified_header['kid']
+        )
+
+        if not jwk:
+            return None
+
+        claims: dict[str, Any] = jwt.decode(
+            id_token,
+            jwk,
+            algorithms=[header_alg],
+            options=Options(
+                require=['iss', 'aud', 'sub', 'iat', 'exp', 'id', 'name'],
+                verify_signature=True,
+                verify_jti=False,
+                verify_iss=True,
+                verify_aud=True,
+                strict_aud=True,
+                verify_sub=True,
+                verify_iat=True,
+                verify_exp=True,
+                verify_nbf=False,
+                enforce_minimum_key_length=False,
+            ),
+            audience=str(settings.TELEGRAM_LOGIN_CLIENT_ID),
+            issuer=self.ISSUER,
+        )
+
+        telegram_id: int = claims['id']
+        full_name: str = claims['name']
+
+        names: list[str] = full_name.split(maxsplit=1)
+        first_name: str = names[0]
+        last_name: str | None = names[1] if len(names) > 1 else None
 
         user, created = User.objects.get_or_create(
             telegram_id=telegram_id,
             defaults={'first_name': first_name, 'last_name': last_name},
         )
 
-        if not self.user_can_authenticate(user):
-            if raise_exception:
-                raise PermissionDenied(
-                    _('Пользователь не может быть аутентифицирован.')
-                )
-
-            return None
-
         if not created:
             user.first_name = first_name
             user.last_name = last_name
             user.save(update_fields=['first_name', 'last_name'])
 
+        if not self.user_can_authenticate(user):
+            return None
+
         return user
-
-    def _validate_auth_date(self, auth_unix_date: int) -> None:
-        if int(time.time()) - auth_unix_date > 86400:
-            raise ValidationError(
-                _('Срок действия данных аутентификации от Telegram истёк.')
-            )
-
-    def _validate_auth_data(self, data: dict[str, Any], hash: str) -> None:
-        secret_key: bytes = hashlib.sha256(
-            settings.TELEGRAM_BOT_TOKEN.encode()
-        ).digest()
-        data_check_string: str = '\n'.join(
-            [f'{key}={data[key]}' for key in sorted(data.keys())]
-        )
-        result_hash: str = hmac.new(
-            secret_key, data_check_string.encode(), hashlib.sha256
-        ).hexdigest()
-
-        if not hmac.compare_digest(result_hash, hash):
-            raise ValidationError(
-                _('Данные аутентификации Telegram являются подделкой.')
-            )
