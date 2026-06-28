@@ -14,7 +14,7 @@ from constructor_telegram_bots.http.pools import TELEGRAM_HTTP_POOL
 from constructor_telegram_bots.utils.storage import force_get_file_size
 
 from .. import tasks
-from ..hub.utils import get_telegram_bots_hub_modal
+from ..hub.utils.models import get_telegram_bots_hub_modal
 from .api_request import APIRequest
 from .background_task import BackgroundTask
 from .chat import Chat

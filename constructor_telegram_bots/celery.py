@@ -15,3 +15,10 @@ def celery_after_setup(*args: Any, **kwargs: Any) -> None:
     from telegram_bots.hub.tasks import sync_telegram_bots_hubs
 
     sync_telegram_bots_hubs.delay()
+
+
+@signals.worker_shutdown.connect
+def celery_shutdown(*args: Any, **kwargs: Any) -> None:
+    from telegram_bots.hub.utils.hubs import force_delete_all_hubs
+
+    force_delete_all_hubs()
