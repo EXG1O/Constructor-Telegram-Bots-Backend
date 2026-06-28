@@ -1,6 +1,6 @@
 from celery import shared_task
 
-from .hub.utils import get_telegram_bots_hub_modal
+from .hub.utils.models import get_telegram_bots_hub_modal
 
 from typing import TYPE_CHECKING, Any
 

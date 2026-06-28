@@ -3,27 +3,18 @@ from django.db.models import Count, QuerySet
 from django.utils import timezone
 
 from celery import shared_task
-from docker.errors import DockerException
 
 from constructor_telegram_bots.docker import docker_client
 
 from ..models import TelegramBot
 from .models import TelegramBotsHub
 from .service.schemas import BotCredentials
+from .utils.hubs import force_delete_all_hubs, force_delete_hub_docker_container
 
-from concurrent.futures import ThreadPoolExecutor
-from contextlib import suppress
 from itertools import batched
-import concurrent.futures
 import logging
-import os
 
 logger: logging.Logger = logging.getLogger(__name__)
-
-
-def _delete_hub_docker_container(id: str) -> None:
-    docker_client.containers.get(id).remove(force=True)
-    os.remove(settings.SOCKETS_DIR / f'{id[:12]}.sock')
 
 
 @shared_task
@@ -40,8 +31,7 @@ def delete_expired_telegram_bots_hubs() -> None:
     ).only('id', 'container_id')
 
     for hub in hubs:
-        with suppress(DockerException, FileNotFoundError):
-            _delete_hub_docker_container(hub.container_id)
+        force_delete_hub_docker_container(hub.container_id)
 
     TelegramBotsHub.objects.filter(id__in=[hub.id for hub in hubs]).delete()
 
@@ -54,15 +44,7 @@ def sync_telegram_bots_hubs() -> None:
         rm=True,
     )
 
-    with ThreadPoolExecutor(max_workers=12) as executor:
-        concurrent.futures.wait(
-            executor.submit(_delete_hub_docker_container, container_id)
-            for container_id in TelegramBotsHub.objects.values_list(
-                'container_id', flat=True
-            )
-        )
-
-    TelegramBotsHub.objects.all().delete()
+    force_delete_all_hubs()
 
     for bots in batched(
         (
