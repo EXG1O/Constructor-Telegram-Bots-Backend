@@ -1,0 +1,3 @@
+[submodule "telegram-bots-hub-microservice"]
+	path = telegram-bots-hub-microservice
+	url = https://github.com/EXG1O/Telegram-Bots-Hub.git

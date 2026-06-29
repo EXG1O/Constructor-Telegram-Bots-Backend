@@ -15,7 +15,7 @@ We appreciate your help in making this [project](https://constructor.exg1o.org/)
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/EXG1O/Constructor-Telegram-Bots-Backend.git
+git clone --recurse-submodules https://github.com/EXG1O/Constructor-Telegram-Bots-Backend.git
 cd Constructor-Telegram-Bots-Backend
 ```
 
