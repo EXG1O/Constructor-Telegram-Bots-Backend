@@ -15,6 +15,7 @@ from constructor_telegram_bots.utils.storage import force_get_file_size
 
 from .. import tasks
 from ..hub.utils.models import get_telegram_bots_hub_modal
+from ..utils.storage import get_telegram_bot_file_names
 from .api_request import APIRequest
 from .background_task import BackgroundTask
 from .chat import Chat
@@ -22,8 +23,8 @@ from .condition import Condition
 from .connection import Connection
 from .database_operation import DatabaseOperation
 from .database_record import DatabaseRecord
-from .invoice import Invoice, InvoiceImage
-from .message import Message, MessageDocument, MessageImage
+from .invoice import Invoice
+from .message import Message
 from .temporary_variable import TemporaryVariable
 from .trigger import Trigger
 from .user import User
@@ -116,20 +117,7 @@ class TelegramBot(models.Model):
         """The property is cached, because it make heavy query to database."""
 
         return sum(
-            map(
-                force_get_file_size,  # type: ignore [arg-type]
-                MessageImage.objects.exclude(file='')
-                .filter(message__telegram_bot=self)
-                .values_list('file', flat=True)
-                .union(
-                    MessageDocument.objects.exclude(file='')
-                    .filter(message__telegram_bot=self)
-                    .values_list('file', flat=True),
-                    InvoiceImage.objects.exclude(file='')
-                    .filter(invoice__telegram_bot=self)
-                    .values_list('file', flat=True),
-                ),
-            )
+            map(force_get_file_size, get_telegram_bot_file_names(telegram_bot=self))
         )
 
     @property

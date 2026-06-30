@@ -4,7 +4,7 @@ from functools import cache
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from .models import TelegramBot
+    from ..models import TelegramBot
 else:
     TelegramBot = Any
 
