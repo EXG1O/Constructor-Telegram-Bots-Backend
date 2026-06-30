@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.filters import OrderingFilter
-from rest_framework.mixins import RetrieveModelMixin
+from rest_framework.mixins import DestroyModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -20,7 +20,7 @@ from constructor_telegram_bots.permissions import ReadOnly
 
 from .authentication import JWTAuthentication
 from .backends import TelegramBackend
-from .jwt.tokens import RefreshToken
+from .jwt.tokens import AccessToken, RefreshToken
 from .models import Token, User
 from .permissions import IsTermsAccepted
 from .serializers import (
@@ -29,9 +29,7 @@ from .serializers import (
     UserSerializer,
     UserTokenRefreshSerializer,
 )
-from .utils.auth import login as user_login
-from .utils.auth import logout as user_logout
-from .utils.auth import logout_all as user_logout_all
+from .utils.auth import user_login, user_logout, user_logout_all
 
 from typing import cast
 import base64
@@ -48,13 +46,13 @@ class StatsAPIView(APIView):
         return Response({'total': User.objects.count()})
 
 
-class UserViewSet(RetrieveModelMixin, GenericViewSet[User]):
+class UserViewSet(RetrieveModelMixin, DestroyModelMixin, GenericViewSet[User]):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
 
     def get_object(self) -> User:
-        return self.request.user  # type: ignore [return-value]
+        return cast(User, self.request.user)
 
     @action(
         detail=False,
@@ -103,18 +101,20 @@ class UserViewSet(RetrieveModelMixin, GenericViewSet[User]):
 
     @action(detail=True, methods=['POST'])
     def logout(self, request: Request, pk: str | None = None) -> Response:
-        user_logout(request, request.auth)  # type: ignore[arg-type]
+        jwt_token = cast(AccessToken, request.auth)
+        user_logout(request, jwt_token)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, url_path='logout-all', methods=['POST'])
+    @action(detail=True, methods=['POST'], url_path='logout-all')
     def logout_all(self, request: Request, pk: str | None = None) -> Response:
-        user_logout_all(request, request.user)  # type: ignore[arg-type]
+        user: User = self.get_object()
+        user_logout_all(request, user)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=True,
-        url_path='token-refresh',
         methods=['POST'],
+        url_path='token-refresh',
         authentication_classes=[],
         permission_classes=[],
     )
@@ -126,22 +126,18 @@ class UserViewSet(RetrieveModelMixin, GenericViewSet[User]):
 
         return Response({'access_token': str(refresh_token.access_token)})
 
-    @action(detail=True, url_path='accept-terms', methods=['POST'])
+    @action(detail=True, methods=['POST'], url_path='accept-terms')
     def accept_terms(self, request: Request, pk: str | None = None) -> Response:
-        user: User = request.user  # type: ignore [assignment]
+        user: User = self.get_object()
         user.accepted_terms = True
         user.terms_accepted_date = timezone.now()
         user.save(update_fields=['accepted_terms', 'terms_accepted_date'])
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def destroy(self, request: Request, pk: str | None = None) -> Response:
-        user: User = request.user  # type: ignore [assignment]
-
-        user_logout_all(request, user)
-        user.delete()
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def perform_destroy(self, user: User) -> None:
+        user_logout_all(self.request, user)
+        super().perform_destroy(user)
 
 
 class TokenViewSet(ReadOnlyModelViewSet[Token]):
