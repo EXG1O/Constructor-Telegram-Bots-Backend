@@ -1,5 +1,4 @@
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import login, logout
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
@@ -31,13 +30,13 @@ def authenticate_token[JWT: (RefreshToken, AccessToken)](
     return user, token
 
 
-def login(request: HttpRequest, user: User) -> RefreshToken:
-    auth_login(request, user)
+def user_login(request: HttpRequest, user: User) -> RefreshToken:
+    login(request, user)
     return RefreshToken.for_user(user)
 
 
-def logout(request: HttpRequest, jwt_token: RefreshToken | AccessToken) -> None:
-    auth_logout(request)
+def user_logout(request: HttpRequest, jwt_token: RefreshToken | AccessToken) -> None:
+    logout(request)
 
     if isinstance(jwt_token, RefreshToken):
         jwt_token.to_blacklist()
@@ -49,8 +48,8 @@ def logout(request: HttpRequest, jwt_token: RefreshToken | AccessToken) -> None:
     BlacklistedToken.objects.create(token=token)
 
 
-def logout_all(request: HttpRequest, user: User) -> None:
-    auth_logout(request)
+def user_logout_all(request: HttpRequest, user: User) -> None:
+    logout(request)
     BlacklistedToken.objects.bulk_create(
         BlacklistedToken(token=token)
         for token in Token.objects.filter(user=user).exclude(blacklisted__isnull=False)
