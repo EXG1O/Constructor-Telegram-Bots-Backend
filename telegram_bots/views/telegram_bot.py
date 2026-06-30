@@ -12,8 +12,9 @@ from constructor_telegram_bots.permissions import ReadOnly
 from users.authentication import JWTAuthentication
 from users.permissions import IsTermsAccepted
 
-from ..models import InvoiceImage, MessageDocument, MessageImage, TelegramBot
+from ..models import TelegramBot
 from ..serializers import TelegramBotSerializer
+from ..utils.storage import get_telegram_bot_file_names
 
 
 class TelegramBotViewSet(IDLookupMixin, ModelViewSet[TelegramBot]):
@@ -46,19 +47,7 @@ class TelegramBotViewSet(IDLookupMixin, ModelViewSet[TelegramBot]):
         return Response(self.get_serializer(telegram_bot).data)
 
     def perform_destroy(self, telegram_bot: TelegramBot) -> None:
-        file_names: set[str] = set(
-            MessageImage.objects.exclude(file='')  # type: ignore [arg-type]
-            .filter(message__telegram_bot=telegram_bot)
-            .values_list('file', flat=True)
-            .union(
-                MessageDocument.objects.exclude(file='')
-                .filter(message__telegram_bot=telegram_bot)
-                .values_list('file', flat=True),
-                InvoiceImage.objects.exclude(file='')
-                .filter(invoice__telegram_bot=telegram_bot)
-                .values_list('file', flat=True),
-            )
-        )
+        file_names: set[str] = get_telegram_bot_file_names(telegram_bot=telegram_bot)
 
         if telegram_bot.is_enabled:
             telegram_bot.stop(save=False)
