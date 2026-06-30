@@ -1,3 +1,4 @@
+from django.core.files.storage import default_storage
 from django.db.models import QuerySet
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -30,6 +31,7 @@ from .serializers import (
     UserTokenRefreshSerializer,
 )
 from .utils.auth import user_login, user_logout, user_logout_all
+from .utils.storage import get_user_file_names
 
 from typing import cast
 import base64
@@ -136,8 +138,13 @@ class UserViewSet(RetrieveModelMixin, DestroyModelMixin, GenericViewSet[User]):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def perform_destroy(self, user: User) -> None:
+        file_names: set[str] = get_user_file_names(user)
+
         user_logout_all(self.request, user)
         super().perform_destroy(user)
+
+        for file_name in file_names:
+            default_storage.delete(file_name)
 
 
 class TokenViewSet(ReadOnlyModelViewSet[Token]):
