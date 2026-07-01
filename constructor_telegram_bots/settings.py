@@ -37,7 +37,7 @@ FRONTEND_PATH: Final[Path] = Path(os.environ['FRONTEND_PATH'])
 TELEGRAM_BOTS_HUB_PATH: Final[Path] = (
     Path(path)
     if (path := os.getenv('TELEGRAM_BOTS_HUB_PATH'))
-    else BASE_DIR / 'telegram-bots-hub'
+    else BASE_DIR / 'telegram-bots-hub-microservice'
 )
 TELEGRAM_BOTS_HUB_TAG: Final[str] = os.getenv(
     'TELEGRAM_BOTS_HUB_TAG', 'telegram-bots-hub-microservice'
