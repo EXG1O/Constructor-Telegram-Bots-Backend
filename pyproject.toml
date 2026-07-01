@@ -1,6 +1,6 @@
 [project]
 name = "constructor-telegram-bots-backend"
-version = "5.0.0"
+version = "5.0.1"
 requires-python = ">=3.14,<3.15"
 dependencies = [
     "celery>=5.6,<5.7",
