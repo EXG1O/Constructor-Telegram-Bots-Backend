@@ -67,9 +67,13 @@ class ConditionSerializer(TelegramBotMixin, BlockSerializer[Condition]):
     def create_parts(
         self, condition: Condition, data: list[dict[str, Any]]
     ) -> list[ConditionPart]:
-        return ConditionPart.objects.bulk_create(
-            ConditionPart(condition=condition, **item) for item in data
-        )
+        create_parts: list[ConditionPart] = []
+
+        for item in data:
+            item.pop('id', None)
+            create_parts.append(ConditionPart(condition=condition, **item))
+
+        return ConditionPart.objects.bulk_create(create_parts)
 
     def create(self, validated_data: dict[str, Any]) -> Condition:
         parts_data: list[dict[str, Any]] = validated_data.pop('parts')
@@ -94,7 +98,7 @@ class ConditionSerializer(TelegramBotMixin, BlockSerializer[Condition]):
 
         for item in data:
             try:
-                part: ConditionPart = condition.parts.get(id=item['id'])
+                part: ConditionPart = condition.parts.get(id=item.pop('id'))
             except KeyError, ConditionPart.DoesNotExist:
                 create_parts.append(ConditionPart(condition=condition, **item))
             else:
