@@ -112,9 +112,13 @@ class InvoiceSerializer(TelegramBotMixin, BlockSerializer[Invoice]):
     def create_prices(
         self, invoice: Invoice, data: list[dict[str, Any]]
     ) -> list[InvoicePrice]:
-        return InvoicePrice.objects.bulk_create(
-            InvoicePrice(invoice=invoice, **item) for item in data
-        )
+        create_prices: list[InvoicePrice] = []
+
+        for item in data:
+            item.pop('id', None)
+            create_prices.append(InvoicePrice(invoice=invoice, **item))
+
+        return InvoicePrice.objects.bulk_create(create_prices)
 
     def create(self, validated_data: dict[str, Any]) -> Invoice:
         image_data: dict[str, Any] | None = validated_data.pop('image', None)
@@ -183,7 +187,7 @@ class InvoiceSerializer(TelegramBotMixin, BlockSerializer[Invoice]):
 
         for item in data:
             try:
-                price: InvoicePrice = invoice.prices.get(id=item['id'])
+                price: InvoicePrice = invoice.prices.get(id=item.pop('id'))
             except KeyError, InvoicePrice.DoesNotExist:
                 create_prices.append(InvoicePrice(invoice=invoice, **item))
             else:
