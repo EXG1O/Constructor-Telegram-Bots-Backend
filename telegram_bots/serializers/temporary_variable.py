@@ -4,18 +4,16 @@ from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 from ..models import TemporaryVariable
-from .base import DiagramSerializer
+from .base import BlockSerializer, DiagramSerializer
 from .mixins import TelegramBotMixin
 
 from typing import Any
 
 
-class TemporaryVariableSerializer(
-    TelegramBotMixin, serializers.ModelSerializer[TemporaryVariable]
-):
-    class Meta:
+class TemporaryVariableSerializer(TelegramBotMixin, BlockSerializer[TemporaryVariable]):
+    class Meta(BlockSerializer.Meta):
         model = TemporaryVariable
-        fields = ['id', 'name', 'value']
+        fields = BlockSerializer.Meta.fields + ['value']
 
     def validate(self, data: dict[str, Any]) -> dict[str, Any]:
         if (
@@ -34,12 +32,12 @@ class TemporaryVariableSerializer(
     def create(self, validated_data: dict[str, Any]) -> TemporaryVariable:
         return self.telegram_bot.temporary_variables.create(**validated_data)
 
-    def update(
+    def update(  # type: ignore[override]
         self, temporary_variable: TemporaryVariable, validated_data: dict[str, Any]
     ) -> TemporaryVariable:
-        temporary_variable.name = validated_data.get('name', temporary_variable.name)
+        super().update(temporary_variable, validated_data, save=False)
         temporary_variable.value = validated_data.get('value', temporary_variable.value)
-        temporary_variable.save(update_fields=['name', 'value'])
+        temporary_variable.save(update_fields=self.update_fields + ['value'])
 
         return temporary_variable
 

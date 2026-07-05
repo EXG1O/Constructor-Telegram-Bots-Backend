@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 from ..models import Trigger, TriggerCommand, TriggerMessage, TriggerWebhook
-from .base import DiagramSerializer
+from .base import BlockSerializer, DiagramSerializer
 from .mixins import TelegramBotMixin
 
 from contextlib import suppress
@@ -35,14 +35,14 @@ class TriggerWebhookSerializer(serializers.ModelSerializer[TriggerWebhook]):
         return webhook.get_webhook_url(request=self.context.get('request'))
 
 
-class TriggerSerializer(TelegramBotMixin, serializers.ModelSerializer[Trigger]):
+class TriggerSerializer(TelegramBotMixin, BlockSerializer[Trigger]):
     command = TriggerCommandSerializer(required=False, allow_null=True)
     message = TriggerMessageSerializer(required=False, allow_null=True)
     webhook = TriggerWebhookSerializer(required=False, allow_null=True)
 
-    class Meta:
+    class Meta(BlockSerializer.Meta):
         model = Trigger
-        fields = ['id', 'name', 'command', 'message', 'webhook']
+        fields = BlockSerializer.Meta.fields + ['command', 'message', 'webhook']
 
     def validate(self, data: dict[str, Any]) -> dict[str, Any]:
         has_command: bool = bool(data.get('command'))
@@ -166,15 +166,13 @@ class TriggerSerializer(TelegramBotMixin, serializers.ModelSerializer[Trigger]):
 
         return webhook
 
-    def update(self, trigger: Trigger, validated_data: dict[str, Any]) -> Trigger:
+    def update(self, trigger: Trigger, validated_data: dict[str, Any]) -> Trigger:  # type: ignore[override]
         command_data: dict[str, Any] | None = validated_data.get('command')
         message_data: dict[str, Any] | None = validated_data.get('message')
         webhook_data: dict[str, Any] | None = validated_data.get('webhook')
 
         with transaction.atomic():
-            trigger.name = validated_data.get('name', trigger.name)
-            trigger.save(update_fields=['name'])
-
+            super().update(trigger, validated_data, save=True)
             self.update_command(trigger, command_data)
             self.update_message(trigger, message_data)
             self.update_webhook(trigger, webhook_data)

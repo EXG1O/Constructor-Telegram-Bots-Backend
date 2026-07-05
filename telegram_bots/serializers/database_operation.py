@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 from ..models import DatabaseCreateOperation, DatabaseOperation, DatabaseUpdateOperation
-from .base import DiagramSerializer
+from .base import BlockSerializer, DiagramSerializer
 from .mixins import TelegramBotMixin
 
 from contextlib import suppress
@@ -34,9 +34,7 @@ class DatabaseUpdateOperationSerializer(
         ]
 
 
-class DatabaseOperationSerializer(
-    TelegramBotMixin, serializers.ModelSerializer[DatabaseOperation]
-):
+class DatabaseOperationSerializer(TelegramBotMixin, BlockSerializer[DatabaseOperation]):
     create_operation = DatabaseCreateOperationSerializer(
         required=False, allow_null=True
     )
@@ -44,9 +42,9 @@ class DatabaseOperationSerializer(
         required=False, allow_null=True
     )
 
-    class Meta:
+    class Meta(BlockSerializer.Meta):
         model = DatabaseOperation
-        fields = ['id', 'name', 'create_operation', 'update_operation']
+        fields = BlockSerializer.Meta.fields + ['create_operation', 'update_operation']
 
     def validate(self, data: dict[str, Any]) -> dict[str, Any]:
         has_create_operation: bool = bool(data.get('create_operation'))
@@ -169,7 +167,7 @@ class DatabaseOperationSerializer(
 
         return update_operation
 
-    def update(
+    def update(  # type: ignore[override]
         self, operation: DatabaseOperation, validated_data: dict[str, Any]
     ) -> DatabaseOperation:
         create_operation_data: dict[str, Any] | None = validated_data.get(
@@ -180,9 +178,7 @@ class DatabaseOperationSerializer(
         )
 
         with transaction.atomic():
-            operation.name = validated_data.get('name', operation.name)
-            operation.save(update_fields=['name'])
-
+            super().update(operation, validated_data, save=True)
             self.update_create_operation(operation, create_operation_data)
             self.update_update_operation(operation, update_operation_data)
 

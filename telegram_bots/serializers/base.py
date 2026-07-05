@@ -3,11 +3,34 @@ from rest_framework import serializers
 from ..models.base import AbstractBlock, AbstractMedia, AbstractMessageMedia
 from .connection import ConnectionSerializer
 
-from typing import Any, TypeVar
+from typing import Any, Final, TypeVar
 
 ABT = TypeVar('ABT', bound=AbstractBlock)
 AMT = TypeVar('AMT', bound=AbstractMedia)
 AMMT = TypeVar('AMMT', bound=AbstractMessageMedia)
+
+
+class BlockSerializer(serializers.ModelSerializer[ABT]):
+    class Meta:
+        fields = ['id', 'name', 'x', 'y']
+        extra_kwargs = {
+            'x': {'write_only': True, 'required': False},
+            'y': {'write_only': True, 'required': False},
+        }
+
+    update_fields: Final[list[str]] = ['name', 'x', 'y']
+
+    def update(
+        self, instance: ABT, validated_data: dict[str, Any], save: bool = True
+    ) -> ABT:
+        instance.name = validated_data.get('name', instance.name)
+        instance.x = validated_data.get('x', instance.x)
+        instance.y = validated_data.get('y', instance.y)
+
+        if save:
+            instance.save(update_fields=self.update_fields)
+
+        return instance
 
 
 class DiagramSerializer(serializers.ModelSerializer[ABT]):
@@ -17,15 +40,16 @@ class DiagramSerializer(serializers.ModelSerializer[ABT]):
         fields = ['id', 'name', 'x', 'y', 'source_connections']
         read_only_fields = ['name']
 
+    update_fields: Final[list[str]] = ['x', 'y']
+
     def update(
-        self,
-        instance: ABT,
-        validated_data: dict[str, Any],
-        update_fields: list[str] = [],  # noqa: B006
+        self, instance: ABT, validated_data: dict[str, Any], save: bool = True
     ) -> ABT:
         instance.x = validated_data.get('x', instance.x)
         instance.y = validated_data.get('y', instance.y)
-        instance.save(update_fields=update_fields + ['x', 'y'])
+
+        if save:
+            instance.save(update_fields=self.update_fields)
 
         return instance
 

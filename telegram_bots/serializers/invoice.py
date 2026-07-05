@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 from ..models import Invoice, InvoiceImage, InvoicePrice
-from .base import DiagramSerializer, MediaSerializer
+from .base import BlockSerializer, DiagramSerializer, MediaSerializer
 from .mixins import TelegramBotMixin
 
 from contextlib import suppress
@@ -26,13 +26,18 @@ class InvoicePriceSerializer(serializers.ModelSerializer[InvoicePrice]):
         fields = ['id', 'label', 'amount']
 
 
-class InvoiceSerializer(TelegramBotMixin, serializers.ModelSerializer[Invoice]):
+class InvoiceSerializer(TelegramBotMixin, BlockSerializer[Invoice]):
     image = InvoiceImageSerializer(required=False, allow_null=True)
     prices = InvoicePriceSerializer(many=True)
 
-    class Meta:
+    class Meta(BlockSerializer.Meta):
         model = Invoice
-        fields = ['id', 'name', 'title', 'description', 'image', 'prices']
+        fields = BlockSerializer.Meta.fields + [
+            'title',
+            'description',
+            'image',
+            'prices',
+        ]
 
     def validate_image(self, data: dict[str, Any] | None) -> dict[str, Any] | None:
         if not data:
@@ -196,7 +201,7 @@ class InvoiceSerializer(TelegramBotMixin, serializers.ModelSerializer[Invoice]):
 
         return prices
 
-    def update(self, invoice: Invoice, validated_data: dict[str, Any]) -> Invoice:
+    def update(self, invoice: Invoice, validated_data: dict[str, Any]) -> Invoice:  # type: ignore[override]
         image_data: dict[str, Any] | None = validated_data.get('image')
         prices_data: list[dict[str, Any]] | None = validated_data.get('prices')
 
@@ -204,12 +209,14 @@ class InvoiceSerializer(TelegramBotMixin, serializers.ModelSerializer[Invoice]):
 
         try:
             with transaction.atomic():
-                invoice.name = validated_data.get('name', invoice.name)
+                super().update(invoice, validated_data, save=False)
                 invoice.title = validated_data.get('title', invoice.title)
                 invoice.description = validated_data.get(
                     'description', invoice.description
                 )
-                invoice.save(update_fields=['name', 'title', 'description'])
+                invoice.save(
+                    update_fields=self.update_fields + ['title', 'description']
+                )
 
                 image = self.update_image(invoice, image_data)
                 self.update_prices(invoice, prices_data)
