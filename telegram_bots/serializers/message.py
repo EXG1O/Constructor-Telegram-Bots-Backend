@@ -235,19 +235,26 @@ class MessageSerializer(TelegramBotMixin, serializers.ModelSerializer[Message]):
     ) -> MessageSettings:
         return MessageSettings.objects.create(message=message, **data)
 
+    def _create_media(
+        self, message: Message, media_model: type[AMMT], data: list[dict[str, Any]]
+    ) -> list[AMMT]:
+        create_media: list[AMMT] = []
+
+        for item in data:
+            item.pop('id', None)
+            create_media.append(media_model(message=message, **item))
+
+        return media_model.objects.bulk_create(create_media)  # type: ignore [attr-defined]
+
     def create_images(
         self, message: Message, data: list[dict[str, Any]]
     ) -> list[MessageImage]:
-        return MessageImage.objects.bulk_create(
-            MessageImage(message=message, **item) for item in data
-        )
+        return self._create_media(message, MessageImage, data)
 
     def create_documents(
         self, message: Message, data: list[dict[str, Any]]
     ) -> list[MessageDocument]:
-        return MessageDocument.objects.bulk_create(
-            MessageDocument(message=message, **item) for item in data
-        )
+        return self._create_media(message, MessageDocument, data)
 
     def create_keyboard(
         self, message: Message, data: dict[str, Any]
@@ -260,10 +267,16 @@ class MessageSerializer(TelegramBotMixin, serializers.ModelSerializer[Message]):
         keyboard: MessageKeyboard = MessageKeyboard.objects.create(
             message=message, **data
         )
-        MessageKeyboardButton.objects.bulk_create(
-            MessageKeyboardButton(keyboard=keyboard, **button_data)
-            for button_data in buttons_data
-        )
+
+        create_buttons: list[MessageKeyboardButton] = []
+
+        for button_data in buttons_data:
+            button_data.pop('id', None)
+            create_buttons.append(
+                MessageKeyboardButton(keyboard=keyboard, **button_data)
+            )
+
+        MessageKeyboardButton.objects.bulk_create(create_buttons)
 
         return keyboard
 
@@ -326,18 +339,18 @@ class MessageSerializer(TelegramBotMixin, serializers.ModelSerializer[Message]):
         for file_name in file_names:
             default_storage.delete(file_name)
 
-    def update_media(
+    def _update_media(
         self,
         message: Message,
-        media_model_class: type[AMMT],
-        media_data: list[dict[str, Any]] | None,
+        media_model: type[AMMT],
+        data: list[dict[str, Any]] | None,
     ) -> list[AMMT] | None:
-        queryset: QuerySet[AMMT] = getattr(message, media_model_class.related_name)
+        queryset: QuerySet[AMMT] = getattr(message, media_model.related_name)
 
         if TYPE_CHECKING:
             file_names: set[str]
 
-        if not media_data:
+        if not data:
             if not self.partial:
                 file_names = set(
                     queryset.exclude(file=None).values_list('file', flat=True)
@@ -355,11 +368,11 @@ class MessageSerializer(TelegramBotMixin, serializers.ModelSerializer[Message]):
 
         delete_file_names: set[str] = set()
 
-        for item in media_data:
+        for item in data:
             try:
-                media: AMMT = queryset.get(id=item['id'])
-            except KeyError, media_model_class.DoesNotExist:
-                create_media.append(media_model_class(message=message, **item))
+                media: AMMT = queryset.get(id=item.pop('id'))
+            except KeyError, media_model.DoesNotExist:
+                create_media.append(media_model(message=message, **item))
             else:
                 new_file: UploadedFile | None = item.get('file')
                 old_file: FieldFile | None = media.file
@@ -377,8 +390,8 @@ class MessageSerializer(TelegramBotMixin, serializers.ModelSerializer[Message]):
                 if old_file and (file_name := old_file.name):
                     delete_file_names.add(file_name)
 
-        new_media: list[AMMT] = media_model_class.objects.bulk_create(create_media)  # type: ignore [attr-defined]
-        media_model_class.objects.bulk_update(  # type: ignore [attr-defined]
+        new_media: list[AMMT] = media_model.objects.bulk_create(create_media)  # type: ignore [attr-defined]
+        media_model.objects.bulk_update(  # type: ignore [attr-defined]
             update_media, fields=['file', 'from_url', 'position']
         )
 
@@ -408,12 +421,12 @@ class MessageSerializer(TelegramBotMixin, serializers.ModelSerializer[Message]):
     def update_images(
         self, message: Message, data: list[dict[str, Any]] | None
     ) -> list[MessageImage] | None:
-        return self.update_media(message, MessageImage, data)
+        return self._update_media(message, MessageImage, data)
 
     def update_documents(
         self, message: Message, data: list[dict[str, Any]] | None
     ) -> list[MessageDocument] | None:
-        return self.update_media(message, MessageDocument, data)
+        return self._update_media(message, MessageDocument, data)
 
     def update_keyboard(
         self, message: Message, data: dict[str, Any] | None
@@ -438,10 +451,12 @@ class MessageSerializer(TelegramBotMixin, serializers.ModelSerializer[Message]):
         create_buttons: list[MessageKeyboardButton] = []
         update_buttons: list[MessageKeyboardButton] = []
 
-        for button_data in data.get('buttons', []):
+        buttons_data: list[dict[str, Any]] = data.get('buttons', [])
+
+        for button_data in buttons_data:
             try:
                 button: MessageKeyboardButton = keyboard.buttons.get(
-                    id=button_data['id']
+                    id=button_data.pop('id')
                 )
             except KeyError, MessageKeyboardButton.DoesNotExist:
                 if keyboard_type != 'default':
