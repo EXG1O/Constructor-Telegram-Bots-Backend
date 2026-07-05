@@ -19,7 +19,7 @@ from ..models import (
     MessageSettings,
 )
 from ..models.base import AbstractMessageMedia
-from .base import AMMT, DiagramSerializer, MessageMediaSerializer
+from .base import AMMT, BlockSerializer, DiagramSerializer, MessageMediaSerializer
 from .connection import ConnectionSerializer
 from .mixins import TelegramBotMixin
 
@@ -62,17 +62,15 @@ class MessageKeyboardSerializer(serializers.ModelSerializer[MessageKeyboard]):
         fields = ['type', 'buttons']
 
 
-class MessageSerializer(TelegramBotMixin, serializers.ModelSerializer[Message]):
+class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
     settings = MessageSettingsSerializer()
     images = MessageImageSerializer(many=True, required=False, allow_null=True)
     documents = MessageDocumentSerializer(many=True, required=False, allow_null=True)
     keyboard = MessageKeyboardSerializer(required=False, allow_null=True)
 
-    class Meta:
+    class Meta(BlockSerializer.Meta):
         model = Message
-        fields = [
-            'id',
-            'name',
+        fields = BlockSerializer.Meta.fields + [
             'text',
             'settings',
             'images',
@@ -491,7 +489,7 @@ class MessageSerializer(TelegramBotMixin, serializers.ModelSerializer[Message]):
 
         return keyboard
 
-    def update(self, message: Message, validated_data: dict[str, Any]) -> Message:
+    def update(self, message: Message, validated_data: dict[str, Any]) -> Message:  # type: ignore[override]
         settings_data: dict[str, Any] | None = validated_data.get('settings')
         images_data: list[dict[str, Any]] | None = validated_data.get('images')
         documents_data: list[dict[str, Any]] | None = validated_data.get('documents')
@@ -501,9 +499,9 @@ class MessageSerializer(TelegramBotMixin, serializers.ModelSerializer[Message]):
 
         try:
             with transaction.atomic():
-                message.name = validated_data.get('name', message.name)
+                super().update(message, validated_data, save=False)
                 message.text = validated_data.get('text', message.text)
-                message.save(update_fields=['name', 'text'])
+                message.save(update_fields=self.update_fields + ['text'])
 
                 self.update_settings(message, settings_data)
                 media += self.update_images(message, images_data) or []

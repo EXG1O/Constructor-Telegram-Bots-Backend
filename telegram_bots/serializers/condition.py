@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 from ..models import Condition, ConditionPart
-from .base import DiagramSerializer
+from .base import BlockSerializer, DiagramSerializer
 from .mixins import TelegramBotMixin
 
 from typing import Any
@@ -24,12 +24,12 @@ class ConditionPartSerializer(serializers.ModelSerializer[ConditionPart]):
         ]
 
 
-class ConditionSerializer(TelegramBotMixin, serializers.ModelSerializer[Condition]):
+class ConditionSerializer(TelegramBotMixin, BlockSerializer[Condition]):
     parts = ConditionPartSerializer(many=True)
 
-    class Meta:
+    class Meta(BlockSerializer.Meta):
         model = Condition
-        fields = ['id', 'name', 'parts']
+        fields = BlockSerializer.Meta.fields + ['parts']
 
     def validate_parts(self, data: list[dict[str, Any]]) -> list[dict[str, Any]]:
         if not ((self.instance and self.partial) or data):
@@ -126,13 +126,11 @@ class ConditionSerializer(TelegramBotMixin, serializers.ModelSerializer[Conditio
 
         return parts
 
-    def update(self, condition: Condition, validated_data: dict[str, Any]) -> Condition:
+    def update(self, condition: Condition, validated_data: dict[str, Any]) -> Condition:  # type: ignore[override]
         parts_data: list[dict[str, Any]] | None = validated_data.get('parts')
 
         with transaction.atomic():
-            condition.name = validated_data.get('name', condition.name)
-            condition.save(update_fields=['name'])
-
+            super().update(condition, validated_data, save=True)
             self.update_parts(condition, parts_data)
 
         return condition

@@ -4,16 +4,16 @@ from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 from ..models import APIRequest
-from .base import DiagramSerializer
+from .base import BlockSerializer, DiagramSerializer
 from .mixins import TelegramBotMixin
 
 from typing import Any
 
 
-class APIRequestSerializer(TelegramBotMixin, serializers.ModelSerializer[APIRequest]):
-    class Meta:
+class APIRequestSerializer(TelegramBotMixin, BlockSerializer[APIRequest]):
+    class Meta(BlockSerializer.Meta):
         model = APIRequest
-        fields = ['id', 'name', 'url', 'method', 'headers', 'body']
+        fields = BlockSerializer.Meta.fields + ['url', 'method', 'headers', 'body']
 
     def validate_headers(self, data: list[Any] | dict[str, Any]) -> dict[str, str]:
         if not isinstance(data, dict):
@@ -45,15 +45,17 @@ class APIRequestSerializer(TelegramBotMixin, serializers.ModelSerializer[APIRequ
     def create(self, validated_data: dict[str, Any]) -> APIRequest:
         return self.telegram_bot.api_requests.create(**validated_data)
 
-    def update(
+    def update(  # type: ignore[override]
         self, api_request: APIRequest, validated_data: dict[str, Any]
     ) -> APIRequest:
-        api_request.name = validated_data.get('name', api_request.name)
+        super().update(api_request, validated_data, save=False)
         api_request.url = validated_data.get('url', api_request.url)
         api_request.method = validated_data.get('method', api_request.method)
         api_request.headers = validated_data.get('headers', api_request.headers)
         api_request.body = validated_data.get('body', api_request.body)
-        api_request.save(update_fields=['name', 'url', 'method', 'headers', 'body'])
+        api_request.save(
+            update_fields=self.update_fields + ['url', 'method', 'headers', 'body']
+        )
 
         return api_request
 
