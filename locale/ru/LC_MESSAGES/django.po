@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-12 13:32+0000\n"
+"POT-Creation-Date: 2026-07-12 13:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,712 +16,703 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
 #, python-brace-format
 msgid "Максимально допустимый размер {max_size} байт."
-msgstr "Maximum allowed size is {max_size} bytes."
+msgstr ""
 
 #, python-format
 msgid "Не удалось проанализировать JSON данные для поля '%(field)s'."
-msgstr "Failed to parse JSON data for the field '%(field)s'."
+msgstr ""
 
 msgid "Английский"
-msgstr "English"
+msgstr ""
 
 msgid "Украинский"
-msgstr "Ukrainian"
+msgstr ""
 
 msgid "Русский"
-msgstr "Russian"
+msgstr ""
 
 msgid "Разрешены только буквы, цифры, пробел и _."
-msgstr "Only letters, digits, spaces, and _ are allowed."
+msgstr ""
 
 msgid "Сумма"
-msgstr "Sum"
+msgstr ""
 
 msgid "Ссылка"
-msgstr "Link"
+msgstr ""
 
 msgid "Пожертвования"
-msgstr "Donations"
+msgstr ""
 
 msgid "Отправитель"
-msgstr "Sender"
+msgstr ""
 
 msgid "Дата"
-msgstr "Date"
+msgstr ""
 
 msgid "Пожертвование"
-msgstr "Donation"
+msgstr ""
 
 msgid "Заголовок"
-msgstr "Title"
+msgstr ""
 
 msgid "Текст"
-msgstr "Text"
+msgstr ""
 
 msgid "Позиция"
-msgstr "Position"
+msgstr ""
 
 msgid "Раздел"
-msgstr "Section"
+msgstr ""
 
 msgid "Разделы"
-msgstr "Sections"
+msgstr ""
 
 msgid "Значение"
-msgstr "Value"
+msgstr ""
 
 msgid "Метод поддержки"
-msgstr "Support method"
+msgstr ""
 
 msgid "Методы поддержки"
-msgstr "Support methods"
+msgstr ""
 
 msgid "Инструкция"
-msgstr "Instruction"
+msgstr ""
 
 msgid "Политика конфиденциальности"
-msgstr "Privacy policy"
+msgstr ""
 
 msgid "Размер хранилища"
-msgstr "Storage size"
+msgstr ""
 
 msgid "Используемый размер хранилища"
-msgstr "Used storage size"
+msgstr ""
 
 msgid "Оставшийся размер хранилища"
-msgstr "Remaining storage size"
+msgstr ""
 
 msgid "Пользователей"
-msgstr "Users"
+msgstr ""
 
 msgid "Блоков"
-msgstr "Blocks"
+msgstr ""
 
 msgid "Включен"
-msgstr "Enabled"
+msgstr ""
 
 msgid "Telegram боты"
-msgstr "Telegram bots"
+msgstr ""
 
 msgid "Слева"
-msgstr "Left"
+msgstr ""
 
 msgid "Справа"
-msgstr "Right"
+msgstr ""
 
 msgid "Триггер"
-msgstr "Trigger"
+msgstr ""
 
 msgid "Сообщение"
-msgstr "Message"
+msgstr ""
 
 msgid "Кнопка клавиатуры сообщения"
-msgstr "Message keyboard button"
+msgstr ""
 
 msgid "Условие"
-msgstr "Condition"
+msgstr ""
 
 msgid "Фоновая задача"
-msgstr "Background task"
+msgstr ""
 
 msgid "API-запрос"
-msgstr "API request"
+msgstr ""
 
 msgid "Операция базы данных"
-msgstr "Database operation"
+msgstr ""
 
 msgid "Счёт"
-msgstr "Invoice"
+msgstr ""
 
 msgid "Временная переменная"
-msgstr "Temporary variable"
+msgstr ""
 
 msgid "Обычный"
-msgstr "Default"
+msgstr ""
 
 msgid "Встроенный"
-msgstr "Inline"
+msgstr ""
 
 msgid "Платёжный"
-msgstr "Payment"
+msgstr ""
 
 msgid "По умолчанию"
-msgstr "Default"
+msgstr ""
 
 msgid "Основной"
-msgstr "Primary"
+msgstr ""
 
 msgid "Успех"
-msgstr "Success"
+msgstr ""
 
 msgid "Опасность"
-msgstr "Danger"
+msgstr ""
 
 msgid "Положительный"
-msgstr "Positive"
+msgstr ""
 
 msgid "Отрицательный"
-msgstr "Negative"
+msgstr ""
 
 msgid "Равно"
-msgstr "Equals"
+msgstr ""
 
 msgid "Не равно"
-msgstr "Not equals"
+msgstr ""
 
 msgid "Больше"
-msgstr "Greater than"
+msgstr ""
 
 msgid "Больше или равно"
-msgstr "Greater or equal"
+msgstr ""
 
 msgid "Меньше"
-msgstr "Less than"
+msgstr ""
 
 msgid "Меньше или равно"
-msgstr "Less or equal"
+msgstr ""
 
 msgid "И"
-msgstr "AND"
+msgstr ""
 
 msgid "ИЛИ"
-msgstr "OR"
+msgstr ""
 
 msgid "1 день"
-msgstr "1 day"
+msgstr ""
 
 msgid "3 дня"
-msgstr "3 days"
+msgstr ""
 
 msgid "7 дней"
-msgstr "7 days"
+msgstr ""
 
 msgid "14 дней"
-msgstr "14 days"
+msgstr ""
 
 msgid "28 дней"
-msgstr "28 days"
+msgstr ""
 
 msgid "Приватный"
-msgstr "Private"
+msgstr ""
 
 msgid "Группа"
-msgstr "Group"
+msgstr ""
 
 msgid "Супергруппа"
-msgstr "Supergroup"
+msgstr ""
 
 msgid "Канал"
-msgstr "Channel"
+msgstr ""
 
 msgid "Хабы Telegram ботов"
-msgstr "Hubs of Telegram Bots"
+msgstr ""
 
 msgid "Недействительный токен."
-msgstr "Invalid token."
+msgstr ""
 
 msgid "ID контейнера"
-msgstr "Container ID"
+msgstr ""
 
 msgid "Telegram токен"
-msgstr "Telegram token"
+msgstr ""
 
 msgid "Токен сервиса"
-msgstr "Service token"
+msgstr ""
 
 msgid "Токен микросервиса"
-msgstr "Microservice token"
+msgstr ""
 
 msgid "Дата начала простоя"
-msgstr "Idle start date"
+msgstr ""
 
 msgid "Хаб"
-msgstr "Hub"
+msgstr ""
 
 msgid "Хабы"
-msgstr "Hubs"
+msgstr ""
 
 msgid "Укажите значение для полей 'id' или 'telegram_id'."
-msgstr "Please specify a value for 'id' or 'telegram_id' fields."
+msgstr ""
 
 msgid "Пользователи не найдены."
-msgstr "Users not found."
+msgstr ""
 
 msgid "Telegram бот"
-msgstr "Telegram bot"
+msgstr ""
 
 msgid "URL-адрес"
-msgstr "URL"
+msgstr ""
 
 msgid "Метод"
-msgstr "Method"
+msgstr ""
 
 msgid "Заголовки"
-msgstr "Headers"
+msgstr ""
 
 msgid "Данные"
-msgstr "Data"
+msgstr ""
 
 msgid "Интервал"
-msgstr "Interval"
+msgstr ""
 
 msgid "Фоновые задачи"
-msgstr "Background tasks"
+msgstr ""
 
 msgid "Название"
-msgstr "Name"
+msgstr ""
 
 msgid "Координата X"
-msgstr "X coordinate"
+msgstr ""
 
 msgid "Координата Y"
-msgstr "Y coordinate"
+msgstr ""
 
 msgid "Из URL-адреса"
-msgstr "From URL"
+msgstr ""
 
 msgid "Тип"
-msgstr "Type"
+msgstr ""
 
 msgid "Имя"
-msgstr "First name"
+msgstr ""
 
 msgid "Фамилия"
-msgstr "Last name"
+msgstr ""
 
 msgid "Форум"
-msgstr "Forum"
+msgstr ""
 
 msgid "Прямые сообщения"
-msgstr "Direct messages"
+msgstr ""
 
 msgid "Разрешён"
-msgstr "Allowed"
+msgstr ""
 
 msgid "Заблокирован"
-msgstr "Blocked"
+msgstr ""
 
 msgid "Чат"
-msgstr "Chat"
+msgstr ""
 
 msgid "Чаты"
-msgstr "Chats"
+msgstr ""
 
 msgid "Первое значение"
-msgstr "First value"
+msgstr ""
 
 msgid "Оператор"
-msgstr "Operator"
+msgstr ""
 
 msgid "Второе значение"
-msgstr "Second value"
+msgstr ""
 
 msgid "Оператор для следующей части"
-msgstr "Operator for a next part"
+msgstr ""
 
 msgid "Часть условия"
-msgstr "Condition part"
+msgstr ""
 
 msgid "Части условий"
-msgstr "Condition parts"
+msgstr ""
 
 msgid "Условия"
-msgstr "Conditions"
+msgstr ""
 
 msgid "Стартовая позиция коннектора"
-msgstr "Connector start position"
+msgstr ""
 
 msgid "Окончательная позиция коннектора"
-msgstr "Connector final position"
+msgstr ""
 
 msgid "Подключение"
-msgstr "Connection"
+msgstr ""
 
 msgid "Подключения"
-msgstr "Connections"
+msgstr ""
 
 msgid "Операция"
-msgstr "Operation"
+msgstr ""
 
 msgid "Операция создания записи"
-msgstr "Create record operation"
+msgstr ""
 
 msgid "Операции создания записей"
-msgstr "Create record operations"
+msgstr ""
 
 msgid "Перезаписать"
-msgstr "Overwrite"
+msgstr ""
 
 msgid "Название поля для поиска"
-msgstr "Field name for search"
+msgstr ""
 
 msgid "Значение поля для поиска"
-msgstr "Field value for search"
+msgstr ""
 
 msgid "Создать, если не найдена"
-msgstr "Create if not found."
+msgstr ""
 
 msgid "Новые данные"
-msgstr "New data"
+msgstr ""
 
 msgid "Операция обновления записи"
-msgstr "Update record operation"
+msgstr ""
 
 msgid "Операции обновления записей"
-msgstr "Update record operations"
+msgstr ""
 
 msgid "Операции баз данных"
-msgstr "Database operations"
+msgstr ""
 
 msgid "Запись в БД"
-msgstr "Database record"
+msgstr ""
 
 msgid "Записи в БД"
-msgstr "Database records"
+msgstr ""
 
 msgid "Изображение"
-msgstr "Image"
+msgstr ""
 
 msgid "Изображение счёта"
-msgstr "Invoice image"
+msgstr ""
 
 msgid "Изображения счетов"
-msgstr "Images of invoices"
+msgstr ""
 
 msgid "Подпись"
-msgstr "Label"
+msgstr ""
 
 msgid "Цена счёта"
-msgstr "Invoice price"
+msgstr ""
 
 msgid "Цены счетов"
-msgstr "Prices of invoices"
+msgstr ""
 
 msgid "Описание"
-msgstr "Description"
+msgstr ""
 
 msgid "Счета"
-msgstr "Invoices"
+msgstr ""
 
 msgid "Ответить на сообщение пользователя"
-msgstr "Reply to user message"
+msgstr ""
 
 msgid "Удалить сообщение пользователя"
-msgstr "Delete user message"
+msgstr ""
 
 msgid "Отправить сообщение как новое"
-msgstr "Send message as new"
+msgstr ""
 
 msgid "Настройки сообщения"
-msgstr "Message settings"
+msgstr ""
 
 msgid "Настройки сообщений"
-msgstr "Settings of messages"
+msgstr ""
 
 msgid "Изображение сообщения"
-msgstr "Message image"
+msgstr ""
 
 msgid "Изображения сообщений"
-msgstr "Images of messages"
+msgstr ""
 
 msgid "Документ"
-msgstr "Document"
+msgstr ""
 
 msgid "Документ сообщения"
-msgstr "Message document"
+msgstr ""
 
 msgid "Документы сообщений"
-msgstr "Documents of messages"
+msgstr ""
 
 msgid "Клавиатура"
-msgstr "Keyboard"
+msgstr ""
 
 msgid "Ряд"
-msgstr "Row"
+msgstr ""
 
 msgid "Стиль"
-msgstr "Style"
+msgstr ""
 
 msgid "Кнопки клавиатур сообщений"
-msgstr "Keyboard buttons of messages"
+msgstr ""
 
 msgid "Режим"
-msgstr "Type"
+msgstr ""
 
 msgid "Клавиатура сообщения"
-msgstr "Message keyboard"
+msgstr ""
 
 msgid "Клавиатуры сообщений"
-msgstr "Keyboards of messages"
+msgstr ""
 
 msgid "Сообщения"
-msgstr "Messages"
+msgstr ""
 
 msgid "Этот API-токен является недействительным."
-msgstr "This API token is invalid."
+msgstr ""
 
 msgid "Произошла непредвиденная ошибка сети при проверки этого API-токена."
-msgstr "An unexpected network error occurred while checking this API token."
+msgstr ""
 
 msgid "Владелец"
-msgstr "Owner"
+msgstr ""
 
 msgid "API-токен"
-msgstr "API token"
+msgstr ""
 
 msgid "Telegram бот с таким API-токеном уже существует."
-msgstr "Telegram bot with this API token already exists."
+msgstr ""
 
 msgid "Должен быть включен"
-msgstr "Must be enabled"
+msgstr ""
 
 msgid "Загружается"
-msgstr "Loading"
+msgstr ""
 
 msgid "Добавлен"
-msgstr "Added"
+msgstr ""
 
 msgid "Telegram бота"
-msgstr "Telegram bot"
+msgstr ""
 
 msgid "Временные переменные"
-msgstr "Temporary variables"
+msgstr ""
 
 msgid "Команда"
-msgstr "Command"
+msgstr ""
 
 msgid "Полезная нагрузка"
-msgstr "Payload"
+msgstr ""
 
 msgid "Команда триггер"
-msgstr "Command trigger"
+msgstr ""
 
 msgid "Команды триггеры"
-msgstr "Command triggers"
+msgstr ""
 
 msgid "Сообщение триггер"
-msgstr "Message trigger"
+msgstr ""
 
 msgid "Сообщения триггеры"
-msgstr "Message triggers"
+msgstr ""
 
 msgid "Токен"
-msgstr "Token"
+msgstr ""
 
 msgid "Webhook триггер"
-msgstr "Webhook trigger"
+msgstr ""
 
 msgid "Webhook триггеры"
-msgstr "Webhook triggers"
+msgstr ""
 
 msgid "Триггеры"
-msgstr "Triggers"
+msgstr ""
 
 msgid "Имя пользователя"
-msgstr "Username"
+msgstr ""
 
 msgid "Бот"
-msgstr "Bot"
+msgstr ""
 
 msgid "Премиум"
-msgstr "Premium"
+msgstr ""
 
 msgid "Дата последней активности"
-msgstr "Last activity date"
+msgstr ""
 
 msgid "Дата активации"
-msgstr "Activation date"
+msgstr ""
 
 msgid "Пользователя"
-msgstr "User"
+msgstr ""
 
 msgid "Пользователи"
-msgstr "Users"
+msgstr ""
 
 msgid "Переменная"
-msgstr "Variable"
+msgstr ""
 
 msgid "Переменные"
-msgstr "Variables"
+msgstr ""
 
 msgid "Заголовки должны быть словарём."
-msgstr "Headers must be a dictionary."
+msgstr ""
 
 #, python-format
 msgid "Значение для заголовка '%(key)s' должно быть строкой."
-msgstr "The value for the '%(key)s' header must be a string."
+msgstr ""
 
 #, python-format
 msgid "Нельзя добавлять больше %(max)s API-запросов."
-msgstr "You cannot add more than %(max)s API requests."
+msgstr ""
 
 #, python-format
 msgid "Нельзя добавлять больше %(max)s фоновых задач."
-msgstr "You cannot add more than %(max)s background tasks."
+msgstr ""
 
 msgid "Условие должно содержать хотя бы одну часть."
-msgstr "Condition must contain at least one part."
+msgstr ""
 
 #, python-format
 msgid "Нельзя добавлять больше %(max)s частей условия."
-msgstr "You cannot add more than %(max)s condition parts."
+msgstr ""
 
 #, python-format
 msgid "Нельзя добавлять больше %(max)s условий."
-msgstr "You cannot add more than %(max)s conditions."
+msgstr ""
 
 #, python-format
 msgid "%(object)s не найден."
-msgstr "%(object)s not found."
+msgstr ""
 
 #, python-format
 msgid "%(source_object)s не может быть стартовой позиции коннектора."
-msgstr "%(source_object)s cannot be a start connector position."
+msgstr ""
 
 #, python-format
 msgid "%(target_object)s не может быть окончательной позиции коннектора."
-msgstr "%(target_object)s cannot be a end connector position."
+msgstr ""
 
 msgid ""
 "Операция базы данных должна иметь значение только для одно из полей: "
 "'create_operation' или 'update_operation'."
 msgstr ""
-"The database operation must have a value for only one of the following "
-"fields: 'create_operation' or 'update_operation'."
 
 #, python-format
 msgid "Нельзя добавлять больше %(max)s операций базы данных."
-msgstr "You cannot add more than %(max)s database operations."
+msgstr ""
 
 #, python-format
 msgid "Нельзя добавлять больше %(max)s записей в базу данных."
-msgstr "You cannot add more than %(max)s database records."
+msgstr ""
 
 msgid ""
 "Изображение счёта должно иметь значение только для одного из полей: 'file' "
 "или 'from_url'."
 msgstr ""
-"The invoice image must have a value for only one of the following fields: "
-"'file' or 'from_url'."
 
 msgid "Превышен лимит хранилища."
-msgstr "Storage limit exceeded."
+msgstr ""
 
 msgid "Счёт должен содержать хотя бы одну цену."
-msgstr "Invoice must contain at least one price."
+msgstr ""
 
 #, python-format
 msgid "Нельзя добавлять больше %(max)s цен счёта."
-msgstr "You cannot add more than %(max)s invoice prices."
+msgstr ""
 
 #, python-format
 msgid "Нельзя добавлять больше %(max)s счетов."
-msgstr "You cannot add more than %(max)s invoices."
+msgstr ""
 
 #, python-format
 msgid "Нельзя добавлять больше %(max)s кнопок для клавиатуры сообщения."
-msgstr "You cannot add more than %(max)s message keyboard buttons."
+msgstr ""
 
 msgid ""
 "Необходимо указать значение минимум для одно из полей: 'text', 'images', "
 "'documents' или 'keyboard'."
 msgstr ""
-"You must specify a value for at least one of the following fields: 'text', "
-"'images', 'documents', or 'keyboard'."
 
 msgid ""
 "Необходимо указать значение для поле 'text', если указано значение для поля "
 "'keyboard'."
 msgstr ""
-"You must specify a value for the 'text' field if a value is provided for the "
-"'keyboard' field."
 
 #, python-format
 msgid "Нельзя добавлять больше %(max)s сообщений."
-msgstr "You cannot add more than %(max)s messages."
+msgstr ""
 
 #, python-format
 msgid "Нельзя добавлять больше %(max)s временных переменных."
-msgstr "You cannot add more than %(max)s temporary variables."
+msgstr ""
 
 msgid ""
 "Триггер должен иметь значение только для одного из полей: 'command', "
 "'message' или 'webhook'."
 msgstr ""
-"The trigger must have a value for only one of the following fields: "
-"'command', 'message' or 'webhook'."
 
 #, python-format
 msgid "Нельзя добавлять больше %(max)s триггеров."
-msgstr "You cannot add more than %(max)s triggers."
+msgstr ""
 
 #, python-format
 msgid "Нельзя добавлять больше %(max)s переменных."
-msgstr "You cannot add more than %(max)s variables."
+msgstr ""
 
 msgid "Недопустимое значение."
-msgstr "Invalid value."
+msgstr ""
 
 msgid "Значение должно быть целым числом."
-msgstr "The value must be an integer."
+msgstr ""
 
 msgid "Значение должно быть положительным числом."
-msgstr "The value must be a positive number."
+msgstr ""
 
 msgid "Значение должно быть не больше 90."
-msgstr "The value must be not greater than 90."
+msgstr ""
 
 msgid "Условия использования сервиса"
-msgstr "Terms of Service"
+msgstr ""
 
 msgid "Telegram ботов"
-msgstr "Telegram bots"
+msgstr ""
 
 msgid "Токен обновления"
-msgstr "Refresh token"
+msgstr ""
 
 msgid "Токен разрешения"
-msgstr "Access token"
+msgstr ""
 
 msgid "Принятие условий сервиса"
-msgstr "Acceptance of the Terms of Service"
+msgstr ""
 
 msgid "Дата принятия условий сервиса"
-msgstr "Date of acceptance of the Terms of Service"
+msgstr ""
 
 msgid "Сотрудник"
-msgstr "Staff"
+msgstr ""
 
 msgid "Присоединился"
-msgstr "Joined"
+msgstr ""
 
 msgid "Пользователь"
-msgstr "User"
+msgstr ""
 
 msgid "Срок действия"
-msgstr "Expiration"
+msgstr ""
 
 msgid "Создан"
-msgstr "Created"
+msgstr ""
 
 msgid "Токены"
-msgstr "Tokens"
+msgstr ""
 
 msgid "Внесён"
-msgstr "Listed"
+msgstr ""
 
 msgid "Токен в чёрном списке"
-msgstr "Blacklisted token"
+msgstr ""
 
 msgid "Токены в чёрном списке"
-msgstr "Blacklisted tokens"
+msgstr ""
 
 msgid "Токен в чёрном списке."
-msgstr "Token is blacklisted."
+msgstr ""
 
 msgid "Пользователь неактивен или удалён."
-msgstr "User is inactive or deleted."
+msgstr ""

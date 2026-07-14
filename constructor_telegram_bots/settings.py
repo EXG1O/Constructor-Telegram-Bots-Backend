@@ -145,7 +145,6 @@ INSTALLED_APPS: Final[list[str]] = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'adminsortable2',
-    'languages',
     'users',
     'webhooks',
     'telegram_bots',
@@ -172,7 +171,7 @@ MIDDLEWARE: Final[list[str]] = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
+    'constructor_telegram_bots.middleware.LocaleMiddleware',
 ]
 
 if MODE == Mode.DEBUG:
@@ -224,10 +223,6 @@ DEFAULT_AUTO_FIELD: Final[str] = 'django.db.models.BigAutoField'
 
 
 USE_I18N: Final[bool] = True
-USE_L10N: Final[bool] = True
-
-LANGUAGE_COOKIE_NAME: Final[str] = 'lang'
-
 LANGUAGES: Final[list[tuple[str, Any]]] = [
     ('en', _('Английский')),
     ('uk', _('Украинский')),
