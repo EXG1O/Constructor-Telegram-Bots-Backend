@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import URLPattern, URLResolver, include, path, re_path
+from django.views.decorators.cache import cache_page
 from django.views.generic import RedirectView
 
 import django_stubs_ext
@@ -9,12 +11,16 @@ import django_stubs_ext
 from rest_framework.generics import GenericAPIView
 
 from .enums import Mode
+from .sitemaps import MainSitemap
 from .views import frontend
 
 django_stubs_ext.monkeypatch(extra_classes=[GenericAPIView])
 
 
 urlpatterns: list[URLPattern | URLResolver] = [
+    path(
+        'sitemap.xml', cache_page(86400)(sitemap), {'sitemaps': {'main': MainSitemap}}
+    ),
     path(
         'api/',
         include(
