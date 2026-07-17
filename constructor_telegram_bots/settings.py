@@ -144,6 +144,7 @@ INSTALLED_APPS: Final[list[str]] = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     'adminsortable2',
     'users',
     'webhooks',
