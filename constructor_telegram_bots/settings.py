@@ -17,7 +17,8 @@ django_stubs_ext.monkeypatch()
 load_dotenv()
 
 
-BASE_DIR: Final[Path] = Path(__file__).resolve().parent.parent
+ROOT_APP_DIR: Final[Path] = Path(__file__).resolve().parent
+BASE_DIR: Final[Path] = ROOT_APP_DIR.parent
 LOGS_DIR: Final[Path] = BASE_DIR / 'logs'
 SOCKETS_DIR: Final[Path] = BASE_DIR / 'sockets'
 
@@ -182,7 +183,7 @@ if MODE == Mode.DEBUG:
 TEMPLATES: Final[list[dict[str, Any]]] = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [FRONTEND_PATH / 'dist'],
+        'DIRS': [ROOT_APP_DIR / 'templates', FRONTEND_PATH / 'dist'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
