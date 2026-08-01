@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-01 14:58+0000\n"
+"POT-Creation-Date: 2026-08-01 22:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,6 +56,30 @@ msgid "Раздел"
 msgstr ""
 
 msgid "Разделы"
+msgstr ""
+
+msgid "Юридическое"
+msgstr ""
+
+msgid "Условия использования"
+msgstr ""
+
+msgid "Политика конфиденциальности"
+msgstr ""
+
+msgid "Тип"
+msgstr ""
+
+msgid "Содержание"
+msgstr ""
+
+msgid "Обновлён"
+msgstr ""
+
+msgid "Документ"
+msgstr ""
+
+msgid "Документы"
 msgstr ""
 
 msgid "Цена"
@@ -143,9 +167,6 @@ msgstr ""
 msgid "Оплачен"
 msgstr ""
 
-msgid "Обновлён"
-msgstr ""
-
 msgid "Счёт за подписку"
 msgstr ""
 
@@ -159,9 +180,6 @@ msgid "Конец подписки"
 msgstr ""
 
 msgid "Подписки"
-msgstr ""
-
-msgid "Политика конфиденциальности"
 msgstr ""
 
 msgid "Размер хранилища"
@@ -362,9 +380,6 @@ msgstr ""
 msgid "Из URL-адреса"
 msgstr ""
 
-msgid "Тип"
-msgstr ""
-
 msgid "Имя"
 msgstr ""
 
@@ -507,9 +522,6 @@ msgid "Изображение сообщения"
 msgstr ""
 
 msgid "Изображения сообщений"
-msgstr ""
-
-msgid "Документ"
 msgstr ""
 
 msgid "Документ сообщения"
@@ -741,9 +753,6 @@ msgid "Значение должно быть положительным чис�
 msgstr ""
 
 msgid "Значение должно быть не больше 90."
-msgstr ""
-
-msgid "Условия использования сервиса"
 msgstr ""
 
 msgid "Telegram ботов"

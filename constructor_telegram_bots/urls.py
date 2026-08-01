@@ -39,8 +39,7 @@ urlpatterns: list[URLPattern | URLResolver] = [
                         include('telegram_bots.hub.urls'),
                     ),
                     path('instruction/', include('instruction.urls')),
-                    path('privacy-policy/', include('privacy_policy.urls')),
-                    path('terms-of-service/', include('terms_of_service.urls')),
+                    path('legal/', include('legal.urls')),
                 ],
                 'api',
             )
