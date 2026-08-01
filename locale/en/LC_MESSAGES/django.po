@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-12 13:32+0000\n"
+"POT-Creation-Date: 2026-08-01 12:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -82,6 +82,113 @@ msgstr "Support methods"
 
 msgid "Инструкция"
 msgstr "Instruction"
+
+msgid "Цена"
+msgstr "Price"
+
+msgid "ID пользователя"
+msgstr "User ID"
+
+msgid "Пометить выбранные счета как ожидаемые"
+msgstr "Mark selected invoices as pending"
+
+#, python-format
+msgid "Выбранные счета (%d) были успешно помечены как ожидаемые."
+msgstr "Selected invoices (%d) have been successfully marked as pending."
+
+msgid "Пометить выбранные счета как оплаченные и активировать подписки"
+msgstr "Mark selected invoices as paid and activate subscriptions"
+
+#, python-format
+msgid ""
+"Выбранные счета (%d) были успешно помечены как оплаченные, а подписки "
+"активированы."
+msgstr ""
+"Selected invoices (%d) have been successfully marked as paid and subscriptions "
+"activated."
+
+msgid "Пометить выбранные счета как возвращённые и вернуть звёзды"
+msgstr "Mark selected invoices as refunded and refund stars"
+
+#, python-format
+msgid ""
+"Выбранные счета (%d) были успешно помечены как возвращённые, а звёзды "
+"возвращены."
+msgstr ""
+"Selected invoices (%d) have been successfully marked as refunded and stars "
+"refunded."
+
+msgid "ID владельца"
+msgstr "Owner ID"
+
+msgid "Премиум"
+msgstr "Premium"
+
+msgid "Ожидание"
+msgstr "Pending"
+
+msgid "Оплачено"
+msgstr "Paid"
+
+msgid "Отклонено"
+msgstr "Failed"
+
+msgid "Истекло"
+msgstr "Expired"
+
+msgid "Возврат"
+msgstr "Refund"
+
+msgid "Бейдж"
+msgstr "Badge"
+
+msgid "Период в месяцах"
+msgstr "Month period"
+
+msgid "Сумма в Telegram Stars за месяц"
+msgstr "Amount of Telegram Stars per month"
+
+msgid "Цена подписки"
+msgstr "Subscription price"
+
+msgid "Цены подписок"
+msgstr "Prices of subscriptions"
+
+msgid "Пользователь"
+msgstr "User"
+
+msgid "Подписка"
+msgstr "Subscription"
+
+msgid "Статус"
+msgstr "Status"
+
+msgid "Сумма в Telegram Stars"
+msgstr "Amount of Telegram Stars"
+
+msgid "Создан"
+msgstr "Created"
+
+msgid "Оплачен"
+msgstr "Paid"
+
+msgid "Обновлён"
+msgstr "Updated"
+
+msgid "Счёт за подписку"
+msgstr "Subscription invoice"
+
+msgid "Счета за подписки"
+msgstr "Invoices of subscriptions"
+
+msgid "Владелец"
+msgstr "Owner"
+
+msgid "Конец подписки"
+msgstr "Subscription end"
+
+msgid "Подписки"
+msgstr "Subscriptions"
 
 msgid "Политика конфиденциальности"
 msgstr "Privacy policy"
@@ -467,9 +574,6 @@ msgstr "This API token is invalid."
 msgid "Произошла непредвиденная ошибка сети при проверки этого API-токена."
 msgstr "An unexpected network error occurred while checking this API token."
 
-msgid "Владелец"
-msgstr "Owner"
-
 msgid "API-токен"
 msgstr "API token"
 
@@ -526,9 +630,6 @@ msgstr "Username"
 
 msgid "Бот"
 msgstr "Bot"
-
-msgid "Премиум"
-msgstr "Premium"
 
 msgid "Дата последней активности"
 msgstr "Last activity date"
@@ -699,14 +800,8 @@ msgstr "Staff"
 msgid "Присоединился"
 msgstr "Joined"
 
-msgid "Пользователь"
-msgstr "User"
-
 msgid "Срок действия"
 msgstr "Expiration"
-
-msgid "Создан"
-msgstr "Created"
 
 msgid "Токены"
 msgstr "Tokens"

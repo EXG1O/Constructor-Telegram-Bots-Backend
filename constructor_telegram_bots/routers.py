@@ -1,7 +1,7 @@
 from rest_framework.routers import DynamicRoute, Route, SimpleRouter
 
 
-class UserRouter(SimpleRouter):
+class DetailRouter(SimpleRouter):
     routes = [
         Route(
             url=r'^{prefix}{trailing_slash}$',

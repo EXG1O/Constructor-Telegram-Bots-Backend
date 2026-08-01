@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from django_stubs_ext.db.models import TypedModelMeta
 
+from premium.models import Subscription, SubscriptionInvoice
 from telegram_bots.models import TelegramBot
 
 from .enums import TokenType
@@ -32,6 +33,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     if TYPE_CHECKING:
         tokens: models.Manager[Token]
+        subscription_invoices: models.Manager[SubscriptionInvoice]
+        subscription: Subscription
         telegram_bots: models.Manager[TelegramBot]
 
     USERNAME_FIELD = 'telegram_id'
@@ -43,12 +46,19 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = _('Пользователя')
         verbose_name_plural = _('Пользователи')
 
+    def __str__(self) -> str:
+        return f'Telegram ID: {self.telegram_id}'
+
     @property
     def full_name(self) -> str:
         return f'{self.first_name} {self.last_name or ""}'.strip()
 
-    def __str__(self) -> str:
-        return f'Telegram ID: {self.telegram_id}'
+    @property
+    def has_subscription(self) -> bool:
+        try:
+            return bool(self.subscription and not self.subscription.is_expired)
+        except Subscription.DoesNotExist:
+            return False
 
 
 class Token(models.Model):

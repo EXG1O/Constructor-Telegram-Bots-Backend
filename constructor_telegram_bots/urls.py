@@ -31,6 +31,7 @@ urlpatterns: list[URLPattern | URLResolver] = [
             (
                 [
                     path('users/', include('users.urls')),
+                    path('premium/', include('premium.urls')),
                     path('webhooks/', include('webhooks.urls')),
                     path('telegram-bots/', include('telegram_bots.urls')),
                     path(
