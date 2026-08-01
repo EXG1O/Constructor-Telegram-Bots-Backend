@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-01 12:25+0000\n"
+"POT-Creation-Date: 2026-08-01 14:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,22 +40,7 @@ msgstr ""
 msgid "Разрешены только буквы, цифры, пробел и _."
 msgstr ""
 
-msgid "Сумма"
-msgstr ""
-
-msgid "Ссылка"
-msgstr ""
-
-msgid "Пожертвования"
-msgstr ""
-
-msgid "Отправитель"
-msgstr ""
-
-msgid "Дата"
-msgstr ""
-
-msgid "Пожертвование"
+msgid "Инструкция"
 msgstr ""
 
 msgid "Заголовок"
@@ -71,18 +56,6 @@ msgid "Раздел"
 msgstr ""
 
 msgid "Разделы"
-msgstr ""
-
-msgid "Значение"
-msgstr ""
-
-msgid "Метод поддержки"
-msgstr ""
-
-msgid "Методы поддержки"
-msgstr ""
-
-msgid "Инструкция"
 msgstr ""
 
 msgid "Цена"
@@ -500,6 +473,9 @@ msgstr ""
 msgid "Подпись"
 msgstr ""
 
+msgid "Сумма"
+msgstr ""
+
 msgid "Цена счёта"
 msgstr ""
 
@@ -588,6 +564,9 @@ msgid "Добавлен"
 msgstr ""
 
 msgid "Telegram бота"
+msgstr ""
+
+msgid "Значение"
 msgstr ""
 
 msgid "Временные переменные"

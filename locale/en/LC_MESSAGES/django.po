@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-01 12:25+0000\n"
+"POT-Creation-Date: 2026-08-01 14:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,23 +38,8 @@ msgstr "Russian"
 msgid "Разрешены только буквы, цифры, пробел и _."
 msgstr "Only letters, digits, spaces, and _ are allowed."
 
-msgid "Сумма"
-msgstr "Sum"
-
-msgid "Ссылка"
-msgstr "Link"
-
-msgid "Пожертвования"
-msgstr "Donations"
-
-msgid "Отправитель"
-msgstr "Sender"
-
-msgid "Дата"
-msgstr "Date"
-
-msgid "Пожертвование"
-msgstr "Donation"
+msgid "Инструкция"
+msgstr "Instruction"
 
 msgid "Заголовок"
 msgstr "Title"
@@ -70,18 +55,6 @@ msgstr "Section"
 
 msgid "Разделы"
 msgstr "Sections"
-
-msgid "Значение"
-msgstr "Value"
-
-msgid "Метод поддержки"
-msgstr "Support method"
-
-msgid "Методы поддержки"
-msgstr "Support methods"
-
-msgid "Инструкция"
-msgstr "Instruction"
 
 msgid "Цена"
 msgstr "Price"
@@ -104,8 +77,8 @@ msgid ""
 "Выбранные счета (%d) были успешно помечены как оплаченные, а подписки "
 "активированы."
 msgstr ""
-"Selected invoices (%d) have been successfully marked as paid and subscriptions "
-"activated."
+"Selected invoices (%d) have been successfully marked as paid and "
+"subscriptions activated."
 
 msgid "Пометить выбранные счета как возвращённые и вернуть звёзды"
 msgstr "Mark selected invoices as refunded and refund stars"
@@ -502,6 +475,9 @@ msgstr "Images of invoices"
 msgid "Подпись"
 msgstr "Label"
 
+msgid "Сумма"
+msgstr "Sum"
+
 msgid "Цена счёта"
 msgstr "Invoice price"
 
@@ -591,6 +567,9 @@ msgstr "Added"
 
 msgid "Telegram бота"
 msgstr "Telegram bot"
+
+msgid "Значение"
+msgstr "Value"
 
 msgid "Временные переменные"
 msgstr "Temporary variables"

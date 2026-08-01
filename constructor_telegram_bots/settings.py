@@ -153,7 +153,6 @@ INSTALLED_APPS: Final[list[str]] = [
     'telegram_bots',
     'telegram_bots.hub',
     'instruction',
-    'donation',
     'privacy_policy',
     'terms_of_service',
 ]

@@ -14,7 +14,6 @@ class MainSitemap(Sitemap[str]):
             '/instruction/',
             '/terms-of-service/',
             '/privacy-policy/',
-            '/donation/',
         ]
 
     def location(self, item: str) -> str:
