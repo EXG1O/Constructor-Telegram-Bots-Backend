@@ -136,8 +136,8 @@ if MODE == Mode.TEST:
 
 INSTALLED_APPS: Final[list[str]] = [
     'rest_framework',
-    'django_filters',
     'drf_standardized_errors',
+    'django_filters',
     'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -148,6 +148,7 @@ INSTALLED_APPS: Final[list[str]] = [
     'django.contrib.sitemaps',
     'adminsortable2',
     'users',
+    'premium',
     'webhooks',
     'telegram_bots',
     'telegram_bots.hub',

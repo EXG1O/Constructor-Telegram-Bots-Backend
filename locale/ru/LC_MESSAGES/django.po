@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-12 13:34+0000\n"
+"POT-Creation-Date: 2026-08-01 12:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
 #, python-brace-format
 msgid "Максимально допустимый размер {max_size} байт."
 msgstr ""
@@ -82,6 +83,109 @@ msgid "Методы поддержки"
 msgstr ""
 
 msgid "Инструкция"
+msgstr ""
+
+msgid "Цена"
+msgstr ""
+
+msgid "ID пользователя"
+msgstr ""
+
+msgid "Пометить выбранные счета как ожидаемые"
+msgstr ""
+
+#, python-format
+msgid "Выбранные счета (%d) были успешно помечены как ожидаемые."
+msgstr ""
+
+msgid "Пометить выбранные счета как оплаченные и активировать подписки"
+msgstr ""
+
+#, python-format
+msgid ""
+"Выбранные счета (%d) были успешно помечены как оплаченные, а подписки "
+"активированы."
+msgstr ""
+
+msgid "Пометить выбранные счета как возвращённые и вернуть звёзды"
+msgstr ""
+
+#, python-format
+msgid ""
+"Выбранные счета (%d) были успешно помечены как возвращённые, а звёзды "
+"возвращены."
+msgstr ""
+
+msgid "ID владельца"
+msgstr ""
+
+msgid "Премиум"
+msgstr ""
+
+msgid "Ожидание"
+msgstr ""
+
+msgid "Оплачено"
+msgstr ""
+
+msgid "Отклонено"
+msgstr ""
+
+msgid "Истекло"
+msgstr ""
+
+msgid "Возврат"
+msgstr ""
+
+msgid "Бейдж"
+msgstr ""
+
+msgid "Период в месяцах"
+msgstr ""
+
+msgid "Сумма в Telegram Stars за месяц"
+msgstr ""
+
+msgid "Цена подписки"
+msgstr ""
+
+msgid "Цены подписок"
+msgstr ""
+
+msgid "Пользователь"
+msgstr ""
+
+msgid "Подписка"
+msgstr ""
+
+msgid "Статус"
+msgstr ""
+
+msgid "Сумма в Telegram Stars"
+msgstr ""
+
+msgid "Создан"
+msgstr ""
+
+msgid "Оплачен"
+msgstr ""
+
+msgid "Обновлён"
+msgstr ""
+
+msgid "Счёт за подписку"
+msgstr ""
+
+msgid "Счета за подписки"
+msgstr ""
+
+msgid "Владелец"
+msgstr ""
+
+msgid "Конец подписки"
+msgstr ""
+
+msgid "Подписки"
 msgstr ""
 
 msgid "Политика конфиденциальности"
@@ -468,9 +572,6 @@ msgstr ""
 msgid "Произошла непредвиденная ошибка сети при проверки этого API-токена."
 msgstr ""
 
-msgid "Владелец"
-msgstr ""
-
 msgid "API-токен"
 msgstr ""
 
@@ -526,9 +627,6 @@ msgid "Имя пользователя"
 msgstr ""
 
 msgid "Бот"
-msgstr ""
-
-msgid "Премиум"
 msgstr ""
 
 msgid "Дата последней активности"
@@ -690,13 +788,7 @@ msgstr ""
 msgid "Присоединился"
 msgstr ""
 
-msgid "Пользователь"
-msgstr ""
-
 msgid "Срок действия"
-msgstr ""
-
-msgid "Создан"
 msgstr ""
 
 msgid "Токены"
