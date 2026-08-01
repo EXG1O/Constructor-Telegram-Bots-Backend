@@ -153,8 +153,7 @@ INSTALLED_APPS: Final[list[str]] = [
     'telegram_bots',
     'telegram_bots.hub',
     'instruction',
-    'privacy_policy',
-    'terms_of_service',
+    'legal',
 ]
 
 if MODE == Mode.DEBUG:
