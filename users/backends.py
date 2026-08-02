@@ -26,11 +26,9 @@ class TelegramBackend(ModelBackend):
     JWKS_URL: str = 'https://oauth.telegram.org/.well-known/jwks.json'
     ISSUER: str = 'https://oauth.telegram.org'
 
-    def __init__(self) -> None:
-        super().__init__()
-        self._base_headers: dict[str | bytes, str | bytes] = {
-            b'User-Agent': settings.APP_USER_AGENT.encode()
-        }
+    _BASE_HEADERS: dict[str | bytes, str | bytes] = {
+        b'User-Agent': settings.APP_USER_AGENT.encode()
+    }
 
     def _request(
         self,
@@ -39,7 +37,7 @@ class TelegramBackend(ModelBackend):
         headers: dict[str | bytes, str | bytes] | None = None,
         content: bytes | None = None,
     ) -> Response:
-        merged_headers: dict[str | bytes, str | bytes] = self._base_headers.copy()
+        merged_headers: dict[str | bytes, str | bytes] = self._BASE_HEADERS.copy()
 
         if headers:
             merged_headers.update(headers)
