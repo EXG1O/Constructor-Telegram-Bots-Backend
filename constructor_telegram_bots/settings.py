@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from yarl import URL
 
 from .enums import Mode
+from .http.utils import build_user_agent
 
 from datetime import timedelta
 from pathlib import Path
@@ -33,6 +34,7 @@ MODE: Final[Mode] = (
 )
 DEBUG: Final[bool] = MODE == Mode.DEBUG
 
+APP_USER_AGENT: Final[str] = build_user_agent()
 APP_URL: Final[URL] = URL(os.environ['APP_URL'])
 APP_SOCKET: Final[Path | None] = (
     Path(path) if (path := os.getenv('APP_SOCKET')) else None

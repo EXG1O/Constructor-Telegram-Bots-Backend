@@ -44,7 +44,9 @@ def validate_api_token(api_token: str) -> None:
 
     try:
         response: Response = TELEGRAM_HTTP_POOL.request(
-            HTTPMethod.GET, f'https://api.telegram.org/bot{api_token}/getMe'
+            HTTPMethod.GET,
+            f'https://api.telegram.org/bot{api_token}/getMe',
+            headers={b'User-Agent': settings.APP_USER_AGENT.encode()},
         )
     except NetworkError as error:
         raise ValidationError(
@@ -142,7 +144,9 @@ class TelegramBot(models.Model):
 
     def update_username(self, save: bool = True) -> None:
         response: Response = TELEGRAM_HTTP_POOL.request(
-            HTTPMethod.GET, f'https://api.telegram.org/bot{self.api_token}/getMe'
+            HTTPMethod.GET,
+            f'https://api.telegram.org/bot{self.api_token}/getMe',
+            headers={b'User-Agent': settings.APP_USER_AGENT.encode()},
         )
 
         if response.status >= 400:

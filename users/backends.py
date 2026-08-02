@@ -26,19 +26,41 @@ class TelegramBackend(ModelBackend):
     JWKS_URL: str = 'https://oauth.telegram.org/.well-known/jwks.json'
     ISSUER: str = 'https://oauth.telegram.org'
 
+    def __init__(self) -> None:
+        super().__init__()
+        self._base_headers: dict[str | bytes, str | bytes] = {
+            b'User-Agent': settings.APP_USER_AGENT.encode()
+        }
+
+    def _request(
+        self,
+        method: HTTPMethod,
+        url: str,
+        headers: dict[str | bytes, str | bytes] | None = None,
+        content: bytes | None = None,
+    ) -> Response:
+        merged_headers: dict[str | bytes, str | bytes] = self._base_headers.copy()
+
+        if headers:
+            merged_headers.update(headers)
+
+        return TELEGRAM_LOGIN_HTTP_POOL.request(
+            method, url, headers=merged_headers, content=content
+        )
+
     def _get_id_token(
         self, code: str, code_verifier: str, redirect_uri: str
     ) -> str | None:
-        response: Response = TELEGRAM_LOGIN_HTTP_POOL.request(
+        response: Response = self._request(
             HTTPMethod.POST,
             self.TOKEN_URL,
             headers={
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': (
-                    'Basic '
+                b'Content-Type': b'application/x-www-form-urlencoded',
+                b'Authorization': (
+                    b'Basic '
                     + base64.b64encode(
                         f'{settings.TELEGRAM_LOGIN_CLIENT_ID}:{settings.TELEGRAM_LOGIN_CLIENT_SECRET}'.encode()
-                    ).decode()
+                    )
                 ),
             },
             content=urllib.parse.urlencode(
@@ -58,7 +80,7 @@ class TelegramBackend(ModelBackend):
         return json.loads(response.content)['id_token']
 
     def _get_jwk(self, algorithm: str, key_id: str) -> jwt.PyJWK | None:
-        response = TELEGRAM_LOGIN_HTTP_POOL.request(HTTPMethod.GET, self.JWKS_URL)
+        response = self._request(HTTPMethod.GET, self.JWKS_URL)
 
         if response.status != 200:
             raise HTTPError(response)
