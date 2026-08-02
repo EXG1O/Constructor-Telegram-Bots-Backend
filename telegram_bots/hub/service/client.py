@@ -23,8 +23,9 @@ class ServiceClient:
             uds=str(settings.SOCKETS_DIR / f'{container_id[:12]}.sock'),
         )
         self.headers: dict[str | bytes, str | bytes] = {
-            'X-API-KEY': access_token,
-            'Content-Type': 'application/json',
+            b'User-Agent': settings.APP_USER_AGENT.encode(),
+            b'Content-Type': b'application/json',
+            b'X-API-KEY': access_token.encode(),
         }
 
     def _request(
