@@ -59,8 +59,8 @@ class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
                     'REDIS_URL': settings.TELEGRAM_BOTS_HUB_REDIS_URL,
                     'SELF_TOKEN': microservice_token,
                     'TELEGRAM_TOKEN': telegram_token,
-                    'SERVICE_URL': settings.SELF_URL,
-                    'SERVICE_UNIX_SOCK': settings.SELF_UNIX_SOCK,
+                    'SERVICE_URL': settings.APP_URL,
+                    'SERVICE_UNIX_SOCK': settings.APP_SOCKET,
                     'SERVICE_TOKEN': service_token,
                 },
                 extra_hosts=(

@@ -127,7 +127,7 @@ class TelegramBot(models.Model):
     @property
     def webhook_url(self) -> str:
         return str(
-            settings.SELF_URL
+            settings.APP_URL
             / reverse('api:webhooks:telegram', kwargs={'bot_id': self.id}).removeprefix(
                 '/'
             )

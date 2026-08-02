@@ -10,16 +10,16 @@ on:
 
 env:
   SECRET_KEY: test_secret_key
-  SELF_URL: 'http://localhost'
+  APP_URL: 'http://localhost'
+  REDIS_URL: redis://localhost:6379
+  PG_DATABASE_NAME: postgres
+  PG_DATABASE_USER: postgres
+  PG_DATABASE_PASSWORD: postgres
+  PG_DATABASE_HOST: localhost
+  PG_DATABASE_PORT: 5432
+  FRONTEND_PATH: ''
   TELEGRAM_LOGIN_CLIENT_ID: 123456789
   TELEGRAM_LOGIN_CLIENT_SECRET: test_secret
-  FRONTEND_PATH: ''
-  POSTGRESQL_DATABASE_NAME: postgres
-  POSTGRESQL_DATABASE_USER: postgres
-  POSTGRESQL_DATABASE_PASSWORD: postgres
-  POSTGRESQL_DATABASE_HOST: localhost
-  POSTGRESQL_DATABASE_PORT: 5432
-  REDIS_URL: redis://localhost:6379
   TELEGRAM_BOTS_HUB_REDIS_URL: redis://localhost:6379/1
 
 jobs:

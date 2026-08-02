@@ -29,11 +29,30 @@ os.makedirs(SOCKETS_DIR, exist_ok=True)
 SECRET_KEY: Final[str] = os.environ['SECRET_KEY']
 
 MODE: Final[Mode] = (
-    Mode.TEST if 'test' in sys.argv else Mode(os.getenv('MODE', 'debug').lower())
+    Mode.TEST if 'test' in sys.argv else Mode(os.getenv('MODE', Mode.DEBUG).lower())
 )
 DEBUG: Final[bool] = MODE == Mode.DEBUG
 
+APP_URL: Final[URL] = URL(os.environ['APP_URL'])
+APP_SOCKET: Final[Path | None] = (
+    Path(path) if (path := os.getenv('APP_SOCKET')) else None
+)
+
+if not (APP_URL or APP_SOCKET):
+    raise ValueError('Either APP_URL or APP_SOCKET must be set.')
+
+REDIS_URL: Final[str] = os.environ['REDIS_URL']
+
+PG_DATABASE_NAME: Final[str] = os.environ['PG_DATABASE_NAME']
+PG_DATABASE_USER: Final[str] = os.environ['PG_DATABASE_USER']
+PG_DATABASE_PASSWORD: Final[str] = os.environ['PG_DATABASE_PASSWORD']
+PG_DATABASE_HOST: Final[str] = os.environ['PG_DATABASE_HOST']
+PG_DATABASE_PORT: Final[str] = os.environ['PG_DATABASE_PORT']
+
 FRONTEND_PATH: Final[Path] = Path(os.environ['FRONTEND_PATH'])
+
+TELEGRAM_LOGIN_CLIENT_ID: Final[int] = int(os.environ['TELEGRAM_LOGIN_CLIENT_ID'])
+TELEGRAM_LOGIN_CLIENT_SECRET: Final[str] = os.environ['TELEGRAM_LOGIN_CLIENT_SECRET']
 
 TELEGRAM_BOTS_HUB_PATH: Final[Path] = (
     Path(path)
@@ -52,57 +71,37 @@ TELEGRAM_BOTS_HUB_LOGS_VOLUME: Final[str | None] = os.getenv(
     'TELEGRAM_BOTS_HUB_LOGS_VOLUME'
 )
 
-TELEGRAM_LOGIN_CLIENT_ID: Final[int] = int(os.environ['TELEGRAM_LOGIN_CLIENT_ID'])
-TELEGRAM_LOGIN_CLIENT_SECRET: Final[str] = os.environ['TELEGRAM_LOGIN_CLIENT_SECRET']
-
-SELF_URL: Final[URL] = URL(os.environ['SELF_URL'])
-SELF_UNIX_SOCK: Final[Path | None] = (
-    Path(path) if (path := os.getenv('SELF_UNIX_SOCK')) else None
-)
-
-if not (SELF_URL or SELF_UNIX_SOCK):
-    raise ValueError('Either SELF_URL or SELF_UNIX_SOCK must be set.')
-
-POSTGRESQL_DATABASE_NAME: Final[str] = os.environ['POSTGRESQL_DATABASE_NAME']
-POSTGRESQL_DATABASE_USER: Final[str] = os.environ['POSTGRESQL_DATABASE_USER']
-POSTGRESQL_DATABASE_PASSWORD: Final[str] = os.environ['POSTGRESQL_DATABASE_PASSWORD']
-POSTGRESQL_DATABASE_HOST: Final[str] = os.environ['POSTGRESQL_DATABASE_HOST']
-POSTGRESQL_DATABASE_PORT: Final[str] = os.environ['POSTGRESQL_DATABASE_PORT']
-
-REDIS_URL: Final[str] = os.environ['REDIS_URL']
-
 
 ALLOWED_HOSTS: Final[list[str]] = (
     ['constructor.exg1o.org'] if MODE == Mode.PRODUCTION else ['*']
 )
 CSRF_TRUSTED_ORIGINS: Final[list[str]] = ['https://*.exg1o.org']
 
+CSRF_COOKIE_AGE: Final[int] = int(timedelta(weeks=4).total_seconds())
+SESSION_COOKIE_AGE: Final[int] = int(timedelta(weeks=4).total_seconds())
 
-CSRF_COOKIE_AGE: Final[int] = 2419200  # 4 weeks
-SESSION_COOKIE_AGE: Final[int] = 2419200  # 4 weeks
+FILE_UPLOAD_MAX_MEMORY_SIZE: Final[int] = 60 * 1024**2
 
-FILE_UPLOAD_MAX_MEMORY_SIZE: Final[int] = 62914560  # 60M
+JWT_REFRESH_TOKEN_LIFETIME: Final[timedelta] = timedelta(weeks=4)
+JWT_ACCESS_TOKEN_LIFETIME: Final[timedelta] = timedelta(minutes=15)
+
 
 TELEGRAM_BOT_MAX_TRIGGERS: Final[int] = 250
 TELEGRAM_BOT_MAX_MESSAGES: Final[int] = 500
 TELEGRAM_BOT_MAX_MESSAGE_KEYBOARD_BUTTONS: Final[int] = 100
-TELEGRAM_BOT_MAX_CONDITIONS: Final[int] = 750
+TELEGRAM_BOT_MAX_CONDITIONS: Final[int] = 250
 TELEGRAM_BOT_MAX_CONDITION_PARTS: Final[int] = 25
 TELEGRAM_BOT_MAX_BACKGROUND_TASKS: Final[int] = 25
-TELEGRAM_BOT_MAX_API_REQUESTS: Final[int] = 100
+TELEGRAM_BOT_MAX_API_REQUESTS: Final[int] = 250
 TELEGRAM_BOT_MAX_DATABASE_OPERATIONS: Final[int] = 250
-TELEGRAM_BOT_MAX_INVOICES: Final[int] = 250
+TELEGRAM_BOT_MAX_INVOICES: Final[int] = 100
 TELEGRAM_BOT_MAX_INVOICE_PRICES: Final[int] = 1
-TELEGRAM_BOT_MAX_TEMPORARY_VARIABLES: Final[int] = 1000
+TELEGRAM_BOT_MAX_TEMPORARY_VARIABLES: Final[int] = 250
 TELEGRAM_BOT_MAX_VARIABLES: Final[int] = 100
-TELEGRAM_BOT_MAX_DATABASE_RECORDS: Final[int] = 1000
+TELEGRAM_BOT_MAX_DATABASE_RECORDS: Final[int] = 10000
 
 TELEGRAM_BOTS_HUB_MAX_BOTS: Final[int] = 200
 TELEGRAM_BOTS_HUB_IDLE_TIMEOUT: Final[timedelta] = timedelta(minutes=30)
-
-
-JWT_REFRESH_TOKEN_LIFETIME: Final[timedelta] = timedelta(weeks=4)
-JWT_ACCESS_TOKEN_LIFETIME: Final[timedelta] = timedelta(minutes=15)
 
 
 CELERY_BROKER_URL: Final[str] = REDIS_URL
@@ -113,15 +112,15 @@ CELERY_TASK_SERIALIZER: Final[str] = 'json'
 CELERY_BEAT_SCHEDULE: Final[dict[str, dict[str, Any]]] = {
     'delete_expired_tokens_schedule': {
         'task': 'users.tasks.delete_expired_tokens',
-        'schedule': 86400,  # 24h
+        'schedule': timedelta(days=1).total_seconds(),
     },
     'delete_users_not_accepted_terms_schedule': {
         'task': 'users.tasks.delete_users_not_accepted_terms',
-        'schedule': 86400,  # 24h
+        'schedule': timedelta(days=1).total_seconds(),
     },
     'ensure_idle_telegram_bots_hubs_schedule': {
         'task': 'telegram_bots.hub.tasks.ensure_idle_telegram_bots_hubs',
-        'schedule': 3600,  # 1h
+        'schedule': timedelta(hours=1).total_seconds(),
     },
     'delete_expired_telegram_bots_hubs_schedule': {
         'task': 'telegram_bots.hub.tasks.delete_expired_telegram_bots_hubs',
@@ -213,11 +212,11 @@ CACHES: Final[dict[str, dict[str, Any]]] = {
 DATABASES: Final[dict[str, dict[str, Any]]] = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': POSTGRESQL_DATABASE_NAME,
-        'USER': POSTGRESQL_DATABASE_USER,
-        'PASSWORD': POSTGRESQL_DATABASE_PASSWORD,
-        'HOST': POSTGRESQL_DATABASE_HOST,
-        'PORT': POSTGRESQL_DATABASE_PORT,
+        'NAME': PG_DATABASE_NAME,
+        'USER': PG_DATABASE_USER,
+        'PASSWORD': PG_DATABASE_PASSWORD,
+        'HOST': PG_DATABASE_HOST,
+        'PORT': PG_DATABASE_PORT,
     },
 }
 DEFAULT_AUTO_FIELD: Final[str] = 'django.db.models.BigAutoField'
@@ -269,16 +268,14 @@ LOGGING: Final[dict[str, Any]] = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': LOGS_DIR / 'app_info.log',
-            'maxBytes': 10485760,
-            'backupCount': 10,
+            'maxBytes': 10 * 1024**2,
             'formatter': 'verbose',
         },
         'error_file': {
             'level': 'WARNING',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': LOGS_DIR / 'app_error.log',
-            'maxBytes': 10485760,
-            'backupCount': 10,
+            'maxBytes': 10 * 1024**2,
             'formatter': 'verbose',
         },
     },
