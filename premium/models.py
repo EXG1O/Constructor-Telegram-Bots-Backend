@@ -22,9 +22,10 @@ class SubscriptionPrice(models.Model):  # type: ignore [django-manager-missing]
     )
 
     class Meta(TypedModelMeta):
-        ordering = ['period_months']
+        db_table = 'premium_subscription_price'
         verbose_name = _('Цена подписки')
         verbose_name_plural = _('Цены подписок')
+        ordering = ['period_months']
 
     def __str__(self) -> str:
         return f'{self.amount_stars_per_month}/m ({self.amount_stars}/{self.period_months}m)'
@@ -63,6 +64,7 @@ class SubscriptionInvoice(models.Model):
     updated_date = models.DateTimeField(_('Обновлён'), auto_now=True)
 
     class Meta(TypedModelMeta):
+        db_table = 'premium_subscription_invoice'
         verbose_name = _('Счёт за подписку')
         verbose_name_plural = _('Счета за подписки')
 
@@ -101,6 +103,7 @@ class Subscription(models.Model):
         invoices: models.Manager[SubscriptionInvoice]
 
     class Meta(TypedModelMeta):
+        db_table = 'premium_subscription'
         verbose_name = _('Подписка')
         verbose_name_plural = _('Подписки')
 

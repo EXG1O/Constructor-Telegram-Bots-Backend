@@ -17,7 +17,7 @@ default_router.register(
 )
 
 detail_router = DetailRouter(use_regex_path=False)
-detail_router.register('subscription', SubscriptionViewSet, basename='subscription')
+detail_router.register('subscriptions', SubscriptionViewSet, basename='subscription')
 
 app_name = 'premium'
 urlpatterns = default_router.urls + detail_router.urls
