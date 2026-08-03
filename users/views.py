@@ -86,7 +86,6 @@ class UserViewSet(RetrieveModelMixin, DestroyModelMixin, GenericViewSet[User]):
             request,
             code=serializer.validated_data['code'],
             redirect_uri=serializer.validated_data['redirect_uri'],
-            raise_exception=True,
         )
 
         if not user:

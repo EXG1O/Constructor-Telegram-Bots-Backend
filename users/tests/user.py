@@ -10,7 +10,7 @@ from rest_framework.test import APIRequestFactory, force_authenticate
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-import httpcore
+import httpx
 import jwt
 
 from constructor_telegram_bots.utils.tests import assert_view_basic_protected
@@ -25,10 +25,9 @@ from contextlib import suppress
 from datetime import datetime, timedelta
 from http import HTTPMethod
 from importlib import import_module
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 from unittest.mock import patch
 import base64
-import json
 import math
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
@@ -122,27 +121,21 @@ class UserViewSetTests(UserMixin, TestCase):
             'use': 'sig',
         }
 
-        with patch('users.backends.TELEGRAM_LOGIN_HTTP_POOL') as mock_pool:
-
-            def mock_request(
-                method: HTTPMethod, url: str, **kwargs: Any
-            ) -> httpcore.Response:
-                if url == TelegramBackend.TOKEN_URL:
-                    response = httpcore.Response(
-                        status=200, content=json.dumps({'id_token': id_token}).encode()
-                    )
-                elif url == TelegramBackend.JWKS_URL:
-                    response = httpcore.Response(
-                        status=200, content=json.dumps({'keys': [jwk_payload]}).encode()
-                    )
-                else:
-                    response = httpcore.Response(status=500, content=b'')
-
-                response.read()
-                return response
-
-            mock_pool.request = mock_request
-
+        with patch('users.backends._telegram_login_client') as mock_client:
+            mock_client.get.return_value = httpx.Response(
+                request=httpx.Request(
+                    method=HTTPMethod.GET, url=TelegramBackend.JWKS_URL
+                ),
+                status_code=httpx.codes.OK,
+                json={'keys': [jwk_payload]},
+            )
+            mock_client.post.return_value = httpx.Response(
+                request=httpx.Request(
+                    method=HTTPMethod.POST, url=TelegramBackend.TOKEN_URL
+                ),
+                status_code=httpx.codes.OK,
+                json={'id_token': id_token},
+            )
             response = login_view(request)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
