@@ -6,7 +6,9 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.test import APIRequestFactory, force_authenticate
 
-from constructor_telegram_bots.http.pools import TELEGRAM_HTTP_POOL
+import httpx
+
+from constructor_telegram_bots.http.clients import telegram_client
 from constructor_telegram_bots.utils.tests import assert_view_basic_protected
 from users.tests.mixins import UserMixin
 from users.utils.tests import assert_view_requires_terms_acceptance
@@ -98,8 +100,8 @@ class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
 
         old_telegram_bot_count: int = self.user.telegram_bots.count()
 
-        with patch.object(TELEGRAM_HTTP_POOL, 'request') as mock_request:
-            mock_request.return_value.status = 200
+        with patch.object(telegram_client, 'request') as mock_request:
+            mock_request.return_value = httpx.Response(status_code=httpx.codes.OK)
             response = view(request)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -271,8 +273,8 @@ class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
         self.telegram_bot.hub = self.hub
         self.telegram_bot.save(update_fields=['hub'])
 
-        with patch.object(TELEGRAM_HTTP_POOL, 'request') as mock_request:
-            mock_request.return_value.status = 200
+        with patch.object(telegram_client, 'request') as mock_request:
+            mock_request.return_value = httpx.Response(status_code=httpx.codes.OK)
             response = view(request, id=self.telegram_bot.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -320,8 +322,8 @@ class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
         self.telegram_bot.hub = self.hub
         self.telegram_bot.save(update_fields=['hub'])
 
-        with patch.object(TELEGRAM_HTTP_POOL, 'request') as mock_request:
-            mock_request.return_value.status = 200
+        with patch.object(telegram_client, 'request') as mock_request:
+            mock_request.return_value = httpx.Response(status_code=httpx.codes.OK)
             response = view(request, id=self.telegram_bot.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

@@ -60,13 +60,15 @@ def sync_telegram_bots_hubs() -> None:
         TelegramBot.objects.filter(id__in=bot_ids).update(is_loading=True)
         try:
             hub: TelegramBotsHub = TelegramBotsHub.objects.create_with_container()
-            hub.client.start_bots(
-                [
-                    BotCredentials(
-                        id=bot.id, token=bot.api_token, webhook_url=bot.webhook_url
-                    )
-                    for bot in bots
-                ]
-            )
+
+            with hub.get_client() as client:
+                client.start_bots(
+                    [
+                        BotCredentials(
+                            id=bot.id, token=bot.api_token, webhook_url=bot.webhook_url
+                        )
+                        for bot in bots
+                    ]
+                )
         except Exception:
             logger.exception('Failed to start bots with IDs: %s', bot_ids)

@@ -23,7 +23,9 @@ class TelegramAPIView(APIView):
 
     def post(self, request: Request, bot_id: int) -> Response:
         hub = cast(TelegramBotsHub, request.user)
-        hub.client.forward_telegram_data(bot_id=bot_id, data=request.body)
+
+        with hub.get_client() as client:
+            client.forward_telegram_data(bot_id=bot_id, data=request.body)
 
         return Response(status=status.HTTP_202_ACCEPTED)
 
@@ -44,11 +46,12 @@ class TriggerWebhookAPIView(APIView):
         if not hub:
             raise TelegramBotDisabledError()
 
-        hub.client.send_trigger(
-            bot_id=telegram_bot.id,
-            trigger=trigger,
-            trigger_has_target_connections=trigger.target_connections.exists(),
-            payload=cast(str, request.data),
-        )
+        with hub.get_client() as client:
+            client.send_trigger(
+                bot_id=telegram_bot.id,
+                trigger=trigger,
+                trigger_has_target_connections=trigger.target_connections.exists(),
+                payload=cast(str, request.data),
+            )
 
         return Response(status=status.HTTP_202_ACCEPTED)

@@ -7,10 +7,9 @@ from django.utils.translation import gettext_lazy as _
 
 from django_stubs_ext.db.models import TypedModelMeta
 
-from httpcore import NetworkError, Response
+import httpx
 
-from constructor_telegram_bots.http.exceptions import HTTPError
-from constructor_telegram_bots.http.pools import TELEGRAM_HTTP_POOL
+from constructor_telegram_bots.http.clients import telegram_client
 from constructor_telegram_bots.utils.storage import force_get_file_size
 
 from .. import tasks
@@ -30,9 +29,7 @@ from .trigger import Trigger
 from .user import User
 from .variable import Variable
 
-from http import HTTPMethod
 from typing import TYPE_CHECKING
-import json
 import re
 
 TELEGRAM_BOT_TOKEN_PATTERN: re.Pattern[str] = re.compile(r'^\d+:.+$')
@@ -43,17 +40,13 @@ def validate_api_token(api_token: str) -> None:
         raise ValidationError(_('Этот API-токен является недействительным.'))
 
     try:
-        response: Response = TELEGRAM_HTTP_POOL.request(
-            HTTPMethod.GET,
-            f'https://api.telegram.org/bot{api_token}/getMe',
-            headers={b'User-Agent': settings.APP_USER_AGENT.encode()},
-        )
-    except NetworkError as error:
+        response: httpx.Response = telegram_client.get(f'/bot{api_token}/getMe')
+    except httpx.RequestError as error:
         raise ValidationError(
             _('Произошла непредвиденная ошибка сети при проверки этого API-токена.')
         ) from error
 
-    if response.status != 200:
+    if not response.is_success:
         raise ValidationError(_('Этот API-токен является недействительным.'))
 
 
@@ -143,16 +136,10 @@ class TelegramBot(models.Model):
             return False
 
     def update_username(self, save: bool = True) -> None:
-        response: Response = TELEGRAM_HTTP_POOL.request(
-            HTTPMethod.GET,
-            f'https://api.telegram.org/bot{self.api_token}/getMe',
-            headers={b'User-Agent': settings.APP_USER_AGENT.encode()},
-        )
+        response: httpx.Response = telegram_client.get(f'/bot{self.api_token}/getMe')
+        response.raise_for_status()
 
-        if response.status >= 400:
-            raise HTTPError(response)
-
-        self.username = json.loads(response.content)['result']['username']
+        self.username = response.json()['result']['username']
 
         if save:
             self.save(update_fields=['username'])

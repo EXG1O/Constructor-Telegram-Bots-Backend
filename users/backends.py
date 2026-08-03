@@ -2,22 +2,20 @@ from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
 from django.http import HttpRequest
 
-from httpcore import ConnectionPool, Response
 from jwt.types import Options
+import httpx
 import jwt
-
-from constructor_telegram_bots.http.exceptions import HTTPError
 
 from .models import User
 
-from http import HTTPMethod
 from typing import Any
-import base64
-import json
-import urllib.parse
 
-TELEGRAM_LOGIN_HTTP_POOL = ConnectionPool(
-    max_connections=100, max_keepalive_connections=20, keepalive_expiry=6
+_telegram_login_client = httpx.Client(
+    headers={'User-Agent': settings.APP_USER_AGENT},
+    limits=httpx.Limits(
+        max_connections=25, max_keepalive_connections=10, keepalive_expiry=6
+    ),
+    transport=httpx.HTTPTransport(trust_env=False, retries=2),
 )
 
 
@@ -26,64 +24,34 @@ class TelegramBackend(ModelBackend):
     JWKS_URL: str = 'https://oauth.telegram.org/.well-known/jwks.json'
     ISSUER: str = 'https://oauth.telegram.org'
 
-    _BASE_HEADERS: dict[str | bytes, str | bytes] = {
-        b'User-Agent': settings.APP_USER_AGENT.encode()
-    }
-
-    def _request(
-        self,
-        method: HTTPMethod,
-        url: str,
-        headers: dict[str | bytes, str | bytes] | None = None,
-        content: bytes | None = None,
-    ) -> Response:
-        merged_headers: dict[str | bytes, str | bytes] = self._BASE_HEADERS.copy()
-
-        if headers:
-            merged_headers.update(headers)
-
-        return TELEGRAM_LOGIN_HTTP_POOL.request(
-            method, url, headers=merged_headers, content=content
-        )
-
     def _get_id_token(
         self, code: str, code_verifier: str, redirect_uri: str
     ) -> str | None:
-        response: Response = self._request(
-            HTTPMethod.POST,
+        response: httpx.Response = _telegram_login_client.post(
             self.TOKEN_URL,
-            headers={
-                b'Content-Type': b'application/x-www-form-urlencoded',
-                b'Authorization': (
-                    b'Basic '
-                    + base64.b64encode(
-                        f'{settings.TELEGRAM_LOGIN_CLIENT_ID}:{settings.TELEGRAM_LOGIN_CLIENT_SECRET}'.encode()
-                    )
-                ),
+            auth=httpx.BasicAuth(
+                username=str(settings.TELEGRAM_LOGIN_CLIENT_ID),
+                password=settings.TELEGRAM_LOGIN_CLIENT_SECRET,
+            ),
+            data={
+                'grant_type': 'authorization_code',
+                'client_id': settings.TELEGRAM_LOGIN_CLIENT_ID,
+                'code': code,
+                'code_verifier': code_verifier,
+                'redirect_uri': redirect_uri,
             },
-            content=urllib.parse.urlencode(
-                {
-                    'grant_type': 'authorization_code',
-                    'client_id': settings.TELEGRAM_LOGIN_CLIENT_ID,
-                    'code': code,
-                    'code_verifier': code_verifier,
-                    'redirect_uri': redirect_uri,
-                }
-            ).encode(),
         )
 
-        if response.status != 200:
+        if not response.is_success:
             return None
 
-        return json.loads(response.content)['id_token']
+        return response.json()['id_token']
 
     def _get_jwk(self, algorithm: str, key_id: str) -> jwt.PyJWK | None:
-        response = self._request(HTTPMethod.GET, self.JWKS_URL)
+        response: httpx.Response = _telegram_login_client.get(self.JWKS_URL)
+        response.raise_for_status()
 
-        if response.status != 200:
-            raise HTTPError(response)
-
-        keys: list[dict[str, Any]] = json.loads(response.content)['keys']
+        keys: list[dict[str, Any]] = response.json()['keys']
 
         for key in keys:
             if key.get('kid') == key_id and key.get('alg') == algorithm:

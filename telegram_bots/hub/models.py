@@ -42,7 +42,10 @@ class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
             if cached_result := redis_client.get(result_key):
                 hub = self.get(id=int(cast(Any, cached_result)))
 
-                if len(hub.client.get_bot_ids()) < settings.TELEGRAM_BOTS_HUB_MAX_BOTS:
+                with hub.get_client() as client:
+                    bot_ids: list[int] = client.get_bot_ids()
+
+                if len(bot_ids) < settings.TELEGRAM_BOTS_HUB_MAX_BOTS:
                     redis_client.expire(result_key, 6)
                     return hub
 
@@ -152,6 +155,5 @@ class TelegramBotsHub(models.Model):
     def container(self) -> Container:
         return docker_client.containers.get(self.container_id)
 
-    @cached_property
-    def client(self) -> ServiceClient:
+    def get_client(self) -> ServiceClient:
         return ServiceClient(self.container_id, self.microservice_token)
