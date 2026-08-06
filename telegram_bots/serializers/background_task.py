@@ -1,7 +1,6 @@
 from django.conf import settings
-from django.utils.translation import gettext as _
 
-from rest_framework import serializers
+from constructor_telegram_bots.utils.serializers import validate_max_count
 
 from ..models import BackgroundTask
 from .base import BlockSerializer, DiagramSerializer
@@ -16,15 +15,10 @@ class BackgroundTaskSerializer(TelegramBotMixin, BlockSerializer[BackgroundTask]
         fields = BlockSerializer.Meta.fields + ['interval']
 
     def validate(self, data: dict[str, Any]) -> dict[str, Any]:
-        if (
-            not self.instance
-            and self.telegram_bot.background_tasks.count() + 1
-            > settings.TELEGRAM_BOT_MAX_BACKGROUND_TASKS
-        ):
-            raise serializers.ValidationError(
-                _('Нельзя добавлять больше %(max)s фоновых задач.')
-                % {'max': settings.TELEGRAM_BOT_MAX_BACKGROUND_TASKS},
-                code='max_limit',
+        if not self.instance:
+            validate_max_count(
+                self.telegram_bot.background_tasks.count() + 1,
+                settings.TELEGRAM_BOT_MAX_BACKGROUND_TASKS,
             )
 
         return data
@@ -39,7 +33,7 @@ class BackgroundTaskSerializer(TelegramBotMixin, BlockSerializer[BackgroundTask]
         background_task.interval = validated_data.get(
             'interval', background_task.interval
         )
-        background_task.save(update_fields=self.update_fields + ['interval'])
+        background_task.save(update_fields={*self._UPDATE_FIELDS, 'interval'})
 
         return background_task
 

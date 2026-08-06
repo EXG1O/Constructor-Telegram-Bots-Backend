@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from django.utils.functional import _StrPromise
-else:
-    _StrPromise = str
 
 
 class APIRequestMethod(TextChoices):

@@ -329,7 +329,7 @@ class BackgroundTaskViewSetTests(
         with suppress(BackgroundTask.DoesNotExist):
             self.background_task.refresh_from_db()
             raise self.failureException(
-                'Background task has not been deleted from database!'
+                'Background task has not been deleted from database.'
             )
 
 

@@ -17,7 +17,7 @@ class StrictJSONField(models.JSONField[_ST, _GT]):
     def __init__(
         self,
         *args: Any,
-        max_light: int = 4096,
+        max_length: int = 4096,
         allowed_types: tuple[type[dict[Any, Any]] | type[list[Any]], ...] = (
             dict,
             list,
@@ -25,9 +25,9 @@ class StrictJSONField(models.JSONField[_ST, _GT]):
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self.max_length = max_light
+        self.max_length = max_length
         self.allowed_types = allowed_types
-        self.validators.append(StrictJSONValidator(max_light, allowed_types))
+        self.validators.append(StrictJSONValidator(max_length, allowed_types))
 
     def deconstruct(self) -> tuple[str, str, Sequence[Any], dict[str, Any]]:
         name, path, args, kwargs = super().deconstruct()

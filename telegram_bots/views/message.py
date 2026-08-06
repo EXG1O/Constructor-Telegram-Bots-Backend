@@ -14,6 +14,7 @@ from users.permissions import IsTermsAccepted
 
 from ..models import Message, MessageDocument, MessageImage
 from ..serializers import DiagramMessageSerializer, MessageSerializer
+from ..utils.storage import get_media_file_names_queryset
 from .mixins import TelegramBotMixin
 
 
@@ -35,13 +36,8 @@ class MessageViewSet(IDLookupMixin, TelegramBotMixin, ModelViewSet[Message]):
 
     def perform_destroy(self, message: Message) -> None:
         file_names: set[str] = set(
-            MessageImage.objects.exclude(file='')  # type: ignore [arg-type]
-            .filter(message=message)
-            .values_list('file', flat=True)
-            .union(
-                MessageDocument.objects.exclude(file='')
-                .filter(message=message)
-                .values_list('file', flat=True)
+            get_media_file_names_queryset(MessageImage, message=message).union(
+                get_media_file_names_queryset(MessageDocument, message=message)
             )
         )
 

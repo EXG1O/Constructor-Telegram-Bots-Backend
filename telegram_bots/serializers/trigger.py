@@ -1,8 +1,12 @@
 from django.conf import settings
 from django.db import transaction
-from django.utils.translation import gettext as _
 
 from rest_framework import serializers
+
+from constructor_telegram_bots.utils.serializers import (
+    validate_exclusive_fields,
+    validate_max_count,
+)
 
 from ..models import Trigger, TriggerCommand, TriggerMessage, TriggerWebhook
 from .base import BlockSerializer, DiagramSerializer
@@ -60,23 +64,14 @@ class TriggerSerializer(TelegramBotMixin, BlockSerializer[Trigger]):
                 with suppress(TriggerWebhook.DoesNotExist):
                     has_webhook = bool(self.instance.webhook)
 
-        if [has_command, has_message, has_webhook].count(True) != 1:
-            raise serializers.ValidationError(
-                _(
-                    'Триггер должен иметь значение только для одного из полей: '
-                    "'command', 'message' или 'webhook'."
-                ),
-            )
+        validate_exclusive_fields(
+            {'command': has_command, 'message': has_message, 'webhook': has_webhook}
+        )
 
-        if (
-            not self.instance
-            and self.telegram_bot.triggers.count() + 1
-            > settings.TELEGRAM_BOT_MAX_TRIGGERS
-        ):
-            raise serializers.ValidationError(
-                _('Нельзя добавлять больше %(max)s триггеров.')
-                % {'max': settings.TELEGRAM_BOT_MAX_TRIGGERS},
-                code='max_limit',
+        if not self.instance:
+            validate_max_count(
+                self.telegram_bot.triggers.count() + 1,
+                settings.TELEGRAM_BOT_MAX_TRIGGERS,
             )
 
         return data

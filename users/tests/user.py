@@ -25,7 +25,6 @@ from contextlib import suppress
 from datetime import datetime, timedelta
 from http import HTTPMethod
 from importlib import import_module
-from typing import TYPE_CHECKING
 from unittest.mock import patch
 import base64
 import math
@@ -41,34 +40,27 @@ class UserViewSetTests(UserMixin, TestCase):
     def test_retrieve(self) -> None:
         view = UserViewSet.as_view({'get': 'retrieve'})
 
-        if TYPE_CHECKING:
-            response: Response
-
         request: Request = self.factory.get(reverse('api:users:user-detail'))
         assert_view_basic_protected(view, request, self.user_access_token)
 
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
-        response = view(request)
+        response: Response = view(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_login(self) -> None:
         login_init_view = UserViewSet.as_view({'post': 'login_init'})
         login_view = UserViewSet.as_view({'post': 'login'})
 
-        if TYPE_CHECKING:
-            request: Request
-            response: Response
-
-        init_request = self.factory.post(reverse('api:users:user-login-init'))
+        init_request: Request = self.factory.post(reverse('api:users:user-login-init'))
         init_request.session = SessionStore()
         force_authenticate(init_request, self.user, None)
 
-        init_response = login_init_view(init_request)
+        init_response: Response = login_init_view(init_request)
         self.assertEqual(init_response.status_code, status.HTTP_200_OK)
         self.assertIn('code_challenge', init_response.data)
 
-        request = self.factory.post(
+        request: Request = self.factory.post(
             reverse('api:users:user-login'),
             data={'code': 'valid_code', 'redirect_uri': 'http://localhost'},
             format='json',
@@ -136,7 +128,7 @@ class UserViewSetTests(UserMixin, TestCase):
                 status_code=httpx.codes.OK,
                 json={'id_token': id_token},
             )
-            response = login_view(request)
+            response: Response = login_view(request)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('access_token', response.data)
@@ -145,24 +137,18 @@ class UserViewSetTests(UserMixin, TestCase):
     def test_logout(self) -> None:
         view = UserViewSet.as_view({'post': 'logout'})
 
-        if TYPE_CHECKING:
-            response: Response
-
         request: Request = self.factory.post(reverse('api:users:user-logout'))
         assert_view_basic_protected(view, request, self.user_access_token)
 
         request.session = SessionStore()
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
-        response = view(request)
+        response: Response = view(request)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertTrue(self.user_refresh_token.is_blacklisted)
 
     def test_logout_all(self) -> None:
         view = UserViewSet.as_view({'post': 'logout_all'})
-
-        if TYPE_CHECKING:
-            response: Response
 
         request: Request = self.factory.post(reverse('api:users:user-logout-all'))
         assert_view_basic_protected(view, request, self.user_access_token)
@@ -172,7 +158,7 @@ class UserViewSetTests(UserMixin, TestCase):
 
         second_refresh_token: RefreshToken = RefreshToken.for_user(self.user)
 
-        response = view(request)
+        response: Response = view(request)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertTrue(self.user_refresh_token.is_blacklisted)
         self.assertTrue(second_refresh_token.is_blacklisted)
@@ -180,38 +166,31 @@ class UserViewSetTests(UserMixin, TestCase):
     def test_token_refresh(self) -> None:
         view = UserViewSet.as_view({'post': 'token_refresh'})
 
-        if TYPE_CHECKING:
-            request: Request
-            response: Response
-
         second_refresh_token: RefreshToken = RefreshToken.for_user(self.user)
         second_refresh_token.to_blacklist()
 
-        request = self.factory.post(
+        invalid_request: Request = self.factory.post(
             reverse('api:users:user-token-refresh'),
             data={'refresh_token': str(second_refresh_token)},
             format='json',
         )
-        force_authenticate(request, self.user, None)
+        force_authenticate(invalid_request, self.user, None)
 
-        response = view(request)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error_response: Response = view(invalid_request)
+        self.assertEqual(error_response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        request = self.factory.post(
+        valid_request: Request = self.factory.post(
             reverse('api:users:user-token-refresh'),
             data={'refresh_token': str(self.user_refresh_token)},
             format='json',
         )
-        force_authenticate(request, self.user, None)
+        force_authenticate(valid_request, self.user, None)
 
-        response = view(request)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        success_response: Response = view(valid_request)
+        self.assertEqual(success_response.status_code, status.HTTP_200_OK)
 
     def test_accept_terms(self) -> None:
         view = UserViewSet.as_view({'post': 'accept_terms'})
-
-        if TYPE_CHECKING:
-            response: Response
 
         request: Request = self.factory.post(reverse('api:users:user-accept-terms'))
         assert_view_basic_protected(view, request, self.user_access_token)
@@ -222,16 +201,13 @@ class UserViewSetTests(UserMixin, TestCase):
         self.user.terms_accepted_date = None
         self.user.save(update_fields=['accepted_terms', 'terms_accepted_date'])
 
-        response = view(request)
+        response: Response = view(request)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertTrue(self.user.accepted_terms)
         self.assertIsNotNone(self.user.terms_accepted_date)
 
     def test_destroy(self) -> None:
         view = UserViewSet.as_view({'delete': 'destroy'})
-
-        if TYPE_CHECKING:
-            response: Response
 
         request: Request = self.factory.delete(reverse('api:users:user-detail'))
         assert_view_basic_protected(view, request, self.user_access_token)
@@ -241,7 +217,7 @@ class UserViewSetTests(UserMixin, TestCase):
 
         second_refresh_token: RefreshToken = RefreshToken.for_user(self.user)
 
-        response = view(request)
+        response: Response = view(request)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         with suppress(User.DoesNotExist):

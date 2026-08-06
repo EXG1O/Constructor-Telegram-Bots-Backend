@@ -48,12 +48,12 @@ class TriggerWebhookAPIViewTests(HubMixin, TelegramBotMixin, UserMixin, TestCase
     def setUp(self) -> None:
         super().setUp()
 
+        self.factory = APIRequestFactory()
+
         self.trigger: Trigger = self.telegram_bot.triggers.create(name='Test name')
         self.trigger_webhook: TriggerWebhook = TriggerWebhook.objects.create(
             trigger=self.trigger
         )
-
-        self.factory = APIRequestFactory()
 
     def test_post(self) -> None:
         view = TriggerWebhookAPIView.as_view()

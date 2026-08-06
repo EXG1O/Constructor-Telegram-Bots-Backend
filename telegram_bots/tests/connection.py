@@ -158,5 +158,5 @@ class ConnectionViewSetTests(TelegramBotMixin, UserMixin, TestCase):
         with suppress(Connection.DoesNotExist):
             self.connection.refresh_from_db()
             raise self.failureException(
-                'Connection has not been deleted from database!'
+                'Connection has not been deleted from database.'
             )

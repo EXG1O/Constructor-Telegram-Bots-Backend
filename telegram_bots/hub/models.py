@@ -20,8 +20,6 @@ import secrets
 
 if TYPE_CHECKING:
     from ..models import TelegramBot
-else:
-    TelegramBot = Any
 
 
 def _generate_token() -> str:

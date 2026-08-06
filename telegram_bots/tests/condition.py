@@ -363,7 +363,7 @@ class ConditionViewSetTests(ConditionMixin, TelegramBotMixin, UserMixin, TestCas
 
         with suppress(Condition.DoesNotExist):
             self.condition.refresh_from_db()
-            raise self.failureException('Condition has not been deleted from database!')
+            raise self.failureException('Condition has not been deleted from database.')
 
 
 class DiagramConditionViewSetTests(

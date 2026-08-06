@@ -22,8 +22,6 @@ from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from django.utils.functional import _StrPromise
-else:
-    _StrPromise = str
 
 
 class ConnectionSerializer(TelegramBotMixin, serializers.ModelSerializer[Connection]):

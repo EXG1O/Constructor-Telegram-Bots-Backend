@@ -34,9 +34,9 @@ class User(models.Model):
 
     class Meta(TypedModelMeta):
         db_table = 'telegram_bot_user'
-        indexes = [models.Index(fields=['telegram_id'])]
         verbose_name = _('Пользователя')
         verbose_name_plural = _('Пользователи')
+        indexes = [models.Index(fields=['telegram_id'])]
 
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name or ""}'.strip()

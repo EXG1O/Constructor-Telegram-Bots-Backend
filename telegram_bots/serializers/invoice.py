@@ -7,6 +7,11 @@ from django.utils.translation import gettext as _
 
 from rest_framework import serializers
 
+from constructor_telegram_bots.utils.serializers import (
+    validate_exclusive_fields,
+    validate_max_count,
+)
+
 from ..models import Invoice, InvoiceImage, InvoicePrice
 from .base import BlockSerializer, DiagramSerializer, MediaSerializer
 from .mixins import TelegramBotMixin
@@ -56,13 +61,7 @@ class InvoiceSerializer(TelegramBotMixin, BlockSerializer[Invoice]):
                 if not has_from_url:
                     has_from_url = bool(invoice_image.from_url)
 
-        if has_file is has_from_url:
-            raise serializers.ValidationError(
-                _(
-                    'Изображение счёта должно иметь значение только для одного из полей: '
-                    "'file' или 'from_url'."
-                ),
-            )
+        validate_exclusive_fields({'file': has_file, 'from_url': has_from_url})
 
         file_size: int | None = file.size if file else None
 
@@ -79,29 +78,22 @@ class InvoiceSerializer(TelegramBotMixin, BlockSerializer[Invoice]):
                 _('Счёт должен содержать хотя бы одну цену.'), code='empty'
             )
 
-        if (
-            self.instance.prices.count() + sum('id' not in item for item in data)
-            if self.instance and self.partial
-            else len(data)
-        ) > settings.TELEGRAM_BOT_MAX_INVOICE_PRICES:
-            raise serializers.ValidationError(
-                _('Нельзя добавлять больше %(max)s цен счёта.')
-                % {'max': settings.TELEGRAM_BOT_MAX_INVOICE_PRICES},
-                code='max_limit',
-            )
+        validate_max_count(
+            (
+                self.instance.prices.count() + sum('id' not in item for item in data)
+                if self.instance and self.partial
+                else len(data)
+            ),
+            settings.TELEGRAM_BOT_MAX_INVOICE_PRICES,
+        )
 
         return data
 
     def validate(self, data: dict[str, Any]) -> dict[str, Any]:
-        if (
-            not self.instance
-            and self.telegram_bot.invoices.count() + 1
-            > settings.TELEGRAM_BOT_MAX_INVOICES
-        ):
-            raise serializers.ValidationError(
-                _('Нельзя добавлять больше %(max)s счетов.')
-                % {'max': settings.TELEGRAM_BOT_MAX_INVOICES},
-                code='max_limit',
+        if not self.instance:
+            validate_max_count(
+                self.telegram_bot.invoices.count() + 1,
+                settings.TELEGRAM_BOT_MAX_INVOICES,
             )
 
         return data
@@ -219,7 +211,7 @@ class InvoiceSerializer(TelegramBotMixin, BlockSerializer[Invoice]):
                     'description', invoice.description
                 )
                 invoice.save(
-                    update_fields=self.update_fields + ['title', 'description']
+                    update_fields={*self._UPDATE_FIELDS, 'title', 'description'}
                 )
 
                 image = self.update_image(invoice, image_data)

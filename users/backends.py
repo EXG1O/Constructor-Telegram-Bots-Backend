@@ -8,7 +8,7 @@ import jwt
 
 from .models import User
 
-from typing import Any
+from typing import Any, Final
 
 _telegram_login_client = httpx.Client(
     headers={'User-Agent': settings.APP_USER_AGENT},
@@ -20,9 +20,9 @@ _telegram_login_client = httpx.Client(
 
 
 class TelegramBackend(ModelBackend):
-    TOKEN_URL: str = 'https://oauth.telegram.org/token'
-    JWKS_URL: str = 'https://oauth.telegram.org/.well-known/jwks.json'
-    ISSUER: str = 'https://oauth.telegram.org'
+    TOKEN_URL: Final[str] = 'https://oauth.telegram.org/token'
+    JWKS_URL: Final[str] = 'https://oauth.telegram.org/.well-known/jwks.json'
+    ISSUER: Final[str] = 'https://oauth.telegram.org'
 
     def _get_id_token(
         self, code: str, code_verifier: str, redirect_uri: str

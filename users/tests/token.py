@@ -12,8 +12,6 @@ from ..models import Token
 from ..views import TokenViewSet
 from .mixins import UserMixin
 
-from typing import TYPE_CHECKING
-
 
 class TokenViewSetTests(UserMixin, TestCase):
     list_url: str = reverse('api:users:token-list')
@@ -24,11 +22,11 @@ class TokenViewSetTests(UserMixin, TestCase):
         self.factory = APIRequestFactory()
         self.token: Token = self.user_refresh_token.token
 
-        self.detail_true_url: str = reverse(
+        self.valid_detail_url: str = reverse(
             'api:users:token-detail',
             kwargs={'jti': self.token.jti},
         )
-        self.detail_false_url: str = reverse(
+        self.invalid_detail_url: str = reverse(
             'api:users:token-detail', kwargs={'jti': '***'}
         )
 
@@ -46,21 +44,16 @@ class TokenViewSetTests(UserMixin, TestCase):
     def test_retrieve(self) -> None:
         view = TokenViewSet.as_view({'get': 'retrieve'})
 
-        if TYPE_CHECKING:
-            request: Request
-            response: Response
+        valid_request: Request = self.factory.get(self.valid_detail_url)
+        assert_view_basic_protected(view, valid_request, self.user_access_token)
 
-        request = self.factory.get(self.detail_true_url)
-        assert_view_basic_protected(view, request, self.user_access_token)
+        invalid_request: Request = self.factory.get(self.invalid_detail_url)
+        force_authenticate(invalid_request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
-        request = self.factory.get(self.detail_false_url)
-        force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
+        error_response: Response = view(invalid_request, jti='***')
+        self.assertEqual(error_response.status_code, status.HTTP_404_NOT_FOUND)
 
-        response = view(request, jti='***')
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        force_authenticate(valid_request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
-        request = self.factory.get(self.detail_true_url)
-        force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
-
-        response = view(request, jti=self.token.jti)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        success_response: Response = view(valid_request, jti=self.token.jti)
+        self.assertEqual(success_response.status_code, status.HTTP_200_OK)

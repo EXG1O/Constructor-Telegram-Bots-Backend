@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -6,13 +5,17 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
+from rest_framework.test import APIRequestFactory, force_authenticate
 
 from constructor_telegram_bots.utils.tests import assert_view_basic_protected
 from users.tests.mixins import UserMixin
 
 from .models import Subscription, SubscriptionInvoice, SubscriptionPrice
-from .views import SubscriptionInvoiceViewSet, SubscriptionViewSet
+from .views import (
+    SubscriptionInvoiceViewSet,
+    SubscriptionPriceViewSet,
+    SubscriptionViewSet,
+)
 
 from typing import TYPE_CHECKING, Any
 
@@ -21,13 +24,15 @@ class SubscriptionPriceViewSetTests(TestCase):
     url: str = reverse('api:premium:subscription-price-list')
 
     def setUp(self) -> None:
-        self.client: APIClient = APIClient()
+        self.factory = APIRequestFactory()
         self.subscription_price: SubscriptionPrice = SubscriptionPrice.objects.create(
             period_months=1, amount_stars_per_month=100
         )
 
     def test_list(self) -> None:
-        response: HttpResponse = self.client.get(self.url)
+        view = SubscriptionPriceViewSet.as_view({'get': 'list'})
+        request: Request = self.factory.get(self.url)
+        response: Response = view(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
@@ -36,6 +41,7 @@ class SubscriptionInvoiceViewSetTests(UserMixin, TestCase):
 
     def setUp(self) -> None:
         super().setUp()
+
         self.factory = APIRequestFactory()
         self.invoice: SubscriptionInvoice = self.user.subscription_invoices.create(
             period_months=1, amount_stars=100

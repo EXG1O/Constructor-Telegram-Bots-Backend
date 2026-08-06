@@ -39,9 +39,9 @@ class Chat(models.Model):
 
     class Meta(TypedModelMeta):
         db_table = 'telegram_bot_chat'
-        indexes = [models.Index(fields=['telegram_id'])]
         verbose_name = _('Чат')
         verbose_name_plural = _('Чаты')
+        indexes = [models.Index(fields=['telegram_id'])]
 
     def __str__(self) -> str:
         return (

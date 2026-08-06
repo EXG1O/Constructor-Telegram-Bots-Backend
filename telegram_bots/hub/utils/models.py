@@ -1,12 +1,10 @@
 from django.apps import apps
 
 from functools import cache
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..models import TelegramBotsHub
-else:
-    TelegramBotsHub = Any
 
 
 @cache

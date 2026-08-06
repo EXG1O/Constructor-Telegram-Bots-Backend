@@ -3,6 +3,8 @@ from django.utils.translation import gettext as _
 
 from rest_framework import serializers
 
+from constructor_telegram_bots.utils.serializers import validate_max_count
+
 from ..models import APIRequest
 from .base import BlockSerializer, DiagramSerializer
 from .mixins import TelegramBotMixin
@@ -29,15 +31,10 @@ class APIRequestSerializer(TelegramBotMixin, BlockSerializer[APIRequest]):
         return data
 
     def validate(self, data: dict[str, Any]) -> dict[str, Any]:
-        if (
-            not self.instance
-            and self.telegram_bot.api_requests.count() + 1
-            > settings.TELEGRAM_BOT_MAX_API_REQUESTS
-        ):
-            raise serializers.ValidationError(
-                _('Нельзя добавлять больше %(max)s API-запросов.')
-                % {'max': settings.TELEGRAM_BOT_MAX_API_REQUESTS},
-                code='max_limit',
+        if not self.instance:
+            validate_max_count(
+                self.telegram_bot.api_requests.count() + 1,
+                settings.TELEGRAM_BOT_MAX_API_REQUESTS,
             )
 
         return data
@@ -54,7 +51,7 @@ class APIRequestSerializer(TelegramBotMixin, BlockSerializer[APIRequest]):
         api_request.headers = validated_data.get('headers', api_request.headers)
         api_request.body = validated_data.get('body', api_request.body)
         api_request.save(
-            update_fields=self.update_fields + ['url', 'method', 'headers', 'body']
+            update_fields={*self._UPDATE_FIELDS, 'url', 'method', 'headers', 'body'}
         )
 
         return api_request

@@ -14,7 +14,7 @@ class DatabaseRecord(models.Model):
         related_name='database_records',
         verbose_name=_('Telegram бот'),
     )
-    data = StrictJSONField(_('Данные'))
+    data = StrictJSONField(_('Данные'), max_length=4096)
 
     class Meta(TypedModelMeta):
         db_table = 'telegram_bot_database_record'

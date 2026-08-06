@@ -317,5 +317,5 @@ class DatabaseRecordViewSetTests(
         with suppress(DatabaseRecord.DoesNotExist):
             self.database_record.refresh_from_db()
             raise self.failureException(
-                'Database record has not been deleted from database!'
+                'Database record has not been deleted from database.'
             )

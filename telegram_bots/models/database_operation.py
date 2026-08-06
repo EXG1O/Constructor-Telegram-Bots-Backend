@@ -17,7 +17,7 @@ class DatabaseCreateOperation(models.Model):
         related_name='create_operation',
         verbose_name=_('Операция'),
     )
-    data = StrictJSONField(_('Данные'))
+    data = StrictJSONField(_('Данные'), max_length=4096)
 
     class Meta(TypedModelMeta):
         db_table = 'telegram_bot_database_create_operation'
@@ -41,7 +41,7 @@ class DatabaseUpdateOperation(models.Model):
     create_if_not_found = models.BooleanField(
         _('Создать, если не найдена'), default=True
     )
-    new_data = StrictJSONField(_('Новые данные'))
+    new_data = StrictJSONField(_('Новые данные'), max_length=4096)
 
     class Meta(TypedModelMeta):
         db_table = 'telegram_bot_database_update_operation'

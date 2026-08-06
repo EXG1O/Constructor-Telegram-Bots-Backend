@@ -113,9 +113,9 @@ class MessageKeyboardButton(models.Model):
 
     class Meta(TypedModelMeta):
         db_table = 'telegram_bot_message_keyboard_button'
-        indexes = [models.Index(fields=['text'])]
         verbose_name = _('Кнопка клавиатуры сообщения')
         verbose_name_plural = _('Кнопки клавиатур сообщений')
+        indexes = [models.Index(fields=['text'])]
 
     def __str__(self) -> str:
         return self.keyboard.message.name

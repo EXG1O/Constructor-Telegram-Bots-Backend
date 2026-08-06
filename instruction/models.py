@@ -10,9 +10,9 @@ class Section(models.Model):  # type: ignore [django-manager-missing]
     position = models.PositiveSmallIntegerField(_('Позиция'), blank=True)
 
     class Meta(TypedModelMeta):
-        ordering = ['position']
         verbose_name = _('Раздел')
         verbose_name_plural = _('Разделы')
+        ordering = ['position']
 
     def __str__(self) -> str:
         return self.title

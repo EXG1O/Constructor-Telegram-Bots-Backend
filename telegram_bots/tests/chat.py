@@ -243,4 +243,4 @@ class ChatViewSetTests(BotChatMixin, TelegramBotMixin, UserMixin, TestCase):
 
         with suppress(Chat.DoesNotExist):
             self.bot_chat.refresh_from_db()
-            raise self.failureException('Chat has not been deleted from database!')
+            raise self.failureException('Chat has not been deleted from database.')

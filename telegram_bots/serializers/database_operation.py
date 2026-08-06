@@ -1,8 +1,12 @@
 from django.conf import settings
 from django.db import transaction
-from django.utils.translation import gettext as _
 
 from rest_framework import serializers
+
+from constructor_telegram_bots.utils.serializers import (
+    validate_exclusive_fields,
+    validate_max_count,
+)
 
 from ..models import DatabaseCreateOperation, DatabaseOperation, DatabaseUpdateOperation
 from .base import BlockSerializer, DiagramSerializer
@@ -58,23 +62,17 @@ class DatabaseOperationSerializer(TelegramBotMixin, BlockSerializer[DatabaseOper
                 with suppress(DatabaseUpdateOperation.DoesNotExist):
                     has_update_operation = bool(self.instance.update_operation)
 
-        if has_create_operation is has_update_operation:
-            raise serializers.ValidationError(
-                _(
-                    'Операция базы данных должна иметь значение только для одно из полей: '
-                    "'create_operation' или 'update_operation'."
-                ),
-            )
+        validate_exclusive_fields(
+            {
+                'create_operation': has_create_operation,
+                'update_operation': has_update_operation,
+            }
+        )
 
-        if (
-            not self.instance
-            and self.telegram_bot.database_operations.count() + 1
-            > settings.TELEGRAM_BOT_MAX_DATABASE_OPERATIONS
-        ):
-            raise serializers.ValidationError(
-                _('Нельзя добавлять больше %(max)s операций базы данных.')
-                % {'max': settings.TELEGRAM_BOT_MAX_DATABASE_OPERATIONS},
-                code='max_limit',
+        if not self.instance:
+            validate_max_count(
+                self.telegram_bot.database_operations.count() + 1,
+                settings.TELEGRAM_BOT_MAX_DATABASE_OPERATIONS,
             )
 
         return data
