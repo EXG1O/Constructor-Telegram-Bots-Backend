@@ -1,7 +1,8 @@
 from django.conf import settings
-from django.utils.translation import gettext as _
 
 from rest_framework import serializers
+
+from constructor_telegram_bots.utils.serializers import validate_max_count
 
 from ..models import DatabaseRecord
 from .mixins import TelegramBotMixin
@@ -17,15 +18,10 @@ class DatabaseRecordSerializer(
         fields = ['id', 'data']
 
     def validate(self, data: dict[str, Any]) -> dict[str, Any]:
-        if (
-            not self.instance
-            and self.telegram_bot.database_records.count() + 1
-            > settings.TELEGRAM_BOT_MAX_DATABASE_RECORDS
-        ):
-            raise serializers.ValidationError(
-                _('Нельзя добавлять больше %(max)s записей в базу данных.')
-                % {'max': settings.TELEGRAM_BOT_MAX_DATABASE_RECORDS},
-                code='max_limit',
+        if not self.instance:
+            validate_max_count(
+                self.telegram_bot.database_records.count() + 1,
+                settings.TELEGRAM_BOT_MAX_DATABASE_RECORDS,
             )
 
         return data

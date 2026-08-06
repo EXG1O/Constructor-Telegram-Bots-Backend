@@ -26,13 +26,13 @@ class TriggerCommand(models.Model):
 
     class Meta(TypedModelMeta):
         db_table = 'telegram_bot_trigger_command'
+        verbose_name = _('Команда триггер')
+        verbose_name_plural = _('Команды триггеры')
         indexes = [
             models.Index(fields=['command']),
             models.Index(fields=['payload']),
             models.Index(fields=['description']),
         ]
-        verbose_name = _('Команда триггер')
-        verbose_name_plural = _('Команды триггеры')
 
     def __str__(self) -> str:
         return self.command

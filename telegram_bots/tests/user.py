@@ -270,4 +270,4 @@ class UserViewSetTests(BotUserMixin, TelegramBotMixin, UserMixin, TestCase):
 
         with suppress(User.DoesNotExist):
             self.bot_user.refresh_from_db()
-            raise self.failureException('User has not been deleted from database!')
+            raise self.failureException('User has not been deleted from database.')

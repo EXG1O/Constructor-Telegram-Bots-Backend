@@ -380,7 +380,7 @@ class InvoiceViewSetTests(InvoiceMixin, TelegramBotMixin, UserMixin, TestCase):
 
         with suppress(Invoice.DoesNotExist):
             self.invoice.refresh_from_db()
-            raise self.failureException('Invoice has not been deleted from database!')
+            raise self.failureException('Invoice has not been deleted from database.')
 
 
 class DiagramInvoiceViewSetTests(InvoiceMixin, TelegramBotMixin, UserMixin, TestCase):

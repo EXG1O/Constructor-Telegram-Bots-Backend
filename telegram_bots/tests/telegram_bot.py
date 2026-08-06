@@ -368,7 +368,7 @@ class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
         with suppress(TelegramBot.DoesNotExist):
             self.telegram_bot.refresh_from_db()
             raise self.failureException(
-                'Telegram bot has not been deleted from database!'
+                'Telegram bot has not been deleted from database.'
             )
 
         self.mock_hub_client.stop_bot.assert_called_once()

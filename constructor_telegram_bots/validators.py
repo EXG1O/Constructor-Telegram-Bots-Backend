@@ -58,11 +58,11 @@ class StrictJSONValidator:
 
     def __init__(
         self,
-        max_light: int,
+        max_length: int,
         allowed_types: tuple[type[dict[Any, Any]] | type[list[Any]], ...],
     ):
         self.allowed_types = allowed_types
-        self.validate_max_length = MaxLengthValidator(max_light)
+        self.validate_max_length = MaxLengthValidator(max_length)
 
     def __call__(self, value: Any) -> None:
         if not isinstance(value, self.allowed_types):

@@ -21,9 +21,9 @@ class Variable(models.Model):
 
     class Meta(TypedModelMeta):
         db_table = 'telegram_bot_variable'
-        indexes = [models.Index(fields=['name'])]
         verbose_name = _('Переменная')
         verbose_name_plural = _('Переменные')
+        indexes = [models.Index(fields=['name'])]
 
     def __str__(self) -> str:
         return self.name

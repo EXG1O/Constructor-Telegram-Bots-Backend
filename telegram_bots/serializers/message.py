@@ -8,6 +8,10 @@ from django.utils.translation import gettext as _
 
 from rest_framework import serializers
 
+from constructor_telegram_bots.utils.serializers import (
+    validate_exclusive_fields,
+    validate_max_count,
+)
 from constructor_telegram_bots.utils.storage import force_get_file_size
 
 from ..models import (
@@ -19,7 +23,8 @@ from ..models import (
     MessageSettings,
 )
 from ..models.base import AbstractMessageMedia
-from .base import AMMT, BlockSerializer, DiagramSerializer, MessageMediaSerializer
+from ..utils.storage import get_media_file_names_queryset
+from .base import BlockSerializer, DiagramSerializer, MessageMediaSerializer
 from .connection import ConnectionSerializer
 from .mixins import TelegramBotMixin
 
@@ -104,11 +109,7 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
                     if not has_from_url:
                         has_from_url = bool(media.from_url)
 
-            if has_file is has_from_url:
-                raise serializers.ValidationError(
-                    'Медиа должен иметь значение только для одного из полей: '
-                    "'file' или 'from_url'."
-                )
+            validate_exclusive_fields({'file': has_file, 'from_url': has_from_url})
 
         return media_data
 
@@ -131,17 +132,17 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
         if not buttons_data:
             return None
 
-        if (
-            self.instance.keyboard.buttons.count()
-            + sum('id' not in button_data for button_data in buttons_data)
-            if self.instance and self.partial
-            else len(buttons_data)
-        ) > settings.TELEGRAM_BOT_MAX_MESSAGE_KEYBOARD_BUTTONS:
-            raise serializers.ValidationError(
-                _('Нельзя добавлять больше %(max)s кнопок для клавиатуры сообщения.')
-                % {'max': settings.TELEGRAM_BOT_MAX_MESSAGE_KEYBOARD_BUTTONS},
-                code='max_limit',
-            )
+        validate_max_count(
+            (
+                (
+                    self.instance.keyboard.buttons.count()
+                    + sum('id' not in button_data for button_data in buttons_data)
+                )
+                if self.instance and self.partial
+                else len(buttons_data)
+            ),
+            settings.TELEGRAM_BOT_MAX_MESSAGE_KEYBOARD_BUTTONS,
+        )
 
         return data
 
@@ -166,8 +167,8 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
         if not any([has_text, has_images, has_documents, has_keyboard]):
             raise serializers.ValidationError(
                 _(
-                    "Необходимо указать значение минимум для одно из полей: 'text', "
-                    "'images', 'documents' или 'keyboard'."
+                    'Необходимо указать значение как минимум для одного из полей: '
+                    "'text', 'images', 'documents', 'keyboard'."
                 ),
                 code='required',
             )
@@ -181,31 +182,48 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
                 code='required',
             )
 
-        images: list[dict[str, Any]] | None = data.get('images')
-        documents: list[dict[str, Any]] | None = data.get('documents')
+        images: list[dict[str, Any]] = data.get('images', [])
+        documents: list[dict[str, Any]] = data.get('documents', [])
+        media: list[dict[str, Any]] = images + documents
 
-        if images or documents:
+        if media:
             new_media_size: int = sum(
                 file.size or 0
-                for media in (images or []) + (documents or [])
-                if (file := media.get('file')) and isinstance(file, UploadedFile)
+                for item in media
+                if (file := item.get('file')) and isinstance(file, UploadedFile)
             )
 
-            if self.instance and not self.partial:
-                existing_media_size: int = sum(
-                    map(
-                        force_get_file_size,  # type: ignore [arg-type]
-                        MessageImage.objects.exclude(file='')
-                        .filter(message=self.instance)
-                        .values_list('file', flat=True)
-                        .union(
-                            MessageDocument.objects.exclude(file='')
-                            .filter(message=self.instance)
-                            .values_list('file', flat=True)
-                        ),
+            if self.instance:
+                image_queryset: QuerySet[MessageImage, str] = (
+                    get_media_file_names_queryset(MessageImage, message=self.instance)
+                )
+                document_queryset: QuerySet[MessageDocument, str] = (
+                    get_media_file_names_queryset(
+                        MessageDocument, message=self.instance
                     )
                 )
-                new_media_size -= existing_media_size
+
+                if self.partial:
+
+                    def _extract_media_ids(
+                        media: list[dict[str, Any]],
+                    ) -> list[int]:
+                        return [
+                            id
+                            for item in media
+                            if (id := item.get('id')) and 'file' in item
+                        ]
+
+                    image_queryset = image_queryset.filter(
+                        id__in=_extract_media_ids(images)
+                    )
+                    document_queryset = document_queryset.filter(
+                        id__in=_extract_media_ids(documents)
+                    )
+
+                new_media_size -= sum(
+                    map(force_get_file_size, image_queryset.union(document_queryset))
+                )
 
             if (
                 new_media_size
@@ -215,15 +233,10 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
                     _('Превышен лимит хранилища.'), code='max_storage_size_limit'
                 )
 
-        if (
-            not self.instance
-            and self.telegram_bot.messages.count() + 1
-            > settings.TELEGRAM_BOT_MAX_MESSAGES
-        ):
-            raise serializers.ValidationError(
-                _('Нельзя добавлять больше %(max)s сообщений.')
-                % {'max': settings.TELEGRAM_BOT_MAX_MESSAGES},
-                code='max_limit',
+        if not self.instance:
+            validate_max_count(
+                self.telegram_bot.messages.count() + 1,
+                settings.TELEGRAM_BOT_MAX_MESSAGES,
             )
 
         return data
@@ -233,10 +246,10 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
     ) -> MessageSettings:
         return MessageSettings.objects.create(message=message, **data)
 
-    def _create_media(
-        self, message: Message, media_model: type[AMMT], data: list[dict[str, Any]]
-    ) -> list[AMMT]:
-        create_media: list[AMMT] = []
+    def _create_media[T: AbstractMessageMedia](
+        self, message: Message, media_model: type[T], data: list[dict[str, Any]]
+    ) -> list[T]:
+        create_media: list[T] = []
 
         for item in data:
             item.pop('id', None)
@@ -337,13 +350,13 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
         for file_name in file_names:
             default_storage.delete(file_name)
 
-    def _update_media(
+    def _update_media[T: AbstractMessageMedia](
         self,
         message: Message,
-        media_model: type[AMMT],
+        media_model: type[T],
         data: list[dict[str, Any]] | None,
-    ) -> list[AMMT] | None:
-        queryset: QuerySet[AMMT] = getattr(message, media_model.related_name)
+    ) -> list[T] | None:
+        queryset: QuerySet[T] = getattr(message, media_model.related_name)
 
         if TYPE_CHECKING:
             file_names: set[str]
@@ -361,14 +374,14 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
                     )
             return None
 
-        create_media: list[AMMT] = []
-        update_media: list[AMMT] = []
+        create_media: list[T] = []
+        update_media: list[T] = []
 
         delete_file_names: set[str] = set()
 
         for item in data:
             try:
-                media: AMMT = queryset.get(id=item.pop('id'))
+                media: T = queryset.get(id=item.pop('id'))
             except KeyError, media_model.DoesNotExist:
                 create_media.append(media_model(message=message, **item))
             else:
@@ -388,7 +401,7 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
                 if old_file and (file_name := old_file.name):
                     delete_file_names.add(file_name)
 
-        new_media: list[AMMT] = media_model.objects.bulk_create(create_media)  # type: ignore [attr-defined]
+        new_media: list[T] = media_model.objects.bulk_create(create_media)  # type: ignore [attr-defined]
         media_model.objects.bulk_update(  # type: ignore [attr-defined]
             update_media, fields=['file', 'from_url', 'position']
         )
@@ -398,10 +411,10 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
                 functools.partial(self._delete_media_files, delete_file_names)
             )
 
-        final_media: list[AMMT] = new_media + update_media
+        final_media: list[T] = new_media + update_media
 
         if not self.partial:
-            new_queryset: QuerySet[AMMT] = queryset.exclude(
+            new_queryset: QuerySet[T] = queryset.exclude(
                 id__in=[media.id for media in final_media]  # type: ignore [attr-defined]
             )
             file_names = set(
@@ -501,7 +514,7 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
             with transaction.atomic():
                 super().update(message, validated_data, save=False)
                 message.text = validated_data.get('text', message.text)
-                message.save(update_fields=self.update_fields + ['text'])
+                message.save(update_fields={*self._UPDATE_FIELDS, 'text'})
 
                 self.update_settings(message, settings_data)
                 media += self.update_images(message, images_data) or []

@@ -14,6 +14,7 @@ from users.permissions import IsTermsAccepted
 
 from ..models import Invoice, InvoiceImage
 from ..serializers import DiagramInvoiceSerializer, InvoiceSerializer
+from ..utils.storage import get_media_file_names_queryset
 from .mixins import TelegramBotMixin
 
 from contextlib import suppress
@@ -37,12 +38,9 @@ class InvoiceViewSet(IDLookupMixin, TelegramBotMixin, ModelViewSet[Invoice]):
         file_name: str | None = None
 
         with suppress(InvoiceImage.DoesNotExist):
-            file_name = (
-                InvoiceImage.objects.exclude(file='')
-                .filter(invoice=invoice)
-                .values_list('file', flat=True)
-                .get()
-            )
+            file_name = get_media_file_names_queryset(
+                InvoiceImage, invoice=invoice
+            ).get()
 
         super().perform_destroy(invoice)
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-01 22:56+0000\n"
+"POT-Creation-Date: 2026-08-06 18:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,6 +35,14 @@ msgid "Украинский"
 msgstr ""
 
 msgid "Русский"
+msgstr ""
+
+#, python-format
+msgid "Достигнут максимальный лимит: %(max)d."
+msgstr ""
+
+#, python-format
+msgid "Укажите значение только для одного из полей: %(fields)s."
 msgstr ""
 
 msgid "Разрешены только буквы, цифры, пробел и _."
@@ -645,23 +653,7 @@ msgstr ""
 msgid "Значение для заголовка '%(key)s' должно быть строкой."
 msgstr ""
 
-#, python-format
-msgid "Нельзя добавлять больше %(max)s API-запросов."
-msgstr ""
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s фоновых задач."
-msgstr ""
-
 msgid "Условие должно содержать хотя бы одну часть."
-msgstr ""
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s частей условия."
-msgstr ""
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s условий."
 msgstr ""
 
 #, python-format
@@ -676,71 +668,20 @@ msgstr ""
 msgid "%(target_object)s не может быть окончательной позиции коннектора."
 msgstr ""
 
-msgid ""
-"Операция базы данных должна иметь значение только для одно из полей: "
-"'create_operation' или 'update_operation'."
-msgstr ""
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s операций базы данных."
-msgstr ""
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s записей в базу данных."
-msgstr ""
-
-msgid ""
-"Изображение счёта должно иметь значение только для одного из полей: 'file' "
-"или 'from_url'."
-msgstr ""
-
 msgid "Превышен лимит хранилища."
 msgstr ""
 
 msgid "Счёт должен содержать хотя бы одну цену."
 msgstr ""
 
-#, python-format
-msgid "Нельзя добавлять больше %(max)s цен счёта."
-msgstr ""
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s счетов."
-msgstr ""
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s кнопок для клавиатуры сообщения."
-msgstr ""
-
 msgid ""
-"Необходимо указать значение минимум для одно из полей: 'text', 'images', "
-"'documents' или 'keyboard'."
+"Необходимо указать значение как минимум для одного из полей: 'text', "
+"'images', 'documents', 'keyboard'."
 msgstr ""
 
 msgid ""
 "Необходимо указать значение для поле 'text', если указано значение для поля "
 "'keyboard'."
-msgstr ""
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s сообщений."
-msgstr ""
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s временных переменных."
-msgstr ""
-
-msgid ""
-"Триггер должен иметь значение только для одного из полей: 'command', "
-"'message' или 'webhook'."
-msgstr ""
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s триггеров."
-msgstr ""
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s переменных."
 msgstr ""
 
 msgid "Недопустимое значение."

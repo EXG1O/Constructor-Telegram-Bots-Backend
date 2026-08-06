@@ -415,7 +415,7 @@ class MessageViewSetTests(MessageMixin, TelegramBotMixin, UserMixin, TestCase):
 
         with suppress(Message.DoesNotExist):
             self.message.refresh_from_db()
-            raise self.failureException('Message has not been deleted from database!')
+            raise self.failureException('Message has not been deleted from database.')
 
 
 class DiagramMessageViewSetTests(MessageMixin, TelegramBotMixin, UserMixin, TestCase):

@@ -8,8 +8,6 @@ from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from rest_framework.views import AsView
-else:
-    AsView = Any
 
 
 def assert_view_requires_terms_acceptance(

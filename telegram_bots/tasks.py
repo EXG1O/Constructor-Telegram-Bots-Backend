@@ -2,14 +2,10 @@ from celery import shared_task
 
 from .hub.utils.models import get_telegram_bots_hub_modal
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .hub.models import TelegramBotsHub
-    from .models import TelegramBot
-else:
-    TelegramBot = Any
-    TelegramBotsHub = Any
 
 
 @shared_task

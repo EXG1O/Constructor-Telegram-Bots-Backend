@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-01 22:56+0000\n"
+"POT-Creation-Date: 2026-08-06 18:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,6 +34,14 @@ msgstr "Ukrainian"
 
 msgid "Русский"
 msgstr "Russian"
+
+#, python-format
+msgid "Достигнут максимальный лимит: %(max)d."
+msgstr "Maximum limit reached: %(max)d."
+
+#, python-format
+msgid "Укажите значение только для одного из полей: %(fields)s."
+msgstr "Specify a value for only one of the following fields: %(fields)s."
 
 msgid "Разрешены только буквы, цифры, пробел и _."
 msgstr "Only letters, digits, spaces, and _ are allowed."
@@ -647,24 +655,8 @@ msgstr "Headers must be a dictionary."
 msgid "Значение для заголовка '%(key)s' должно быть строкой."
 msgstr "The value for the '%(key)s' header must be a string."
 
-#, python-format
-msgid "Нельзя добавлять больше %(max)s API-запросов."
-msgstr "You cannot add more than %(max)s API requests."
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s фоновых задач."
-msgstr "You cannot add more than %(max)s background tasks."
-
 msgid "Условие должно содержать хотя бы одну часть."
 msgstr "Condition must contain at least one part."
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s частей условия."
-msgstr "You cannot add more than %(max)s condition parts."
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s условий."
-msgstr "You cannot add more than %(max)s conditions."
 
 #, python-format
 msgid "%(object)s не найден."
@@ -678,49 +670,16 @@ msgstr "%(source_object)s cannot be a start connector position."
 msgid "%(target_object)s не может быть окончательной позиции коннектора."
 msgstr "%(target_object)s cannot be a end connector position."
 
-msgid ""
-"Операция базы данных должна иметь значение только для одно из полей: "
-"'create_operation' или 'update_operation'."
-msgstr ""
-"The database operation must have a value for only one of the following "
-"fields: 'create_operation' or 'update_operation'."
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s операций базы данных."
-msgstr "You cannot add more than %(max)s database operations."
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s записей в базу данных."
-msgstr "You cannot add more than %(max)s database records."
-
-msgid ""
-"Изображение счёта должно иметь значение только для одного из полей: 'file' "
-"или 'from_url'."
-msgstr ""
-"The invoice image must have a value for only one of the following fields: "
-"'file' or 'from_url'."
-
 msgid "Превышен лимит хранилища."
 msgstr "Storage limit exceeded."
 
 msgid "Счёт должен содержать хотя бы одну цену."
 msgstr "Invoice must contain at least one price."
 
-#, python-format
-msgid "Нельзя добавлять больше %(max)s цен счёта."
-msgstr "You cannot add more than %(max)s invoice prices."
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s счетов."
-msgstr "You cannot add more than %(max)s invoices."
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s кнопок для клавиатуры сообщения."
-msgstr "You cannot add more than %(max)s message keyboard buttons."
-
+#, fuzzy
 msgid ""
-"Необходимо указать значение минимум для одно из полей: 'text', 'images', "
-"'documents' или 'keyboard'."
+"Необходимо указать значение как минимум для одного из полей: 'text', "
+"'images', 'documents', 'keyboard'."
 msgstr ""
 "You must specify a value for at least one of the following fields: 'text', "
 "'images', 'documents', or 'keyboard'."
@@ -731,29 +690,6 @@ msgid ""
 msgstr ""
 "You must specify a value for the 'text' field if a value is provided for the "
 "'keyboard' field."
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s сообщений."
-msgstr "You cannot add more than %(max)s messages."
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s временных переменных."
-msgstr "You cannot add more than %(max)s temporary variables."
-
-msgid ""
-"Триггер должен иметь значение только для одного из полей: 'command', "
-"'message' или 'webhook'."
-msgstr ""
-"The trigger must have a value for only one of the following fields: "
-"'command', 'message' or 'webhook'."
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s триггеров."
-msgstr "You cannot add more than %(max)s triggers."
-
-#, python-format
-msgid "Нельзя добавлять больше %(max)s переменных."
-msgstr "You cannot add more than %(max)s variables."
 
 msgid "Недопустимое значение."
 msgstr "Invalid value."

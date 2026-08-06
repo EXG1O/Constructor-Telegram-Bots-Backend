@@ -334,4 +334,4 @@ class VariableViewSetTests(VariableMixin, TelegramBotMixin, UserMixin, TestCase)
 
         with suppress(Variable.DoesNotExist):
             self.variable.refresh_from_db()
-            raise self.failureException('Variable has not been deleted from database!')
+            raise self.failureException('Variable has not been deleted from database.')

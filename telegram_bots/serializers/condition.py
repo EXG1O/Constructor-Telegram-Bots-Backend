@@ -4,6 +4,8 @@ from django.utils.translation import gettext as _
 
 from rest_framework import serializers
 
+from constructor_telegram_bots.utils.serializers import validate_max_count
+
 from ..models import Condition, ConditionPart
 from .base import BlockSerializer, DiagramSerializer
 from .mixins import TelegramBotMixin
@@ -37,29 +39,22 @@ class ConditionSerializer(TelegramBotMixin, BlockSerializer[Condition]):
                 _('Условие должно содержать хотя бы одну часть.'), code='empty'
             )
 
-        if (
-            self.instance.parts.count() + sum('id' not in item for item in data)
-            if self.instance and self.partial
-            else len(data)
-        ) > settings.TELEGRAM_BOT_MAX_CONDITION_PARTS:
-            raise serializers.ValidationError(
-                _('Нельзя добавлять больше %(max)s частей условия.')
-                % {'max': settings.TELEGRAM_BOT_MAX_CONDITION_PARTS},
-                code='max_limit',
-            )
+        validate_max_count(
+            (
+                self.instance.parts.count() + sum('id' not in item for item in data)
+                if self.instance and self.partial
+                else len(data)
+            ),
+            settings.TELEGRAM_BOT_MAX_CONDITION_PARTS,
+        )
 
         return data
 
     def validate(self, data: dict[str, Any]) -> dict[str, Any]:
-        if (
-            not self.instance
-            and self.telegram_bot.conditions.count() + 1
-            > settings.TELEGRAM_BOT_MAX_CONDITIONS
-        ):
-            raise serializers.ValidationError(
-                _('Нельзя добавлять больше %(max)s условий.')
-                % {'max': settings.TELEGRAM_BOT_MAX_CONDITIONS},
-                code='max_limit',
+        if not self.instance:
+            validate_max_count(
+                self.telegram_bot.conditions.count() + 1,
+                settings.TELEGRAM_BOT_MAX_CONDITIONS,
             )
 
         return data
