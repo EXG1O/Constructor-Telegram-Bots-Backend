@@ -30,7 +30,7 @@ class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
     def create_with_container(self) -> TelegramBotsHub:
         redis_client: Redis = get_redis_client()
 
-        lock_key: str = 'tbh:lock:create_with_container:'
+        lock_key: str = 'tbh:lock:create_with_container'
         result_key: str = 'tbh:shared_result:create_with_container'
 
         if TYPE_CHECKING:
