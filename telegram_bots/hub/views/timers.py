@@ -17,4 +17,11 @@ class TimerViewSet(IDLookupMixin, TelegramBotMixin, ReadOnlyModelViewSet[Timer])
     serializer_class = TimerSerializer
 
     def get_queryset(self) -> QuerySet[Timer]:
-        return self.telegram_bot.timers.all()
+        timers: QuerySet[Timer] = self.telegram_bot.timers.all()
+
+        if self.action in ['list', 'retrieve']:
+            return timers.prefetch_related(
+                'source_connections__source_object', 'source_connections__target_object'
+            )
+
+        return timers
