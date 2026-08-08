@@ -9,6 +9,7 @@ from .message import MessageKeyboardButtonViewSetTests, MessageViewSetTests
 from .tasks import EnsureIdleTelegramBotsHubsTaskTests
 from .telegram_bot import TelegramBotViewSetTests
 from .temporary_variable import TemporaryVariableViewSetTests
+from .timer import TimerViewSetTests
 from .trigger import TriggerViewSetTests
 from .user import UserViewSetTests
 from .variable import VariableViewSetTests
@@ -24,6 +25,7 @@ __all__ = [
     'TriggerViewSetTests',
     'InvoiceViewSetTests',
     'TemporaryVariableViewSetTests',
+    'TimerViewSetTests',
     'VariableViewSetTests',
     'ChatViewSetTests',
     'UserViewSetTests',

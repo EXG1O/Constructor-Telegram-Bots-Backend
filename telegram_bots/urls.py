@@ -17,12 +17,14 @@ from .views import (
     DiagramInvoiceViewSet,
     DiagramMessageViewSet,
     DiagramTemporaryVariableViewSet,
+    DiagramTimerViewSet,
     DiagramTriggerViewSet,
     InvoiceViewSet,
     MessageViewSet,
     StatsAPIView,
     TelegramBotViewSet,
     TemporaryVariableViewSet,
+    TimerViewSet,
     TriggerViewSet,
     UserViewSet,
     VariableViewSet,
@@ -128,6 +130,16 @@ router.register(
     f'{base_diagram_path}/temporary-variables',
     DiagramTemporaryVariableViewSet,
     basename=f'{base_diagram_name}-temporary-variable',
+)
+router.register(
+    f'{base_path}/timers',
+    TimerViewSet,
+    basename=f'{base_name}-timer',
+)
+router.register(
+    f'{base_diagram_path}/timers',
+    DiagramTimerViewSet,
+    basename=f'{base_diagram_name}-timer',
 )
 
 router.register(

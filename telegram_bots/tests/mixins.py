@@ -15,6 +15,7 @@ from ..models import (
     MessageSettings,
     TelegramBot,
     TemporaryVariable,
+    Timer,
     Trigger,
     TriggerCommand,
     Variable,
@@ -148,6 +149,17 @@ class TemporaryVariableMixin:
             self.telegram_bot.temporary_variables.create(
                 name='test_name', value='value'
             )
+        )
+
+
+class TimerMixin:
+    if TYPE_CHECKING:
+        telegram_bot: TelegramBot
+
+    def setUp(self) -> None:
+        super().setUp()  # type: ignore [misc]
+        self.timer: Timer = self.telegram_bot.timers.create(
+            name='Test name', duration_seconds=60
         )
 
 

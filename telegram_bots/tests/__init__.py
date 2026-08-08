@@ -19,6 +19,7 @@ from .temporary_variable import (
     DiagramTemporaryVariableViewSetTests,
     TemporaryVariableViewSetTests,
 )
+from .timer import DiagramTimerViewSetTests, TimerViewSetTests
 from .trigger import DiagramTriggerViewSetTests, TriggerViewSetTests
 from .user import UserViewSetTests
 from .variable import VariableViewSetTests
@@ -43,6 +44,8 @@ __all__ = [
     'DiagramInvoiceViewSetTests',
     'TemporaryVariableViewSetTests',
     'DiagramTemporaryVariableViewSetTests',
+    'TimerViewSetTests',
+    'DiagramTimerViewSetTests',
     'VariableViewSetTests',
     'ChatViewSetTests',
     'UserViewSetTests',

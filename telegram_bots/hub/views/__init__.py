@@ -8,6 +8,7 @@ from .invoice import InvoiceViewSet
 from .message import MessageKeyboardButtonViewSet, MessageViewSet
 from .telegram_bot import TelegramBotViewSet
 from .temporary_variable import TemporaryVariableViewSet
+from .timers import TimerViewSet
 from .trigger import TriggerViewSet
 from .user import UserViewSet
 from .variable import VariableViewSet
@@ -23,6 +24,7 @@ __all__ = [
     'DatabaseOperationViewSet',
     'InvoiceViewSet',
     'TemporaryVariableViewSet',
+    'TimerViewSet',
     'VariableViewSet',
     'ChatViewSet',
     'UserViewSet',

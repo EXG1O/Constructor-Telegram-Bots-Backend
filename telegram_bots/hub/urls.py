@@ -12,6 +12,7 @@ from .views import (
     MessageViewSet,
     TelegramBotViewSet,
     TemporaryVariableViewSet,
+    TimerViewSet,
     TriggerViewSet,
     UserViewSet,
     VariableViewSet,
@@ -66,6 +67,11 @@ router.register(
     f'{base_path}/temporary-variables',
     TemporaryVariableViewSet,
     basename=f'{base_name}-temporary-variable',
+)
+router.register(
+    f'{base_path}/timers',
+    TimerViewSet,
+    basename=f'{base_name}-timer',
 )
 router.register(
     f'{base_path}/variables',

@@ -23,6 +23,7 @@ from .message import (
 )
 from .telegram_bot import TelegramBotSerializer
 from .temporary_variable import TemporaryVariableSerializer
+from .timers import TimerSerializer
 from .trigger import (
     TriggerCommandSerializer,
     TriggerMessageSerializer,
@@ -54,6 +55,7 @@ __all__ = [
     'InvoiceImageSerializer',
     'InvoicePriceSerializer',
     'TemporaryVariableSerializer',
+    'TimerSerializer',
     'VariableSerializer',
     'ChatSerializer',
     'ChatUserSerializer',
