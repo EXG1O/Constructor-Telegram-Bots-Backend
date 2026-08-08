@@ -20,6 +20,7 @@ from .message import (
 )
 from .telegram_bot import TelegramBot
 from .temporary_variable import TemporaryVariable
+from .timers import Timer
 from .trigger import Trigger, TriggerCommand, TriggerMessage, TriggerWebhook
 from .user import User
 from .variable import Variable
@@ -48,6 +49,7 @@ __all__ = [
     'InvoiceImage',
     'InvoicePrice',
     'TemporaryVariable',
+    'Timer',
     'Variable',
     'Chat',
     'User',

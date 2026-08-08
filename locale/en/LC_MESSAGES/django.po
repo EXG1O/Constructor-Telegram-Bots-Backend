@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-06 18:07+0000\n"
+"POT-Creation-Date: 2026-08-08 18:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -593,6 +593,15 @@ msgstr "Value"
 
 msgid "Временные переменные"
 msgstr "Temporary variables"
+
+msgid "Длительность в секундах"
+msgstr "Duration in seconds"
+
+msgid "Таймер"
+msgstr "Timer"
+
+msgid "Таймеры"
+msgstr "Timers"
 
 msgid "Команда"
 msgstr "Command"
