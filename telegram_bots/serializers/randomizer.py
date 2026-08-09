@@ -29,5 +29,3 @@ class RandomizerSerializer(TelegramBotMixin, BlockSerializer[Randomizer]):
 class DiagramRandomizerSerializer(DiagramSerializer[Randomizer]):
     class Meta(DiagramSerializer.Meta):
         model = Randomizer
-        fields = DiagramSerializer.Meta.fields
-        read_only_fields = DiagramSerializer.Meta.read_only_fields
