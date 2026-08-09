@@ -12,7 +12,9 @@ from ...models import (
     Invoice,
     Message,
     MessageKeyboardButton,
+    Randomizer,
     TemporaryVariable,
+    Timer,
     Trigger,
 )
 
@@ -47,6 +49,8 @@ class ConnectionSerializer(serializers.ModelSerializer[Connection]):
         ConnectionObjectType.DATABASE_OPERATION: DatabaseOperation,
         ConnectionObjectType.INVOICE: Invoice,
         ConnectionObjectType.TEMPORARY_VARIABLE: TemporaryVariable,
+        ConnectionObjectType.TIMER: Timer,
+        ConnectionObjectType.RANDOMIZER: Randomizer,
     }
 
     def get_object_type(self, obj: Model) -> str:
