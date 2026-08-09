@@ -21,6 +21,7 @@ from .message import (
     MessageSerializer,
     MessageSettingsSerializer,
 )
+from .randomizer import RandomizerSerializer
 from .telegram_bot import TelegramBotSerializer
 from .temporary_variable import TemporaryVariableSerializer
 from .timer import TimerSerializer
@@ -56,6 +57,7 @@ __all__ = [
     'InvoicePriceSerializer',
     'TemporaryVariableSerializer',
     'TimerSerializer',
+    'RandomizerSerializer',
     'VariableSerializer',
     'ChatSerializer',
     'ChatUserSerializer',

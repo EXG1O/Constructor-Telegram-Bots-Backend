@@ -6,6 +6,7 @@ from .database_operation import DatabaseOperationViewSetTests
 from .database_record import DatabaseRecordViewSetTests
 from .invoice import InvoiceViewSetTests
 from .message import MessageKeyboardButtonViewSetTests, MessageViewSetTests
+from .randomizer import RandomizerViewSetTests
 from .tasks import EnsureIdleTelegramBotsHubsTaskTests
 from .telegram_bot import TelegramBotViewSetTests
 from .temporary_variable import TemporaryVariableViewSetTests
@@ -26,6 +27,7 @@ __all__ = [
     'InvoiceViewSetTests',
     'TemporaryVariableViewSetTests',
     'TimerViewSetTests',
+    'RandomizerViewSetTests',
     'VariableViewSetTests',
     'ChatViewSetTests',
     'UserViewSetTests',

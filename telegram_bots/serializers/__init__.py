@@ -31,6 +31,7 @@ from .message import (
     MessageSerializer,
     MessageSettingsSerializer,
 )
+from .randomizer import DiagramRandomizerSerializer, RandomizerSerializer
 from .telegram_bot import TelegramBotSerializer
 from .temporary_variable import (
     DiagramTemporaryVariableSerializer,
@@ -81,6 +82,8 @@ __all__ = [
     'DiagramTemporaryVariableSerializer',
     'TimerSerializer',
     'DiagramTimerSerializer',
+    'RandomizerSerializer',
+    'DiagramRandomizerSerializer',
     'VariableSerializer',
     'ChatSerializer',
     'UserSerializer',

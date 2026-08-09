@@ -13,6 +13,7 @@ from ..models import (
     InvoicePrice,
     Message,
     MessageSettings,
+    Randomizer,
     TelegramBot,
     TemporaryVariable,
     Timer,
@@ -160,6 +161,17 @@ class TimerMixin:
         super().setUp()  # type: ignore [misc]
         self.timer: Timer = self.telegram_bot.timers.create(
             name='Test name', duration_seconds=60
+        )
+
+
+class RandomizerMixin:
+    if TYPE_CHECKING:
+        telegram_bot: TelegramBot
+
+    def setUp(self) -> None:
+        super().setUp()  # type: ignore [misc]
+        self.randomizer: Randomizer = self.telegram_bot.randomizers.create(
+            name='Test randomizer'
         )
 
 

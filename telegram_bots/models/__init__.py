@@ -18,6 +18,7 @@ from .message import (
     MessageKeyboardButton,
     MessageSettings,
 )
+from .randomizer import Randomizer
 from .telegram_bot import TelegramBot
 from .temporary_variable import TemporaryVariable
 from .timer import Timer
@@ -50,6 +51,7 @@ __all__ = [
     'InvoicePrice',
     'TemporaryVariable',
     'Timer',
+    'Randomizer',
     'Variable',
     'Chat',
     'User',
