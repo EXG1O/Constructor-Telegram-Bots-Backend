@@ -23,7 +23,7 @@ from .message import (
 )
 from .telegram_bot import TelegramBotSerializer
 from .temporary_variable import TemporaryVariableSerializer
-from .timers import TimerSerializer
+from .timer import TimerSerializer
 from .trigger import (
     TriggerCommandSerializer,
     TriggerMessageSerializer,

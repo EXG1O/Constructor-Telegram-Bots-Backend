@@ -16,7 +16,7 @@ from .temporary_variable import (
     DiagramTemporaryVariableViewSet,
     TemporaryVariableViewSet,
 )
-from .timers import DiagramTimerViewSet, TimerViewSet
+from .timer import DiagramTimerViewSet, TimerViewSet
 from .trigger import DiagramTriggerViewSet, TriggerViewSet
 from .user import UserViewSet
 from .variable import VariableViewSet

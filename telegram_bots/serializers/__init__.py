@@ -36,7 +36,7 @@ from .temporary_variable import (
     DiagramTemporaryVariableSerializer,
     TemporaryVariableSerializer,
 )
-from .timers import DiagramTimerSerializer, TimerSerializer
+from .timer import DiagramTimerSerializer, TimerSerializer
 from .trigger import (
     DiagramTriggerSerializer,
     TriggerCommandSerializer,

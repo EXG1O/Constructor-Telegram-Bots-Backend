@@ -25,7 +25,7 @@ from .database_record import DatabaseRecord
 from .invoice import Invoice
 from .message import Message
 from .temporary_variable import TemporaryVariable
-from .timers import Timer
+from .timer import Timer
 from .trigger import Trigger
 from .user import User
 from .variable import Variable
