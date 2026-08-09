@@ -33,6 +33,8 @@ class ConnectionObjectType(TextChoices):
     DATABASE_OPERATION = 'database_operation', _('Операция базы данных')
     INVOICE = 'invoice', _('Счёт')
     TEMPORARY_VARIABLE = 'temporary_variable', _('Временная переменная')
+    TIMER = 'timer', _('Таймер')
+    RANDOMIZER = 'randomizer', _('Рандомайзер')
 
     @staticmethod
     def source_choices() -> list[tuple[str, _StrPromise]]:
@@ -48,6 +50,8 @@ class ConnectionObjectType(TextChoices):
                 ConnectionObjectType.DATABASE_OPERATION,
                 ConnectionObjectType.INVOICE,
                 ConnectionObjectType.TEMPORARY_VARIABLE,
+                ConnectionObjectType.TIMER,
+                ConnectionObjectType.RANDOMIZER,
             ]
         ]
 
@@ -63,6 +67,8 @@ class ConnectionObjectType(TextChoices):
                 ConnectionObjectType.DATABASE_OPERATION,
                 ConnectionObjectType.INVOICE,
                 ConnectionObjectType.TEMPORARY_VARIABLE,
+                ConnectionObjectType.TIMER,
+                ConnectionObjectType.RANDOMIZER,
             ]
         ]
 
