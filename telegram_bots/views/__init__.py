@@ -10,6 +10,7 @@ from .database_operation import (
 from .database_record import DatabaseRecordViewSet
 from .invoice import DiagramInvoiceViewSet, InvoiceViewSet
 from .message import DiagramMessageViewSet, MessageViewSet
+from .randomizer import DiagramRandomizerViewSet, RandomizerViewSet
 from .stats import StatsAPIView
 from .telegram_bot import TelegramBotViewSet
 from .temporary_variable import (
@@ -43,6 +44,8 @@ __all__ = [
     'DiagramTemporaryVariableViewSet',
     'TimerViewSet',
     'DiagramTimerViewSet',
+    'RandomizerViewSet',
+    'DiagramRandomizerViewSet',
     'VariableViewSet',
     'ChatViewSet',
     'UserViewSet',

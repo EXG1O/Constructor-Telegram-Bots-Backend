@@ -6,6 +6,7 @@ from .database_operation import DatabaseOperationViewSet
 from .database_record import DatabaseRecordViewSet
 from .invoice import InvoiceViewSet
 from .message import MessageKeyboardButtonViewSet, MessageViewSet
+from .randomizer import RandomizerViewSet
 from .telegram_bot import TelegramBotViewSet
 from .temporary_variable import TemporaryVariableViewSet
 from .timer import TimerViewSet
@@ -25,6 +26,7 @@ __all__ = [
     'InvoiceViewSet',
     'TemporaryVariableViewSet',
     'TimerViewSet',
+    'RandomizerViewSet',
     'VariableViewSet',
     'ChatViewSet',
     'UserViewSet',

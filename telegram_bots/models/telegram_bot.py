@@ -24,6 +24,7 @@ from .database_operation import DatabaseOperation
 from .database_record import DatabaseRecord
 from .invoice import Invoice
 from .message import Message
+from .randomizer import Randomizer
 from .temporary_variable import TemporaryVariable
 from .timer import Timer
 from .trigger import Trigger
@@ -96,6 +97,7 @@ class TelegramBot(models.Model):
         invoices: models.Manager[Invoice]
         temporary_variables: models.Manager[TemporaryVariable]
         timers: models.Manager[Timer]
+        randomizers: models.Manager[Randomizer]
         variables: models.Manager[Variable]
         chats: models.Manager[Chat]
         users: models.Manager[User]

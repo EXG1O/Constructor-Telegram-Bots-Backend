@@ -10,6 +10,7 @@ from .views import (
     InvoiceViewSet,
     MessageKeyboardButtonViewSet,
     MessageViewSet,
+    RandomizerViewSet,
     TelegramBotViewSet,
     TemporaryVariableViewSet,
     TimerViewSet,
@@ -72,6 +73,11 @@ router.register(
     f'{base_path}/timers',
     TimerViewSet,
     basename=f'{base_name}-timer',
+)
+router.register(
+    f'{base_path}/randomizers',
+    RandomizerViewSet,
+    basename=f'{base_name}-randomizer',
 )
 router.register(
     f'{base_path}/variables',
