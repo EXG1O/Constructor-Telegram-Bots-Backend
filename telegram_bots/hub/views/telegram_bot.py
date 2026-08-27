@@ -15,6 +15,7 @@ from ..authentication import TokenAuthentication
 from ..models import TelegramBotsHub
 from ..serializers import TelegramBotSerializer
 
+from http import HTTPMethod
 from typing import cast
 
 
@@ -26,7 +27,7 @@ class TelegramBotViewSet(IDLookupMixin, ReadOnlyModelViewSet[TelegramBot]):
     def get_queryset(self) -> QuerySet[TelegramBot]:
         return TelegramBot.objects.all()
 
-    @action(detail=True, methods=['POST'], url_path='hub/assign')
+    @action(detail=True, methods=[HTTPMethod.POST], url_path='hub/assign')
     def assign_hub(self, request: Request, id: int) -> Response:
         hub = cast(TelegramBotsHub, request.user)
 
@@ -42,7 +43,7 @@ class TelegramBotViewSet(IDLookupMixin, ReadOnlyModelViewSet[TelegramBot]):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['POST'], url_path='hub/unassign')
+    @action(detail=True, methods=[HTTPMethod.POST], url_path='hub/unassign')
     def unassign_hub(self, request: Request, id: int) -> Response:
         bot: TelegramBot = self.get_object()
         bot.must_be_enabled = False

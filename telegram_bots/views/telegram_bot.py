@@ -16,6 +16,8 @@ from ..models import TelegramBot
 from ..serializers import TelegramBotSerializer
 from ..utils.storage import get_telegram_bot_file_names
 
+from http import HTTPMethod
+
 
 class TelegramBotViewSet(IDLookupMixin, ModelViewSet[TelegramBot]):
     authentication_classes = [JWTAuthentication]
@@ -25,21 +27,21 @@ class TelegramBotViewSet(IDLookupMixin, ModelViewSet[TelegramBot]):
     def get_queryset(self) -> QuerySet[TelegramBot]:
         return self.request.user.telegram_bots.all()  # type: ignore [union-attr]
 
-    @action(detail=True, methods=['POST'])
+    @action(detail=True, methods=[HTTPMethod.POST])
     def start(self, request: Request, id: int) -> Response:
         telegram_bot: TelegramBot = self.get_object()
         telegram_bot.start()
 
         return Response(self.get_serializer(telegram_bot).data)
 
-    @action(detail=True, methods=['POST'])
+    @action(detail=True, methods=[HTTPMethod.POST])
     def restart(self, request: Request, id: int) -> Response:
         telegram_bot: TelegramBot = self.get_object()
         telegram_bot.restart()
 
         return Response(self.get_serializer(telegram_bot).data)
 
-    @action(detail=True, methods=['POST'])
+    @action(detail=True, methods=[HTTPMethod.POST])
     def stop(self, request: Request, id: int) -> Response:
         telegram_bot: TelegramBot = self.get_object()
         telegram_bot.stop()
