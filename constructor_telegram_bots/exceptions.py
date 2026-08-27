@@ -1,7 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import status
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import APIException, AuthenticationFailed
 
 
 class ContentTooLargeError(APIException):
@@ -18,3 +18,7 @@ class ContentTooLargeError(APIException):
         if detail is None:
             detail = self.default_detail.format(max_size=max_size)
         super().__init__(detail, code)
+
+
+class InvalidTokenError(AuthenticationFailed):
+    default_detail = _('Недействительный токен.')

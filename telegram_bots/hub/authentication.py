@@ -1,7 +1,6 @@
-from django.utils.translation import gettext as _
-
 from rest_framework.authentication import TokenAuthentication as BaseTokenAuthentication
-from rest_framework.exceptions import AuthenticationFailed
+
+from constructor_telegram_bots.exceptions import InvalidTokenError
 
 from .models import TelegramBotsHub
 
@@ -11,6 +10,6 @@ class TokenAuthentication(BaseTokenAuthentication):
         try:
             hub: TelegramBotsHub = TelegramBotsHub.objects.get(service_token=token)
         except TelegramBotsHub.DoesNotExist as error:
-            raise AuthenticationFailed(_('Недействительный токен.')) from error
+            raise InvalidTokenError() from error
 
         return hub, token
