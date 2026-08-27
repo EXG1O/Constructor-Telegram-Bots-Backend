@@ -6,6 +6,8 @@ from rest_framework.exceptions import APIException
 
 from jwt import PyJWTError
 
+from constructor_telegram_bots.exceptions import InvalidTokenError
+
 from ..enums import TokenType
 from ..jwt.tokens import AccessToken, RefreshToken
 from ..models import BlacklistedToken, Token, User
@@ -17,7 +19,7 @@ def authenticate_token[JWT: (RefreshToken, AccessToken)](
     try:
         token = token_cls(token=raw_token)
     except PyJWTError as error:
-        raise exception_cls(_('Недействительный токен.')) from error
+        raise exception_cls(InvalidTokenError.default_detail) from error
 
     if token.is_blacklisted:
         raise exception_cls(_('Токен в чёрном списке.'))
