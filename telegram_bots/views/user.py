@@ -30,6 +30,7 @@ from ..serializers import UserSerializer
 from .mixins import TelegramBotMixin
 
 from datetime import timedelta
+from http import HTTPMethod
 from typing import Any
 import datetime
 
@@ -55,7 +56,7 @@ class UserViewSet(
     def get_queryset(self) -> QuerySet[User]:
         return self.telegram_bot.users.all()
 
-    @action(detail=False, url_path='timeline-stats', methods=['GET'])
+    @action(detail=False, methods=[HTTPMethod.GET], url_path='timeline-stats')
     def timeline_stats(self, request: Request, telegram_bot_id: int) -> Response:
         field: str = request.query_params.get('field', 'activated_date')
 

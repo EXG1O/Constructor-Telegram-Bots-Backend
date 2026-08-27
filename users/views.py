@@ -33,6 +33,7 @@ from .serializers import (
 from .utils.auth import user_login, user_logout, user_logout_all
 from .utils.storage import get_user_file_names
 
+from http import HTTPMethod
 from typing import cast
 import base64
 import hashlib
@@ -58,7 +59,7 @@ class UserViewSet(RetrieveModelMixin, DestroyModelMixin, GenericViewSet[User]):
 
     @action(
         detail=False,
-        methods=['POST'],
+        methods=[HTTPMethod.POST],
         url_path='login-init',
         authentication_classes=[],
         permission_classes=[],
@@ -76,7 +77,10 @@ class UserViewSet(RetrieveModelMixin, DestroyModelMixin, GenericViewSet[User]):
         return Response({'code_challenge': code_challenge})
 
     @action(
-        detail=False, methods=['POST'], authentication_classes=[], permission_classes=[]
+        detail=False,
+        methods=[HTTPMethod.POST],
+        authentication_classes=[],
+        permission_classes=[],
     )
     def login(self, request: Request) -> Response:
         serializer = UserLoginSerializer(data=request.data)
@@ -100,13 +104,13 @@ class UserViewSet(RetrieveModelMixin, DestroyModelMixin, GenericViewSet[User]):
             }
         )
 
-    @action(detail=True, methods=['POST'])
+    @action(detail=True, methods=[HTTPMethod.POST])
     def logout(self, request: Request, pk: str | None = None) -> Response:
         jwt_token = cast(AccessToken, request.auth)
         user_logout(request, jwt_token)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['POST'], url_path='logout-all')
+    @action(detail=True, methods=[HTTPMethod.POST], url_path='logout-all')
     def logout_all(self, request: Request, pk: str | None = None) -> Response:
         user: User = self.get_object()
         user_logout_all(request, user)
@@ -114,7 +118,7 @@ class UserViewSet(RetrieveModelMixin, DestroyModelMixin, GenericViewSet[User]):
 
     @action(
         detail=True,
-        methods=['POST'],
+        methods=[HTTPMethod.POST],
         url_path='token-refresh',
         authentication_classes=[],
         permission_classes=[],
@@ -127,7 +131,7 @@ class UserViewSet(RetrieveModelMixin, DestroyModelMixin, GenericViewSet[User]):
 
         return Response({'access_token': str(refresh_token.access_token)})
 
-    @action(detail=True, methods=['POST'], url_path='accept-terms')
+    @action(detail=True, methods=[HTTPMethod.POST], url_path='accept-terms')
     def accept_terms(self, request: Request, pk: str | None = None) -> Response:
         user: User = self.get_object()
         user.accepted_terms = True

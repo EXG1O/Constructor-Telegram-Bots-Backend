@@ -17,6 +17,8 @@ from ..authentication import TokenAuthentication
 from ..serializers import DatabaseRecordSerializer
 from .mixins import TelegramBotMixin
 
+from http import HTTPMethod
+
 
 class DatabaseRecordFilter(FilterSet):
     has_data_path = CharFilter(field_name='data', method='filter_has_data_path')
@@ -48,11 +50,13 @@ class DatabaseRecordViewSet(
     def get_queryset(self) -> QuerySet[DatabaseRecord]:
         return self.telegram_bot.database_records.all()
 
-    @action(detail=False, url_path='update-many', methods=['PUT', 'PATCH'])
+    @action(
+        detail=False, methods=[HTTPMethod.PUT, HTTPMethod.PATCH], url_path='update-many'
+    )
     def update_many(self, request: Request, telegram_bot_id: int) -> Response:
         serializer = self.get_serializer(
             list(self.filter_queryset(self.get_queryset())),
-            partial=request.method == 'PATCH',
+            partial=request.method == HTTPMethod.PATCH,
             data=request.data,
             many=True,
         )

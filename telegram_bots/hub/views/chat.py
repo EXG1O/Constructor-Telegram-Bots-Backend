@@ -19,6 +19,7 @@ from ..authentication import TokenAuthentication
 from ..serializers import ChatSerializer, ChatUserSerializer
 from .mixins import TelegramBotMixin
 
+from http import HTTPMethod
 from typing import cast
 
 
@@ -47,7 +48,7 @@ class ChatViewSet(
     def get_queryset(self) -> QuerySet[Chat]:
         return self.telegram_bot.chats.all()
 
-    @action(detail=True, methods=['POST'])
+    @action(detail=True, methods=[HTTPMethod.POST])
     def users(self, request: Request, telegram_bot_id: int, id: int) -> Response:
         chat: Chat = self.get_object()
 
