@@ -28,34 +28,9 @@ class ChatSerializer(TelegramBotMixin, serializers.ModelSerializer[Chat]):
         read_only_fields = ['is_allowed', 'is_blocked']
 
     def create(self, validated_data: dict[str, Any]) -> Chat:
-        telegram_id: int = validated_data.pop('telegram_id')
-
-        chat, created = self.telegram_bot.chats.get_or_create(
-            telegram_id=telegram_id, defaults=validated_data
+        chat, created = self.telegram_bot.chats.update_or_create(
+            telegram_id=validated_data.pop('telegram_id'), defaults=validated_data
         )
-
-        if not created:
-            chat.type = validated_data.get('type', chat.type)
-            chat.title = validated_data.get('title', chat.title)
-            chat.username = validated_data.get('username', chat.username)
-            chat.first_name = validated_data.get('first_name', chat.first_name)
-            chat.last_name = validated_data.get('last_name', chat.last_name)
-            chat.is_forum = validated_data.get('is_forum', chat.is_forum)
-            chat.is_direct_messages = validated_data.get(
-                'is_direct_messages', chat.is_direct_messages
-            )
-            chat.save(
-                update_fields=[
-                    'type',
-                    'title',
-                    'username',
-                    'first_name',
-                    'last_name',
-                    'is_forum',
-                    'is_direct_messages',
-                ]
-            )
-
         return chat
 
 

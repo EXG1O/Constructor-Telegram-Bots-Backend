@@ -8,7 +8,7 @@ import jwt
 
 from .models import User
 
-from typing import Any, Final
+from typing import TYPE_CHECKING, Any, Final, cast
 
 _telegram_login_client = httpx.Client(
     headers={'User-Agent': settings.APP_USER_AGENT},
@@ -109,21 +109,18 @@ class TelegramBackend(ModelBackend):
         )
 
         telegram_id: int = claims['id']
-        full_name: str = claims['name']
 
-        names: list[str] = full_name.split(maxsplit=1)
-        first_name: str = names[0]
-        last_name: str | None = names[1] if len(names) > 1 else None
+        if TYPE_CHECKING:
+            first_name: str
+            last_name: str | None
 
-        user, created = User.objects.get_or_create(
+        first_name, _, last_name = cast(str, claims['name']).partition(' ')
+        last_name = last_name or None
+
+        user, created = User.objects.update_or_create(
             telegram_id=telegram_id,
             defaults={'first_name': first_name, 'last_name': last_name},
         )
-
-        if not created:
-            user.first_name = first_name
-            user.last_name = last_name
-            user.save(update_fields=['first_name', 'last_name'])
 
         if not self.user_can_authenticate(user):
             return None
