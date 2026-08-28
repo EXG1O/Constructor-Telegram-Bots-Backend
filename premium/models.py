@@ -71,7 +71,7 @@ class SubscriptionInvoice(models.Model):
     def __str__(self) -> str:
         return f'{self.user}: {self.amount_stars}/{self.period_months}m ({self.status})'
 
-    def activate_subscription(self) -> Subscription:
+    def activate_subscription(self, save: bool = True) -> Subscription:
         current_datetime: datetime = timezone.now()
         period_days = timedelta(days=self.period_months * 30)
         new_end_date: datetime = current_datetime + period_days
@@ -86,6 +86,11 @@ class SubscriptionInvoice(models.Model):
             else:
                 subscription.end_date += period_days
             subscription.save(update_fields=['end_date'])
+
+        self.subscription = subscription
+
+        if save:
+            self.save(update_fields=['subscription'])
 
         return subscription
 
