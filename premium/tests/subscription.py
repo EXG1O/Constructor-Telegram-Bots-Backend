@@ -13,8 +13,6 @@ from users.tests.mixins import UserMixin
 from ..models import Subscription
 from ..views import SubscriptionViewSet
 
-from typing import TYPE_CHECKING
-
 
 class SubscriptionViewSetTests(UserMixin, TestCase):
     url: str = reverse('api:premium:subscription-detail')
@@ -29,15 +27,10 @@ class SubscriptionViewSetTests(UserMixin, TestCase):
     def test_retrieve(self) -> None:
         view = SubscriptionViewSet.as_view({'get': 'retrieve'})
 
-        if TYPE_CHECKING:
-            request: Request
-            response: Response
-
-        request = self.factory.get(self.url)
+        request: Request = self.factory.get(self.url)
         assert_view_basic_protected(view, request, self.user_access_token)
 
-        request = self.factory.get(self.url)
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
-        response = view(request)
+        response: Response = view(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
