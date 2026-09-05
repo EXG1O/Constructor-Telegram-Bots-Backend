@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 
 from django_stubs_ext.db.models import TypedModelMeta
 
+from platform_bot.models import PlatformBot
+
 from .enums import InvoiceStatus
 
 from datetime import datetime, timedelta
@@ -33,6 +35,20 @@ class SubscriptionPrice(models.Model):  # type: ignore [django-manager-missing]
     @property
     def amount_stars(self) -> int:
         return self.amount_stars_per_month * self.period_months
+
+    def get_checkout_url(self, user_id: int) -> str:
+        with PlatformBot().get_client() as client:
+            return client.init_checkout(
+                user_id=user_id,
+                title='Premium',
+                description=(
+                    'Premium subscription for '
+                    f'{self.period_months} month{"s" if self.period_months > 1 else ""} '
+                    f'({self.period_months * 30} days).'
+                ),
+                period_months=self.period_months,
+                amount=self.amount_stars,
+            ).url
 
 
 class SubscriptionInvoice(models.Model):

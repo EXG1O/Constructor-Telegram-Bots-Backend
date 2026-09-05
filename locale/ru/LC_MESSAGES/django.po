@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-09 15:43+0000\n"
+"POT-Creation-Date: 2026-09-02 16:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,6 +22,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Максимально допустимый размер {max_size} байт."
+msgstr ""
+
+msgid "Недействительный токен."
 msgstr ""
 
 #, python-format
@@ -88,6 +91,9 @@ msgid "Документ"
 msgstr ""
 
 msgid "Документы"
+msgstr ""
+
+msgid "Бот платформы"
 msgstr ""
 
 msgid "Цена"
@@ -244,6 +250,12 @@ msgstr ""
 msgid "Временная переменная"
 msgstr ""
 
+msgid "Таймер"
+msgstr ""
+
+msgid "Рандомайзер"
+msgstr ""
+
 msgid "Обычный"
 msgstr ""
 
@@ -323,9 +335,6 @@ msgid "Канал"
 msgstr ""
 
 msgid "Хабы Telegram ботов"
-msgstr ""
-
-msgid "Недействительный токен."
 msgstr ""
 
 msgid "ID контейнера"
@@ -562,9 +571,6 @@ msgstr ""
 msgid "Сообщения"
 msgstr ""
 
-msgid "Рандомайзер"
-msgstr ""
-
 msgid "Рандомайзеры"
 msgstr ""
 
@@ -599,9 +605,6 @@ msgid "Временные переменные"
 msgstr ""
 
 msgid "Длительность в секундах"
-msgstr ""
-
-msgid "Таймер"
 msgstr ""
 
 msgid "Таймеры"

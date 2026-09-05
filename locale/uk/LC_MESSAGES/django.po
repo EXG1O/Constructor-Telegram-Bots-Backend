@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-09 15:43+0000\n"
+"POT-Creation-Date: 2026-09-02 16:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,6 +24,9 @@ msgstr ""
 #, python-brace-format
 msgid "Максимально допустимый размер {max_size} байт."
 msgstr "Максимально дозволений розмір {max_size} байтів."
+
+msgid "Недействительный токен."
+msgstr "Недійсний токен."
 
 #, python-format
 msgid "Не удалось проанализировать JSON данные для поля '%(field)s'."
@@ -90,6 +93,9 @@ msgstr "Документ"
 
 msgid "Документы"
 msgstr "Документи"
+
+msgid "Бот платформы"
+msgstr "Бот платформи"
 
 msgid "Цена"
 msgstr "Ціна"
@@ -247,6 +253,12 @@ msgstr "Рахунок"
 msgid "Временная переменная"
 msgstr "Тимчасова змінна"
 
+msgid "Таймер"
+msgstr "Таймер"
+
+msgid "Рандомайзер"
+msgstr "Рандомайзер"
+
 msgid "Обычный"
 msgstr "Звичайний"
 
@@ -327,9 +339,6 @@ msgstr "Канал"
 
 msgid "Хабы Telegram ботов"
 msgstr "Хаби Telegram ботів"
-
-msgid "Недействительный токен."
-msgstr "Недійсний токен."
 
 msgid "ID контейнера"
 msgstr "ID контейнера"
@@ -565,9 +574,6 @@ msgstr "Клавіатури повідомлень"
 msgid "Сообщения"
 msgstr "Повідомлення"
 
-msgid "Рандомайзер"
-msgstr "Рандомайзер"
-
 msgid "Рандомайзеры"
 msgstr "Рандомайзери"
 
@@ -603,9 +609,6 @@ msgstr "Тимчасові змінні"
 
 msgid "Длительность в секундах"
 msgstr "Тривалість у секундах"
-
-msgid "Таймер"
-msgstr "Таймер"
 
 msgid "Таймеры"
 msgstr "Таймери"
