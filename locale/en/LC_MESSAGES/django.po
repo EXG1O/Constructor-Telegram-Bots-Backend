@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-09 15:43+0000\n"
+"POT-Creation-Date: 2026-09-02 16:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,6 +21,9 @@ msgstr ""
 #, python-brace-format
 msgid "Максимально допустимый размер {max_size} байт."
 msgstr "Maximum allowed size is {max_size} bytes."
+
+msgid "Недействительный токен."
+msgstr "Invalid token."
 
 #, python-format
 msgid "Не удалось проанализировать JSON данные для поля '%(field)s'."
@@ -87,6 +90,9 @@ msgstr "Document"
 
 msgid "Документы"
 msgstr "Documents"
+
+msgid "Бот платформы"
+msgstr "Platform bot"
 
 msgid "Цена"
 msgstr "Price"
@@ -246,6 +252,12 @@ msgstr "Invoice"
 msgid "Временная переменная"
 msgstr "Temporary variable"
 
+msgid "Таймер"
+msgstr "Timer"
+
+msgid "Рандомайзер"
+msgstr "Randomizer"
+
 msgid "Обычный"
 msgstr "Default"
 
@@ -326,9 +338,6 @@ msgstr "Channel"
 
 msgid "Хабы Telegram ботов"
 msgstr "Hubs of Telegram Bots"
-
-msgid "Недействительный токен."
-msgstr "Invalid token."
 
 msgid "ID контейнера"
 msgstr "Container ID"
@@ -564,9 +573,6 @@ msgstr "Keyboards of messages"
 msgid "Сообщения"
 msgstr "Messages"
 
-msgid "Рандомайзер"
-msgstr "Randomizer"
-
 msgid "Рандомайзеры"
 msgstr "Randomizers"
 
@@ -602,9 +608,6 @@ msgstr "Temporary variables"
 
 msgid "Длительность в секундах"
 msgstr "Duration in seconds"
-
-msgid "Таймер"
-msgstr "Timer"
 
 msgid "Таймеры"
 msgstr "Timers"

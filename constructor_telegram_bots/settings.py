@@ -56,6 +56,15 @@ FRONTEND_PATH: Final[Path] = Path(os.environ['FRONTEND_PATH'])
 TELEGRAM_LOGIN_CLIENT_ID: Final[int] = int(os.environ['TELEGRAM_LOGIN_CLIENT_ID'])
 TELEGRAM_LOGIN_CLIENT_SECRET: Final[str] = os.environ['TELEGRAM_LOGIN_CLIENT_SECRET']
 
+PLATFORM_BOT_URL: Final[URL] = URL(os.getenv('PLATFORM_BOT_URL', 'http://localhost'))
+PLATFORM_BOT_SOCKET: Final[Path | None] = (
+    Path(path) if (path := os.getenv('PLATFORM_BOT_SOCKET')) else None
+)
+PLATFORM_BOT_SERVICE_TOKEN: Final[str] = os.environ['PLATFORM_BOT_SERVICE_TOKEN']
+PLATFORM_BOT_MICROSERVICE_TOKEN: Final[str] = os.environ[
+    'PLATFORM_BOT_MICROSERVICE_TOKEN'
+]
+
 TELEGRAM_BOTS_HUB_PATH: Final[Path] = (
     Path(path)
     if (path := os.getenv('TELEGRAM_BOTS_HUB_PATH'))
@@ -107,6 +116,10 @@ TELEGRAM_BOT_MAX_DATABASE_RECORDS: Final[int] = 10000
 TELEGRAM_BOTS_HUB_MAX_BOTS: Final[int] = 200
 TELEGRAM_BOTS_HUB_IDLE_TIMEOUT: Final[timedelta] = timedelta(minutes=30)
 
+PREMIUM_INVOICE_PENDING_TIMEOUT: Final[timedelta] = timedelta(hours=1)
+PREMIUM_SUBSCRIPTION_EXPIRY_NOTIFICATION_START: Final[timedelta] = timedelta(days=5)
+PREMIUM_SUBSCRIPTION_EXPIRY_NOTIFICATION_END: Final[timedelta] = timedelta(hours=1)
+
 
 CELERY_BROKER_URL: Final[str] = REDIS_URL
 CELERY_RESULT_BACKEND: Final[str] = REDIS_URL
@@ -129,6 +142,18 @@ CELERY_BEAT_SCHEDULE: Final[dict[str, dict[str, Any]]] = {
     'delete_expired_telegram_bots_hubs_schedule': {
         'task': 'telegram_bots.hub.tasks.delete_expired_telegram_bots_hubs',
         'schedule': TELEGRAM_BOTS_HUB_IDLE_TIMEOUT.total_seconds(),
+    },
+    'make_pending_invoices_expired_schedule': {
+        'task': 'premium.tasks.make_pending_invoices_expired',
+        'schedule': PREMIUM_INVOICE_PENDING_TIMEOUT.total_seconds(),
+    },
+    'send_subscription_expiry_notifications_schedule': {
+        'task': 'premium.tasks.send_subscription_expiry_notifications',
+        'schedule': timedelta(days=1).total_seconds(),
+    },
+    'delete_expired_subscriptions_schedule': {
+        'task': 'premium.tasks.delete_expired_subscriptions',
+        'schedule': timedelta(minutes=30).total_seconds(),
     },
 }
 
@@ -155,6 +180,7 @@ INSTALLED_APPS: Final[list[str]] = [
     'webhooks',
     'telegram_bots',
     'telegram_bots.hub',
+    'platform_bot',
     'instruction',
     'legal',
 ]

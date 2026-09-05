@@ -38,6 +38,7 @@ urlpatterns: list[URLPattern | URLResolver] = [
                         'telegram-bots-hub/telegram-bots/',
                         include('telegram_bots.hub.urls'),
                     ),
+                    path('platform-bot/', include('platform_bot.urls')),
                     path('instruction/', include('instruction.urls')),
                     path('legal/', include('legal.urls')),
                 ],

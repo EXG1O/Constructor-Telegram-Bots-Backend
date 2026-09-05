@@ -1,0 +1,2 @@
+class UnknownInvoiceTypeError(Exception):
+    pass
