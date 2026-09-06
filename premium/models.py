@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.validators import MinValueValidator
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -11,7 +11,6 @@ from platform_bot.models import PlatformBot
 from .enums import InvoiceStatus
 
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING
 
 
 class SubscriptionPrice(models.Model):  # type: ignore [django-manager-missing]
@@ -59,14 +58,6 @@ class SubscriptionInvoice(models.Model):
         verbose_name=_('Пользователь'),
         null=True,
     )
-    subscription = models.ForeignKey(
-        'Subscription',
-        on_delete=models.SET_NULL,
-        related_name='invoices',
-        verbose_name=_('Подписка'),
-        null=True,
-        default=None,
-    )
     status = models.CharField(
         _('Статус'), max_length=8, choices=InvoiceStatus, default=InvoiceStatus.PENDING
     )
@@ -87,26 +78,24 @@ class SubscriptionInvoice(models.Model):
     def __str__(self) -> str:
         return f'{self.user}: {self.amount_stars}/{self.period_months}m ({self.status})'
 
-    def activate_subscription(self, save: bool = True) -> Subscription:
+    def activate_subscription(self) -> Subscription:
         current_datetime: datetime = timezone.now()
-        period_days = timedelta(days=self.period_months * 30)
-        new_end_date: datetime = current_datetime + period_days
+        period_extension = timedelta(days=self.period_months * 30)
+        expiry_date: datetime = current_datetime + period_extension
 
-        subscription, created = Subscription.objects.get_or_create(
-            owner=self.user, defaults={'end_date': new_end_date}
-        )
+        with transaction.atomic():
+            subscription, created = (
+                Subscription.objects.select_for_update().get_or_create(
+                    owner=self.user, defaults={'expiry_date': expiry_date}
+                )
+            )
 
-        if not created:
-            if subscription.is_expired:
-                subscription.end_date = new_end_date
-            else:
-                subscription.end_date += period_days
-            subscription.save(update_fields=['end_date'])
-
-        self.subscription = subscription
-
-        if save:
-            self.save(update_fields=['subscription'])
+            if not created:
+                if subscription.is_expired:
+                    subscription.expiry_date = expiry_date
+                else:
+                    subscription.expiry_date += period_extension
+                subscription.save(update_fields=['expiry_date'])
 
         return subscription
 
@@ -118,10 +107,7 @@ class Subscription(models.Model):
         related_name='subscription',
         verbose_name=_('Владелец'),
     )
-    end_date = models.DateTimeField(_('Конец подписки'))
-
-    if TYPE_CHECKING:
-        invoices: models.Manager[SubscriptionInvoice]
+    expiry_date = models.DateTimeField(_('Истечёт'))
 
     class Meta(TypedModelMeta):
         db_table = 'premium_subscription'
@@ -129,8 +115,8 @@ class Subscription(models.Model):
         verbose_name_plural = _('Подписки')
 
     def __str__(self) -> str:
-        return f'{self.owner}: {self.end_date}'
+        return f'{self.owner}: {self.expiry_date}'
 
     @property
     def is_expired(self) -> bool:
-        return timezone.now() > self.end_date
+        return timezone.now() > self.expiry_date

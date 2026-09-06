@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-02 16:58+0000\n"
+"POT-Creation-Date: 2026-09-06 11:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -168,9 +168,6 @@ msgstr "Prices of subscriptions"
 msgid "Пользователь"
 msgstr "User"
 
-msgid "Подписка"
-msgstr "Subscription"
-
 msgid "Статус"
 msgstr "Status"
 
@@ -192,8 +189,11 @@ msgstr "Invoices of subscriptions"
 msgid "Владелец"
 msgstr "Owner"
 
-msgid "Конец подписки"
-msgstr "Subscription end"
+msgid "Истечёт"
+msgstr "Expires"
+
+msgid "Подписка"
+msgstr "Subscription"
 
 msgid "Подписки"
 msgstr "Subscriptions"

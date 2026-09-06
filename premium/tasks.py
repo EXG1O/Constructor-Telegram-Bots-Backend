@@ -76,24 +76,24 @@ def send_subscription_expiry_notifications() -> None:
 
     if TYPE_CHECKING:
         owner_telegram_id: int
-        end_date: datetime
+        expiry_date: datetime
 
     with PlatformBot().get_client() as client:
-        for owner_telegram_id, end_date in (
+        for owner_telegram_id, expiry_date in (
             Subscription.objects.filter(
-                end_date__gte=(
+                expiry_date__gte=(
                     current_datetime
                     + settings.PREMIUM_SUBSCRIPTION_EXPIRY_NOTIFICATION_END
                 ),
-                end_date__lte=(
+                expiry_date__lte=(
                     current_datetime
                     + settings.PREMIUM_SUBSCRIPTION_EXPIRY_NOTIFICATION_START
                 ),
             )
-            .values_list('owner__telegram_id', 'end_date')
+            .values_list('owner__telegram_id', 'expiry_date')
             .iterator(chunk_size=500)
         ):
-            hours_left: float = (end_date - current_datetime).total_seconds() / 3600
+            hours_left: float = (expiry_date - current_datetime).total_seconds() / 3600
             message_batch.append(
                 SendTelegramMessage(
                     chat_ids=[owner_telegram_id],
@@ -122,7 +122,7 @@ def send_subscription_expiry_notifications() -> None:
 @shared_task
 def delete_expired_subscriptions() -> None:
     expired_subscriptions: QuerySet[Subscription, tuple[int, int]] = (
-        Subscription.objects.filter(end_date__lte=timezone.now()).values_list(
+        Subscription.objects.filter(expiry_date__lte=timezone.now()).values_list(
             'id', 'owner__telegram_id'
         )
     )

@@ -172,7 +172,6 @@ class PremiumInvoiceViewSetTests(UserMixin, TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.invoice.refresh_from_db()
-        self.assertTrue(self.invoice.subscription)
         self.assertEqual(self.invoice.status, InvoiceStatus.PAID)
         self.assertEqual(self.invoice.telegram_charge_id, telegram_charge_id)
 
