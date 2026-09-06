@@ -21,7 +21,7 @@ class SubscriptionViewSetTests(UserMixin, TestCase):
         super().setUp()
         self.factory = APIRequestFactory()
         self.subscription: Subscription = Subscription.objects.create(
-            owner=self.user, end_date=timezone.now()
+            owner=self.user, expiry_date=timezone.now()
         )
 
     def test_retrieve(self) -> None:

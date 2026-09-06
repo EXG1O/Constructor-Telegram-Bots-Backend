@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-02 16:58+0000\n"
+"POT-Creation-Date: 2026-09-06 11:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -166,9 +166,6 @@ msgstr ""
 msgid "Пользователь"
 msgstr ""
 
-msgid "Подписка"
-msgstr ""
-
 msgid "Статус"
 msgstr ""
 
@@ -190,7 +187,10 @@ msgstr ""
 msgid "Владелец"
 msgstr ""
 
-msgid "Конец подписки"
+msgid "Истечёт"
+msgstr ""
+
+msgid "Подписка"
 msgstr ""
 
 msgid "Подписки"

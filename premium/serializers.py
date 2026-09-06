@@ -32,4 +32,4 @@ class SubscriptionInvoiceSerializer(serializers.ModelSerializer[SubscriptionInvo
 class SubscriptionSerializer(serializers.ModelSerializer[Subscription]):
     class Meta:
         model = Subscription
-        fields = ['id', 'end_date']
+        fields = ['id', 'expiry_date']

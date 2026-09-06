@@ -63,7 +63,6 @@ class SubscriptionInvoiceAdmin(admin.ModelAdmin[SubscriptionInvoice]):
     fields = [
         'id',
         'user',
-        'subscription',
         'status',
         'period_months',
         'amount_stars',
@@ -75,7 +74,6 @@ class SubscriptionInvoiceAdmin(admin.ModelAdmin[SubscriptionInvoice]):
     readonly_fields = [
         'id',
         'user',
-        'subscription',
         'status',
         'period_months',
         'amount_stars',
@@ -163,11 +161,11 @@ class SubscriptionInvoiceAdmin(admin.ModelAdmin[SubscriptionInvoice]):
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin[Subscription]):
-    date_hierarchy = 'end_date'
+    date_hierarchy = 'expiry_date'
     search_fields = ['owner__id']
-    list_filter = ['end_date']
-    list_display = ['id', 'owner_id_display', 'end_date']
-    fields = ['id', 'owner', 'end_date']
+    list_filter = ['expiry_date']
+    list_display = ['id', 'owner_id_display', 'expiry_date']
+    fields = ['id', 'owner', 'expiry_date']
     readonly_fields = ['id']
 
     def get_queryset(self, request: HttpRequest) -> QuerySet[Subscription]:

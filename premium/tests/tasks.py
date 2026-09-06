@@ -76,7 +76,7 @@ class SendSubscriptionExpiryNotificationsTaskTests(UserMixin, TestCase):
     def test_notify_expiring_subscriptions(self) -> None:
         Subscription.objects.create(
             owner=self.user,
-            end_date=(
+            expiry_date=(
                 timezone.now()
                 + (
                     settings.PREMIUM_SUBSCRIPTION_EXPIRY_NOTIFICATION_START
@@ -96,7 +96,7 @@ class SendSubscriptionExpiryNotificationsTaskTests(UserMixin, TestCase):
     def test_skip_subscriptions_not_expiring_soon(self) -> None:
         Subscription.objects.create(
             owner=self.user,
-            end_date=(
+            expiry_date=(
                 timezone.now()
                 + settings.PREMIUM_SUBSCRIPTION_EXPIRY_NOTIFICATION_START * 2
             ),
@@ -107,7 +107,7 @@ class SendSubscriptionExpiryNotificationsTaskTests(UserMixin, TestCase):
 
     def test_skip_expired_subscriptions(self) -> None:
         Subscription.objects.create(
-            owner=self.user, end_date=timezone.now() - timedelta(days=1)
+            owner=self.user, expiry_date=timezone.now() - timedelta(days=1)
         )
 
         send_subscription_expiry_notifications.delay()
@@ -131,7 +131,7 @@ class DeleteExpiredSubscriptionsTaskTests(UserMixin, TestCase):
 
     def test_delete_expired_subscriptions(self) -> None:
         subscription: Subscription = Subscription.objects.create(
-            owner=self.user, end_date=timezone.now() - timedelta(days=1)
+            owner=self.user, expiry_date=timezone.now() - timedelta(days=1)
         )
 
         delete_expired_subscriptions.delay()
@@ -143,7 +143,7 @@ class DeleteExpiredSubscriptionsTaskTests(UserMixin, TestCase):
 
     def test_skip_non_expired_subscriptions(self) -> None:
         subscription: Subscription = Subscription.objects.create(
-            owner=self.user, end_date=timezone.now() + timedelta(days=1)
+            owner=self.user, expiry_date=timezone.now() + timedelta(days=1)
         )
 
         delete_expired_subscriptions.delay()

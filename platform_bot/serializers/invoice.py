@@ -98,13 +98,13 @@ class PremiumInvoiceSerializer(serializers.ModelSerializer[SubscriptionInvoice])
     ) -> SubscriptionInvoice:
         new_status: InvoiceStatus | None = validated_data.get('status')
 
-        if new_status == InvoiceStatus.PAID:
-            invoice.activate_subscription(save=False)
-
         invoice.status = new_status or invoice.status
         invoice.telegram_charge_id = validated_data.get(
             'telegram_charge_id', invoice.telegram_charge_id
         )
-        invoice.save(update_fields=['subscription', 'status', 'telegram_charge_id'])
+        invoice.save(update_fields=['status', 'telegram_charge_id'])
+
+        if new_status == InvoiceStatus.PAID:
+            invoice.activate_subscription()
 
         return invoice
