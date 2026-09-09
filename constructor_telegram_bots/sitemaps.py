@@ -1,6 +1,8 @@
 from django.contrib.sitemaps import Sitemap
 from django.utils import translation
 
+from legal.enums import DocumentType
+
 
 class MainSitemap(Sitemap[str]):
     priority = 0.5
@@ -9,12 +11,7 @@ class MainSitemap(Sitemap[str]):
     alternates = True
 
     def items(self) -> list[str]:
-        return [
-            '/',
-            '/instruction/',
-            '/terms-of-service/',
-            '/privacy-policy/',
-        ]
+        return ['/', '/instruction/', *(f'/legal/{type}/' for type in DocumentType)]
 
     def location(self, item: str) -> str:
         language: str = translation.get_language()
