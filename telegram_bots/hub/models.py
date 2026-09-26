@@ -11,7 +11,7 @@ from docker.models.containers import Container
 from redis import Redis
 
 from constructor_telegram_bots.docker import docker_client
-from constructor_telegram_bots.utils.redis import get_redis_client
+from constructor_telegram_bots.redis import get_redis_client
 
 from .service.client import ServiceClient
 
