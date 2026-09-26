@@ -1,6 +1,6 @@
 from django.db import migrations
 
-from constructor_telegram_bots.migrations import convert_html_to_markdown
+from constructor_telegram_bots.utils.migrations import convert_html_to_markdown
 
 
 class Migration(migrations.Migration):
