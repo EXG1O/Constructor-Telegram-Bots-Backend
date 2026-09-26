@@ -11,6 +11,7 @@ from .database_operation import (
     DiagramDatabaseOperationViewSetTests,
 )
 from .database_record import DatabaseRecordViewSetTests
+from .enums import ConnectionObjectTypeTests
 from .invoice import DiagramInvoiceViewSetTests, InvoiceViewSetTests
 from .message import DiagramMessageViewSetTests, MessageViewSetTests
 from .randomizer import DiagramRandomizerViewSetTests, RandomizerViewSetTests
@@ -26,6 +27,7 @@ from .user import UserViewSetTests
 from .variable import VariableViewSetTests
 
 __all__ = [
+    'ConnectionObjectTypeTests',
     'StatsAPIViewTests',
     'TelegramBotViewSetTests',
     'ConnectionViewSetTests',

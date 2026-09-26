@@ -10,6 +10,8 @@ import django_stubs_ext
 
 from rest_framework.generics import GenericAPIView
 
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
 from .enums import Mode
 from .sitemaps import MainSitemap
 from .views import frontend
@@ -53,7 +55,21 @@ if settings.MODE == Mode.DEBUG:
 
     urlpatterns.extend(static(settings.STATIC_URL, document_root=settings.STATIC_ROOT))
     urlpatterns.extend(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
-    urlpatterns.append(path('silk/', include('silk.urls', namespace='silk')))
+    urlpatterns.extend(
+        [
+            path(
+                'api/schema/public/',
+                SpectacularAPIView.as_view(),
+                name='schema-public',
+            ),
+            path(
+                'api/docs/public/',
+                SpectacularSwaggerView.as_view(url_name='schema-public'),
+                name='docs-public',
+            ),
+            path('silk/', include('silk.urls', namespace='silk')),
+        ]
+    )
 
 urlpatterns.extend(
     i18n_patterns(

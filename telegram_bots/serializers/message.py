@@ -182,8 +182,8 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
                 code='required',
             )
 
-        images: list[dict[str, Any]] = data.get('images', [])
-        documents: list[dict[str, Any]] = data.get('documents', [])
+        images: list[dict[str, Any]] = data.get('images') or []
+        documents: list[dict[str, Any]] = data.get('documents') or []
         media: list[dict[str, Any]] = images + documents
 
         if media:

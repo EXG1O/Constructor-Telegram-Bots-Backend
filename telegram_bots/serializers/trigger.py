@@ -3,6 +3,12 @@ from django.db import transaction
 
 from rest_framework import serializers
 
+from drf_spectacular.extensions import OpenApiSerializerExtension
+from drf_spectacular.openapi import AutoSchema
+from drf_spectacular.plumbing import build_basic_type
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import Direction, extend_schema_field
+
 from constructor_telegram_bots.utils.serializers import (
     validate_exclusive_fields,
     validate_max_count,
@@ -35,8 +41,22 @@ class TriggerWebhookSerializer(serializers.ModelSerializer[TriggerWebhook]):
         model = TriggerWebhook
         fields = ['url']
 
+    @extend_schema_field(OpenApiTypes.URI)
     def get_url(self, webhook: TriggerWebhook) -> str:
         return webhook.get_webhook_url(request=self.context.get('request'))
+
+
+class TriggerWebhookSerializerExtension(OpenApiSerializerExtension):  # type: ignore [no-untyped-call]
+    target_class = TriggerWebhookSerializer
+
+    def map_serializer(
+        self, auto_schema: AutoSchema, direction: Direction
+    ) -> dict[str, Any]:
+        if direction == 'request':
+            schema: dict[str, Any] | None = build_basic_type(OpenApiTypes.OBJECT)
+            assert schema
+            return schema
+        return super().map_serializer(auto_schema, direction)
 
 
 class TriggerSerializer(TelegramBotMixin, BlockSerializer[Trigger]):

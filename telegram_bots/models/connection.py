@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from django_stubs_ext.db.models import TypedModelMeta
 
-from ..enums import ConnectionHandlePosition
+from ..enums import ConnectionHandlePosition, ConnectionObjectType
 
 
 class Connection(models.Model):
@@ -52,3 +52,21 @@ class Connection(models.Model):
             f'{self.source_content_type}:{self.source_object_id} -> '
             f'{self.target_content_type}:{self.target_object_id}'
         )
+
+    @property
+    def source_object_type(self) -> ConnectionObjectType:
+        model: type[models.Model] | None = self.source_content_type.model_class()
+
+        if not model:
+            raise ValueError('Unknown source content type model.')
+
+        return ConnectionObjectType.from_model(model)
+
+    @property
+    def target_object_type(self) -> ConnectionObjectType:
+        model: type[models.Model] | None = self.target_content_type.model_class()
+
+        if not model:
+            raise ValueError('Unknown target content type model.')
+
+        return ConnectionObjectType.from_model(model)

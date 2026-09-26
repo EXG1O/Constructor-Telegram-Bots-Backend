@@ -7,6 +7,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from drf_spectacular.utils import extend_schema
+
 from constructor_telegram_bots.mixins import IDLookupMixin
 from constructor_telegram_bots.permissions import ReadOnly
 from users.authentication import JWTAuthentication
@@ -27,6 +29,7 @@ class TelegramBotViewSet(IDLookupMixin, ModelViewSet[TelegramBot]):
     def get_queryset(self) -> QuerySet[TelegramBot]:
         return self.request.user.telegram_bots.all()  # type: ignore [union-attr]
 
+    @extend_schema(request=None)
     @action(detail=True, methods=[HTTPMethod.POST])
     def start(self, request: Request, id: int) -> Response:
         telegram_bot: TelegramBot = self.get_object()
@@ -34,6 +37,7 @@ class TelegramBotViewSet(IDLookupMixin, ModelViewSet[TelegramBot]):
 
         return Response(self.get_serializer(telegram_bot).data)
 
+    @extend_schema(request=None)
     @action(detail=True, methods=[HTTPMethod.POST])
     def restart(self, request: Request, id: int) -> Response:
         telegram_bot: TelegramBot = self.get_object()
@@ -41,6 +45,7 @@ class TelegramBotViewSet(IDLookupMixin, ModelViewSet[TelegramBot]):
 
         return Response(self.get_serializer(telegram_bot).data)
 
+    @extend_schema(request=None)
     @action(detail=True, methods=[HTTPMethod.POST])
     def stop(self, request: Request, id: int) -> Response:
         telegram_bot: TelegramBot = self.get_object()

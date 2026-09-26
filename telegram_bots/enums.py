@@ -1,10 +1,7 @@
-from django.db.models import IntegerChoices, TextChoices
+from django.db.models import IntegerChoices, Model, TextChoices
 from django.utils.translation import gettext_lazy as _
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from django.utils.functional import _StrPromise
+from enum import nonmember
 
 
 class APIRequestMethod(TextChoices):
@@ -36,41 +33,56 @@ class ConnectionObjectType(TextChoices):
     TIMER = 'timer', _('Таймер')
     RANDOMIZER = 'randomizer', _('Рандомайзер')
 
-    @staticmethod
-    def source_choices() -> list[tuple[str, _StrPromise]]:
-        return [
-            (item.value, item.label)
-            for item in [
-                ConnectionObjectType.TRIGGER,
-                ConnectionObjectType.MESSAGE,
-                ConnectionObjectType.MESSAGE_KEYBOARD_BUTTON,
-                ConnectionObjectType.CONDITION,
-                ConnectionObjectType.BACKGROUND_TASK,
-                ConnectionObjectType.API_REQUEST,
-                ConnectionObjectType.DATABASE_OPERATION,
-                ConnectionObjectType.INVOICE,
-                ConnectionObjectType.TEMPORARY_VARIABLE,
-                ConnectionObjectType.TIMER,
-                ConnectionObjectType.RANDOMIZER,
-            ]
+    SOURCE_CHOICES = nonmember(
+        [
+            TRIGGER,
+            MESSAGE,
+            MESSAGE_KEYBOARD_BUTTON,
+            CONDITION,
+            BACKGROUND_TASK,
+            API_REQUEST,
+            DATABASE_OPERATION,
+            INVOICE,
+            TEMPORARY_VARIABLE,
+            TIMER,
+            RANDOMIZER,
         ]
+    )
+    TARGET_CHOICES = nonmember(
+        [
+            TRIGGER,
+            MESSAGE,
+            CONDITION,
+            API_REQUEST,
+            DATABASE_OPERATION,
+            INVOICE,
+            TEMPORARY_VARIABLE,
+            TIMER,
+            RANDOMIZER,
+        ]
+    )
+
+    _OBJECT_TYPE_MAP = nonmember(
+        {
+            'telegram_bots.trigger': TRIGGER[0],
+            'telegram_bots.message': MESSAGE[0],
+            'telegram_bots.messagekeyboardbutton': MESSAGE_KEYBOARD_BUTTON[0],
+            'telegram_bots.condition': CONDITION[0],
+            'telegram_bots.backgroundtask': BACKGROUND_TASK[0],
+            'telegram_bots.apirequest': API_REQUEST[0],
+            'telegram_bots.databaseoperation': DATABASE_OPERATION[0],
+            'telegram_bots.invoice': INVOICE[0],
+            'telegram_bots.temporaryvariable': TEMPORARY_VARIABLE[0],
+            'telegram_bots.timer': TIMER[0],
+            'telegram_bots.randomizer': RANDOMIZER[0],
+        }
+    )
 
     @staticmethod
-    def target_choices() -> list[tuple[str, _StrPromise]]:
-        return [
-            (item.value, item.label)
-            for item in [
-                ConnectionObjectType.TRIGGER,
-                ConnectionObjectType.MESSAGE,
-                ConnectionObjectType.CONDITION,
-                ConnectionObjectType.API_REQUEST,
-                ConnectionObjectType.DATABASE_OPERATION,
-                ConnectionObjectType.INVOICE,
-                ConnectionObjectType.TEMPORARY_VARIABLE,
-                ConnectionObjectType.TIMER,
-                ConnectionObjectType.RANDOMIZER,
-            ]
-        ]
+    def from_model(model: type[Model]) -> ConnectionObjectType:
+        return ConnectionObjectType(
+            ConnectionObjectType._OBJECT_TYPE_MAP[model._meta.label_lower]
+        )
 
 
 class KeyboardType(TextChoices):

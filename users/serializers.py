@@ -19,15 +19,16 @@ class UserSerializer(serializers.ModelSerializer[User]):
             'is_staff',
             'joined_date',
         ]
+        read_only_fields = fields
 
 
 class UserLoginSerializer(serializers.Serializer[User]):
-    code = serializers.CharField()
-    redirect_uri = serializers.URLField()
+    code = serializers.CharField(write_only=True)
+    redirect_uri = serializers.URLField(write_only=True)
 
 
 class UserTokenRefreshSerializer(serializers.Serializer[User]):
-    refresh_token = serializers.CharField()
+    refresh_token = serializers.CharField(write_only=True)
 
     def validate_refresh_token(self, raw_refresh_token: str) -> RefreshToken:
         _, refresh_token = authenticate_token(
@@ -40,9 +41,10 @@ class UserTokenRefreshSerializer(serializers.Serializer[User]):
 
 class TokenSerializer(serializers.ModelSerializer[Token]):
     blacklisted_date = serializers.DateTimeField(
-        source='blacklisted.blacklisted_date', allow_null=True
+        source='blacklisted.blacklisted_date', read_only=True, allow_null=True
     )
 
     class Meta:
         model = Token
         fields = ['jti', 'type', 'blacklisted_date', 'expiry_date', 'created_date']
+        read_only_fields = fields

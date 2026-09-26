@@ -1,8 +1,10 @@
+from django.conf import settings
 from django.db.models import Count, QuerySet
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from django.utils.translation import gettext as _
 
+from rest_framework import serializers, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -18,7 +20,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
 
+from constructor_telegram_bots.enums import Mode
 from constructor_telegram_bots.mixins import IDLookupMixin
 from constructor_telegram_bots.pagination import LimitOffsetPagination
 from constructor_telegram_bots.permissions import ReadOnly
@@ -53,10 +58,47 @@ class UserViewSet(
     filterset_fields = ['is_allowed', 'is_blocked']
     ordering = ['-id']
 
+    # Stub for OpenAPI schema generation
+    if settings.MODE == Mode.DEBUG:
+        queryset = User.objects.none()
+
     def get_queryset(self) -> QuerySet[User]:
         return self.telegram_bot.users.all()
 
-    @action(detail=False, methods=[HTTPMethod.GET], url_path='timeline-stats')
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name='field',
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                enum=['last_activity_date', 'activated_date'],
+                default='activated_date',
+            ),
+            OpenApiParameter(
+                name='days',
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                default=7,
+            ),
+        ],
+        responses={
+            status.HTTP_200_OK: inline_serializer(
+                name='UserTimelineStatsResponse',
+                fields={
+                    'date': serializers.DateField(read_only=True),
+                    'count': serializers.IntegerField(read_only=True),
+                },
+                many=True,
+            )
+        },
+    )
+    @action(
+        detail=False,
+        methods=[HTTPMethod.GET],
+        url_path='timeline-stats',
+        pagination_class=None,
+        filter_backends=[],
+    )
     def timeline_stats(self, request: Request, telegram_bot_id: int) -> Response:
         field: str = request.query_params.get('field', 'activated_date')
 

@@ -1,10 +1,11 @@
+from django.conf import settings
 from django.core.files.storage import default_storage
 from django.db.models import QuerySet
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
-from rest_framework import status
+from rest_framework import serializers, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.filters import OrderingFilter
@@ -16,7 +17,10 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, inline_serializer
+from drf_standardized_errors.openapi_serializers import ErrorResponse401Serializer
 
+from constructor_telegram_bots.enums import Mode
 from constructor_telegram_bots.permissions import ReadOnly
 
 from .authentication import JWTAuthentication
@@ -44,6 +48,14 @@ class StatsAPIView(APIView):
     authentication_classes = []
     permission_classes = []
 
+    @extend_schema(
+        responses={
+            status.HTTP_200_OK: inline_serializer(
+                name='UserStatsResponse',
+                fields={'total': serializers.IntegerField(read_only=True)},
+            )
+        }
+    )
     @method_decorator(cache_page(3600))
     def get(self, request: Request) -> Response:
         return Response({'total': User.objects.count()})
@@ -57,6 +69,15 @@ class UserViewSet(RetrieveModelMixin, DestroyModelMixin, GenericViewSet[User]):
     def get_object(self) -> User:
         return cast(User, self.request.user)
 
+    @extend_schema(
+        request=None,
+        responses={
+            status.HTTP_200_OK: inline_serializer(
+                name='UserLoginInitResponse',
+                fields={'code_challenge': serializers.CharField(read_only=True)},
+            )
+        },
+    )
     @action(
         detail=False,
         methods=[HTTPMethod.POST],
@@ -76,6 +97,19 @@ class UserViewSet(RetrieveModelMixin, DestroyModelMixin, GenericViewSet[User]):
 
         return Response({'code_challenge': code_challenge})
 
+    @extend_schema(
+        request=UserLoginSerializer,
+        responses={
+            status.HTTP_200_OK: inline_serializer(
+                name='UserLoginResponse',
+                fields={
+                    'refresh_token': serializers.CharField(read_only=True),
+                    'access_token': serializers.CharField(read_only=True),
+                },
+            ),
+            status.HTTP_401_UNAUTHORIZED: ErrorResponse401Serializer,
+        },
+    )
     @action(
         detail=False,
         methods=[HTTPMethod.POST],
@@ -104,18 +138,29 @@ class UserViewSet(RetrieveModelMixin, DestroyModelMixin, GenericViewSet[User]):
             }
         )
 
+    @extend_schema(request=None, responses={status.HTTP_204_NO_CONTENT: None})
     @action(detail=True, methods=[HTTPMethod.POST])
     def logout(self, request: Request, pk: str | None = None) -> Response:
         jwt_token = cast(AccessToken, request.auth)
         user_logout(request, jwt_token)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(request=None, responses={status.HTTP_204_NO_CONTENT: None})
     @action(detail=True, methods=[HTTPMethod.POST], url_path='logout-all')
     def logout_all(self, request: Request, pk: str | None = None) -> Response:
         user: User = self.get_object()
         user_logout_all(request, user)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(
+        request=UserTokenRefreshSerializer,
+        responses={
+            status.HTTP_200_OK: inline_serializer(
+                name='UserTokenRefreshResponse',
+                fields={'access_token': serializers.CharField(read_only=True)},
+            )
+        },
+    )
     @action(
         detail=True,
         methods=[HTTPMethod.POST],
@@ -131,6 +176,7 @@ class UserViewSet(RetrieveModelMixin, DestroyModelMixin, GenericViewSet[User]):
 
         return Response({'access_token': str(refresh_token.access_token)})
 
+    @extend_schema(request=None, responses={status.HTTP_204_NO_CONTENT: None})
     @action(detail=True, methods=[HTTPMethod.POST], url_path='accept-terms')
     def accept_terms(self, request: Request, pk: str | None = None) -> Response:
         user: User = self.get_object()
@@ -158,6 +204,10 @@ class TokenViewSet(ReadOnlyModelViewSet[Token]):
     filterset_fields = ['type']
     ordering = ['-created_date']
     lookup_field = 'jti'
+
+    # Stub for OpenAPI schema generation
+    if settings.MODE == Mode.DEBUG:
+        queryset = Token.objects.none()
 
     def get_queryset(self) -> QuerySet[Token]:
         tokens: QuerySet[Token] = cast(User, self.request.user).tokens.all()
