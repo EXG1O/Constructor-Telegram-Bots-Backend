@@ -186,12 +186,69 @@ INSTALLED_APPS: Final[list[str]] = [
 ]
 
 if MODE == Mode.DEBUG:
-    INSTALLED_APPS.append('silk')
+    INSTALLED_APPS.extend(['drf_spectacular', 'silk'])
+
+PUBLIC_APPS: Final[list[str]] = [
+    'users',
+    'premium',
+    'telegram_bots',
+    'instruction',
+    'legal',
+]
+
 
 REST_FRAMEWORK: Final[dict[str, Any]] = {
-    'EXCEPTION_HANDLER': 'drf_standardized_errors.handler.exception_handler'
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'constructor_telegram_bots.parsers.MultiPartJSONParser',
+    ],
+    'EXCEPTION_HANDLER': 'drf_standardized_errors.handler.exception_handler',
 }
 
+if MODE == Mode.DEBUG:
+    REST_FRAMEWORK['DEFAULT_SCHEMA_CLASS'] = (
+        'constructor_telegram_bots.openapi.AutoSchema'
+    )
+    SPECTACULAR_SETTINGS = {
+        'OAS_VERSION': '3.1.0',
+        'CAMELIZE_NAMES': True,
+        'COMPONENT_SPLIT_REQUEST': True,
+        'ENUM_NAME_OVERRIDES': {
+            'ValidationErrorType': 'drf_standardized_errors.openapi_serializers.ValidationErrorEnum.choices',
+            'ClientErrorType': 'drf_standardized_errors.openapi_serializers.ClientErrorEnum.choices',
+            'ServerErrorType': 'drf_standardized_errors.openapi_serializers.ServerErrorEnum.choices',
+            'ErrorCode401': 'drf_standardized_errors.openapi_serializers.ErrorCode401Enum.choices',
+            'ErrorCode403': 'drf_standardized_errors.openapi_serializers.ErrorCode403Enum.choices',
+            'ErrorCode404': 'drf_standardized_errors.openapi_serializers.ErrorCode404Enum.choices',
+            'ErrorCode405': 'drf_standardized_errors.openapi_serializers.ErrorCode405Enum.choices',
+            'ErrorCode406': 'drf_standardized_errors.openapi_serializers.ErrorCode406Enum.choices',
+            'ErrorCode415': 'drf_standardized_errors.openapi_serializers.ErrorCode415Enum.choices',
+            'ErrorCode429': 'drf_standardized_errors.openapi_serializers.ErrorCode429Enum.choices',
+            'ErrorCode500': 'drf_standardized_errors.openapi_serializers.ErrorCode500Enum.choices',
+            'TokenType': 'users.enums.TokenType',
+            'DocumentType': 'legal.enums.DocumentType.choices',
+            'ConnectionHandlePosition': 'telegram_bots.enums.ConnectionHandlePosition',
+            # 'ConnectionObjectType': 'telegram_bots.enums.ConnectionObjectType',
+            'ConnectionSourceObjectType': 'telegram_bots.enums.ConnectionObjectType.SOURCE_CHOICES',
+            'ConnectionTargetObjectType': 'telegram_bots.enums.ConnectionObjectType.TARGET_CHOICES',
+            'MessageKeyboardType': 'telegram_bots.enums.KeyboardType',
+            'MessageKeyboardButtonStyle': 'telegram_bots.enums.KeyboardButtonStyle',
+            'ConditionPartType': 'telegram_bots.enums.ConditionPartType',
+            'ConditionPartOperatorType': 'telegram_bots.enums.ConditionPartOperatorType',
+            'ConditionPartNextPartOperator': 'telegram_bots.enums.ConditionPartNextPartOperator',
+            'APIRequestMethod': 'telegram_bots.enums.APIRequestMethod',
+            'BackgroundTaskInterval': 'telegram_bots.enums.BackgroundTaskInterval',
+            'ChatType': 'telegram_bots.enums.ChatType',
+        },
+        'PREPROCESSING_HOOKS': [
+            'constructor_telegram_bots.openapi.filter_public_endpoints'
+        ],
+        'POSTPROCESSING_HOOKS': [
+            'drf_standardized_errors.openapi_hooks.postprocess_schema_enums',
+            'constructor_telegram_bots.openapi.add_x_enum_varnames',
+        ],
+    }
 
 MIDDLEWARE: Final[list[str]] = [
     'django.middleware.security.SecurityMiddleware',

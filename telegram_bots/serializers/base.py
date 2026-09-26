@@ -1,5 +1,8 @@
 from rest_framework import serializers
 
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
+
 from ..models.base import AbstractBlock, AbstractMedia, AbstractMessageMedia
 from .connection import ConnectionSerializer
 
@@ -68,11 +71,13 @@ class MediaSerializer[T: AbstractMedia](serializers.ModelSerializer[T]):
             },
         }
 
+    @extend_schema_field(OpenApiTypes.INT)
     def get_size(self, media: T) -> int | None:
         if not media.file:
             return None
         return media.file.size
 
+    @extend_schema_field(OpenApiTypes.URI)
     def get_url(self, media: T) -> str | None:
         if not media.file:
             return None

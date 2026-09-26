@@ -1,11 +1,14 @@
 from django.db.models import QuerySet
 
+from rest_framework import serializers, status
 from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
+
+from drf_spectacular.utils import extend_schema, inline_serializer
 
 from constructor_telegram_bots.mixins import IDLookupMixin
 from users.authentication import JWTAuthentication
@@ -29,6 +32,14 @@ class SubscriptionPriceViewSet(IDLookupMixin, ReadOnlyModelViewSet[SubscriptionP
     queryset = SubscriptionPrice.objects.all()
     serializer_class = SubscriptionPriceSerializer
 
+    @extend_schema(
+        responses={
+            status.HTTP_200_OK: inline_serializer(
+                name='SubscriptionPriceCheckoutResponse',
+                fields={'url': serializers.URLField(read_only=True)},
+            )
+        }
+    )
     @action(
         detail=True,
         methods=[HTTPMethod.GET],

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-06 11:29+0000\n"
+"POT-Creation-Date: 2026-09-26 07:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,8 +26,8 @@ msgid "Недействительный токен."
 msgstr "Invalid token."
 
 #, python-format
-msgid "Не удалось проанализировать JSON данные для поля '%(field)s'."
-msgstr "Failed to parse JSON data for the field '%(field)s'."
+msgid "Не удалось проанализировать JSON данные из поля '%(field)s'."
+msgstr "Failed to parse JSON data from the field '%(field)s'."
 
 msgid "Английский"
 msgstr "English"
@@ -679,14 +679,6 @@ msgstr "Condition must contain at least one part."
 #, python-format
 msgid "%(object)s не найден."
 msgstr "%(object)s not found."
-
-#, python-format
-msgid "%(source_object)s не может быть стартовой позиции коннектора."
-msgstr "%(source_object)s cannot be a start connector position."
-
-#, python-format
-msgid "%(target_object)s не может быть окончательной позиции коннектора."
-msgstr "%(target_object)s cannot be a end connector position."
 
 msgid "Превышен лимит хранилища."
 msgstr "Storage limit exceeded."

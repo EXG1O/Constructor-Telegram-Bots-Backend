@@ -7,3 +7,4 @@ class DocumentSerializer(serializers.ModelSerializer[Document]):
     class Meta:
         model = Document
         fields = ['content', 'updated_date']
+        read_only_fields = fields

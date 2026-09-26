@@ -21,10 +21,7 @@ from ..models import (
 from .mixins import TelegramBotMixin
 
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, TypedDict
-
-if TYPE_CHECKING:
-    from django.utils.functional import _StrPromise
+from typing import Any, TypedDict
 
 
 class _ObjectTypeConfig(TypedDict):
@@ -34,10 +31,10 @@ class _ObjectTypeConfig(TypedDict):
 
 class ConnectionSerializer(TelegramBotMixin, serializers.ModelSerializer[Connection]):
     source_object_type = serializers.ChoiceField(
-        choices=ConnectionObjectType.source_choices(), write_only=True
+        choices=ConnectionObjectType.SOURCE_CHOICES
     )
     target_object_type = serializers.ChoiceField(
-        choices=ConnectionObjectType.target_choices(), write_only=True
+        choices=ConnectionObjectType.TARGET_CHOICES
     )
 
     class Meta:
@@ -109,55 +106,14 @@ class ConnectionSerializer(TelegramBotMixin, serializers.ModelSerializer[Connect
                 code='not_found',
             ) from error
 
-    def get_object_type(self, obj: Model) -> str:
-        for object_type, config in self._object_type_map.items():
-            if isinstance(obj, config['model']):
-                return object_type
-
-        raise ValueError('Unknown object.')
-
     def validate(self, data: dict[str, Any]) -> dict[str, Any]:
-        source_object_type: str = data.pop('source_object_type')
-        target_object_type: str = data.pop('target_object_type')
-
-        allowed_source_object_types: dict[str, _StrPromise] = dict(
-            ConnectionObjectType.source_choices()
-        )
-        allowed_target_object_types: dict[str, _StrPromise] = dict(
-            ConnectionObjectType.target_choices()
-        )
-
-        if source_object_type not in allowed_source_object_types:
-            raise serializers.ValidationError(
-                _('%(source_object)s не может быть стартовой позиции коннектора.')
-                % {'source_object': allowed_source_object_types[source_object_type]}
-            )
-
-        if target_object_type not in allowed_target_object_types:
-            raise serializers.ValidationError(
-                _('%(target_object)s не может быть окончательной позиции коннектора.')
-                % {'target_object': allowed_target_object_types[target_object_type]}
-            )
-
         data['source_object'] = self.get_object(
-            source_object_type, data.pop('source_object_id')
+            data.pop('source_object_type'), data.pop('source_object_id')
         )
         data['target_object'] = self.get_object(
-            target_object_type, data.pop('target_object_id')
+            data.pop('target_object_type'), data.pop('target_object_id')
         )
-
         return data
 
     def create(self, validated_data: dict[str, Any]) -> Connection:
         return self.telegram_bot.connections.create(**validated_data)
-
-    def to_representation(self, instance: Connection) -> dict[str, Any]:
-        representation: dict[str, Any] = super().to_representation(instance)
-        representation['source_object_type'] = self.get_object_type(
-            instance.source_object  # type: ignore [arg-type]
-        )
-        representation['target_object_type'] = self.get_object_type(
-            instance.target_object  # type: ignore [arg-type]
-        )
-
-        return representation

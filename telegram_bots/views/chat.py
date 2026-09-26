@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import QuerySet
 
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -12,6 +13,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from django_filters.rest_framework import DjangoFilterBackend
 
+from constructor_telegram_bots.enums import Mode
 from constructor_telegram_bots.mixins import IDLookupMixin
 from constructor_telegram_bots.pagination import LimitOffsetPagination
 from constructor_telegram_bots.permissions import ReadOnly
@@ -40,6 +42,10 @@ class ChatViewSet(
     search_fields = ['telegram_id', 'title', 'username', 'first_name', 'last_name']
     filterset_fields = ['type', 'is_allowed', 'is_blocked']
     ordering = ['-id']
+
+    # Stub for OpenAPI schema generation
+    if settings.MODE == Mode.DEBUG:
+        queryset = Chat.objects.none()
 
     def get_queryset(self) -> QuerySet[Chat]:
         return self.telegram_bot.chats.all()

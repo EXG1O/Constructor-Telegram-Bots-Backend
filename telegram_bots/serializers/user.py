@@ -1,10 +1,13 @@
 from rest_framework import serializers
 
+from drf_spectacular.utils import extend_schema_serializer
+
 from ..models import User
 
 from typing import Any
 
 
+@extend_schema_serializer(component_name='TelegramBotUserSerializer')
 class UserSerializer(serializers.ModelSerializer[User]):
     class Meta:
         model = User
