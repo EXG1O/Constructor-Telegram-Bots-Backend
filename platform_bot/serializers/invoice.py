@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.utils.functional import cached_property
 
 from rest_framework import serializers
@@ -102,7 +103,8 @@ class PremiumInvoiceSerializer(serializers.ModelSerializer[SubscriptionInvoice])
         invoice.telegram_charge_id = validated_data.get(
             'telegram_charge_id', invoice.telegram_charge_id
         )
-        invoice.save(update_fields=['status', 'telegram_charge_id'])
+        invoice.paid_date = timezone.now()
+        invoice.save(update_fields=['status', 'telegram_charge_id', 'paid_date'])
 
         if new_status == InvoiceStatus.PAID:
             invoice.activate_subscription()
