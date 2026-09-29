@@ -11,7 +11,12 @@ class MainSitemap(Sitemap[str]):
     alternates = True
 
     def items(self) -> list[str]:
-        return ['/', '/instruction/', *(f'/legal/{type}/' for type in DocumentType)]
+        return [
+            '/',
+            '/instruction/',
+            *(f'/legal/{type}/' for type in DocumentType),
+            '/premium/',
+        ]
 
     def location(self, item: str) -> str:
         language: str = translation.get_language()
