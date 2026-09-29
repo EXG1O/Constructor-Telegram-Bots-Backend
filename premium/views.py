@@ -29,7 +29,7 @@ from typing import cast
 class SubscriptionPriceViewSet(IDLookupMixin, ReadOnlyModelViewSet[SubscriptionPrice]):
     authentication_classes = []
     permission_classes = []
-    queryset = SubscriptionPrice.objects.all()
+    queryset = SubscriptionPrice.objects.filter(is_active=True)
     serializer_class = SubscriptionPriceSerializer
 
     @extend_schema(
