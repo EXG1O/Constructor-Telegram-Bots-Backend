@@ -16,11 +16,12 @@ from datetime import datetime, timedelta
 class SubscriptionPrice(models.Model):  # type: ignore [django-manager-missing]
     badge = models.CharField(_('Бейдж'), max_length=64, blank=True, null=True)
     period_months = models.PositiveSmallIntegerField(
-        _('Период в месяцах'), unique=True, validators=[MinValueValidator(1)]
+        _('Период в месяцах'), validators=[MinValueValidator(1)]
     )
     amount_stars_per_month = models.PositiveIntegerField(
         _('Сумма в Telegram Stars за месяц'), validators=[MinValueValidator(1)]
     )
+    is_active = models.BooleanField(_('Активный'), default=True)
 
     class Meta(TypedModelMeta):
         db_table = 'premium_subscription_price'

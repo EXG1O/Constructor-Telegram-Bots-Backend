@@ -18,8 +18,10 @@ from typing import Any, Literal
 
 @admin.register(SubscriptionPrice)
 class SubscriptionPriceAdmin(TranslationAdmin[SubscriptionPrice]):
+    list_filter = ['is_active']
     list_display = [
         'id',
+        'is_active',
         'badge',
         'period_months',
         'amount_stars_per_month',
@@ -31,6 +33,7 @@ class SubscriptionPriceAdmin(TranslationAdmin[SubscriptionPrice]):
         'period_months',
         'amount_stars_per_month',
         'amount_stars_display',
+        'is_active',
     ]
     readonly_fields = ['id', 'amount_stars_display']
 
