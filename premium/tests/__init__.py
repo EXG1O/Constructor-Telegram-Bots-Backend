@@ -1,4 +1,3 @@
-from .subscription import SubscriptionViewSetTests
 from .subscription_invoice import SubscriptionInvoiceViewSetTests
 from .subscription_price import SubscriptionPriceViewSetTests
 from .tasks import (
@@ -10,7 +9,6 @@ from .tasks import (
 __all__ = [
     'SubscriptionPriceViewSetTests',
     'SubscriptionInvoiceViewSetTests',
-    'SubscriptionViewSetTests',
     'SendSubscriptionExpiryNotificationsTaskTests',
     'DeleteExpiredSubscriptionsTaskTests',
     'MakePendingInvoicesExpiredTaskTests',

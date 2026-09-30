@@ -2,11 +2,10 @@ from django.db.models import QuerySet
 
 from rest_framework import serializers, status
 from rest_framework.decorators import action
-from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from drf_spectacular.utils import extend_schema, inline_serializer
 
@@ -15,12 +14,8 @@ from users.authentication import JWTAuthentication
 from users.models import User
 from users.permissions import IsTermsAccepted
 
-from .models import Subscription, SubscriptionInvoice, SubscriptionPrice
-from .serializers import (
-    SubscriptionInvoiceSerializer,
-    SubscriptionPriceSerializer,
-    SubscriptionSerializer,
-)
+from .models import SubscriptionInvoice, SubscriptionPrice
+from .serializers import SubscriptionInvoiceSerializer, SubscriptionPriceSerializer
 
 from http import HTTPMethod
 from typing import cast
@@ -65,14 +60,3 @@ class SubscriptionInvoiceViewSet(
 
     def get_queryset(self) -> QuerySet[SubscriptionInvoice]:
         return cast(User, self.request.user).subscription_invoices.all()
-
-
-class SubscriptionViewSet(
-    IDLookupMixin, RetrieveModelMixin, GenericViewSet[Subscription]
-):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = SubscriptionSerializer
-
-    def get_object(self) -> Subscription:
-        return cast(User, self.request.user).subscription
