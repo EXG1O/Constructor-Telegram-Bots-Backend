@@ -228,6 +228,7 @@ if MODE == Mode.DEBUG:
             'ErrorCode500': 'drf_standardized_errors.openapi_serializers.ErrorCode500Enum.choices',
             'TokenType': 'users.enums.TokenType',
             'DocumentType': 'legal.enums.DocumentType.choices',
+            'InvoiceStatus': 'premium.enums.InvoiceStatus',
             'ConnectionHandlePosition': 'telegram_bots.enums.ConnectionHandlePosition',
             # 'ConnectionObjectType': 'telegram_bots.enums.ConnectionObjectType',
             'ConnectionSourceObjectType': 'telegram_bots.enums.ConnectionObjectType.SOURCE_CHOICES',
