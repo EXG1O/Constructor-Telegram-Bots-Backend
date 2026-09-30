@@ -44,6 +44,16 @@ class SubscriptionPriceViewSetTests(UserMixin, TestCase):
         response: Response = view(request, **view_kwargs)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_inactive(self) -> None:
+        view = SubscriptionPriceViewSet.as_view({'get': 'retrieve'})
+
+        self.price.is_active = False
+        self.price.save(update_fields=['is_active'])
+
+        request: Request = self.factory.get(self.detail_url)
+        response: Response = view(request, **self.detail_url_kwargs)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_list(self) -> None:
         view = SubscriptionPriceViewSet.as_view({'get': 'list'})
         request: Request = self.factory.get(self.list_url)
