@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Subscription, SubscriptionInvoice, SubscriptionPrice
+from .models import SubscriptionInvoice, SubscriptionPrice
 
 
 class SubscriptionPriceSerializer(serializers.ModelSerializer[SubscriptionPrice]):
@@ -28,11 +28,4 @@ class SubscriptionInvoiceSerializer(serializers.ModelSerializer[SubscriptionInvo
             'created_date',
             'paid_date',
         ]
-        read_only_fields = fields
-
-
-class SubscriptionSerializer(serializers.ModelSerializer[Subscription]):
-    class Meta:
-        model = Subscription
-        fields = ['id', 'expiry_date']
         read_only_fields = fields

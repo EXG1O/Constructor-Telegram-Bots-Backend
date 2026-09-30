@@ -1,11 +1,22 @@
 from rest_framework import serializers
 
+from premium.models import Subscription
+
 from .jwt.tokens import RefreshToken
 from .models import Token, User
 from .utils.auth import authenticate_token
 
 
+class UserSubscriptionSerializer(serializers.ModelSerializer[Subscription]):
+    class Meta:
+        model = Subscription
+        fields = ['is_expired', 'expiry_date']
+        read_only_fields = fields
+
+
 class UserSerializer(serializers.ModelSerializer[User]):
+    subscription = UserSubscriptionSerializer(read_only=True, allow_null=True)
+
     class Meta:
         model = User
         fields = [
@@ -14,8 +25,8 @@ class UserSerializer(serializers.ModelSerializer[User]):
             'first_name',
             'last_name',
             'full_name',
+            'subscription',
             'accepted_terms',
-            'has_subscription',
             'is_staff',
             'joined_date',
         ]
