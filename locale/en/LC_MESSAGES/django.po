@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-30 13:00+0000\n"
+"POT-Creation-Date: 2026-10-01 06:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,9 +24,6 @@ msgstr "Maximum allowed size is {max_size} bytes."
 
 msgid "Недействительный токен."
 msgstr "Invalid token."
-
-msgid "Этот параметр запроса обязателен."
-msgstr "This query parameter is required."
 
 #, python-format
 msgid "Не удалось проанализировать JSON данные из поля '%(field)s'."
