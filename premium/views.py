@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import QuerySet
 
 from rest_framework import serializers, status
@@ -7,9 +8,14 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from drf_spectacular.utils import extend_schema, inline_serializer
 
+from constructor_telegram_bots.enums import Mode
+from constructor_telegram_bots.filters import ChoiceInFilter
 from constructor_telegram_bots.mixins import IDLookupMixin
+from constructor_telegram_bots.pagination import LimitOffsetPagination
+from premium.enums import InvoiceStatus
 from users.authentication import JWTAuthentication
 from users.models import User
 from users.permissions import IsTermsAccepted
@@ -51,12 +57,29 @@ class SubscriptionPriceViewSet(IDLookupMixin, ReadOnlyModelViewSet[SubscriptionP
         )
 
 
+class SubscriptionInvoiceFilter(FilterSet):
+    statuses = ChoiceInFilter(
+        field_name='status', lookup_expr='in', choices=InvoiceStatus.choices
+    )
+
+    class Meta:
+        model = SubscriptionInvoice
+        fields = ['statuses']
+
+
 class SubscriptionInvoiceViewSet(
     IDLookupMixin, ReadOnlyModelViewSet[SubscriptionInvoice]
 ):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = SubscriptionInvoiceSerializer
+    pagination_class = LimitOffsetPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = SubscriptionInvoiceFilter
+
+    # Stub for OpenAPI schema generation
+    if settings.MODE == Mode.DEBUG:
+        queryset = SubscriptionInvoice.objects.none()
 
     def get_queryset(self) -> QuerySet[SubscriptionInvoice]:
         return cast(User, self.request.user).subscription_invoices.all()
