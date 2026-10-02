@@ -1,4 +1,4 @@
-from django.db.models import IntegerChoices, Model, TextChoices
+from django.db.models import Model, TextChoices
 from django.utils.translation import gettext_lazy as _
 
 from enum import nonmember
@@ -117,12 +117,9 @@ class ConditionPartNextPartOperator(TextChoices):
     OR = '||', _('ИЛИ')
 
 
-class BackgroundTaskInterval(IntegerChoices):
-    DAY_1 = 1, _('1 день')
-    DAYS_3 = 3, _('3 дня')
-    DAYS_7 = 7, _('7 дней')
-    DAYS_14 = 14, _('14 дней')
-    DAYS_28 = 28, _('28 дней')
+class BackgroundTaskStatus(TextChoices):
+    PENDING = 'pending', _('Ожидание')
+    RUNNING = 'running', _('Выполнение')
 
 
 class ChatType(TextChoices):

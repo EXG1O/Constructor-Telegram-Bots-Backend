@@ -102,7 +102,15 @@ TELEGRAM_BOT_MAX_MESSAGES: Final[int] = 500
 TELEGRAM_BOT_MAX_MESSAGE_KEYBOARD_BUTTONS: Final[int] = 100
 TELEGRAM_BOT_MAX_CONDITIONS: Final[int] = 250
 TELEGRAM_BOT_MAX_CONDITION_PARTS: Final[int] = 25
+
 TELEGRAM_BOT_MAX_BACKGROUND_TASKS: Final[int] = 25
+TELEGRAM_BOT_MIN_BACKGROUND_TASK_INTERVAL: Final[int] = int(
+    timedelta(minutes=15).total_seconds()
+)
+TELEGRAM_BOT_MAX_BACKGROUND_TASK_INTERVAL: Final[int] = int(
+    timedelta(days=30).total_seconds()
+)
+
 TELEGRAM_BOT_MAX_API_REQUESTS: Final[int] = 250
 TELEGRAM_BOT_MAX_DATABASE_OPERATIONS: Final[int] = 250
 TELEGRAM_BOT_MAX_INVOICES: Final[int] = 100
@@ -239,7 +247,7 @@ if MODE == Mode.DEBUG:
             'ConditionPartOperatorType': 'telegram_bots.enums.ConditionPartOperatorType',
             'ConditionPartNextPartOperator': 'telegram_bots.enums.ConditionPartNextPartOperator',
             'APIRequestMethod': 'telegram_bots.enums.APIRequestMethod',
-            'BackgroundTaskInterval': 'telegram_bots.enums.BackgroundTaskInterval',
+            'BackgroundTaskStatus': 'telegram_bots.enums.BackgroundTaskStatus',
             'ChatType': 'telegram_bots.enums.ChatType',
         },
         'PREPROCESSING_HOOKS': [

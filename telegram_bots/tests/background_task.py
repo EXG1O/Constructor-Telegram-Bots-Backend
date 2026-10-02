@@ -11,7 +11,6 @@ from constructor_telegram_bots.utils.tests import assert_view_basic_protected
 from users.tests.mixins import UserMixin
 from users.utils.tests import assert_view_requires_terms_acceptance
 
-from ..enums import BackgroundTaskInterval
 from ..models import BackgroundTask
 from ..views import BackgroundTaskViewSet, DiagramBackgroundTaskViewSet
 from .mixins import BackgroundTaskMixin, TelegramBotMixin
@@ -115,7 +114,10 @@ class BackgroundTaskViewSetTests(
 
         request = self.factory.post(
             self.list_true_url,
-            {'name': 'Test name', 'interval': BackgroundTaskInterval.DAY_1},
+            {
+                'name': 'Test name',
+                'interval': settings.TELEGRAM_BOT_MIN_BACKGROUND_TASK_INTERVAL,
+            },
             format='json',
         )
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
@@ -132,14 +134,17 @@ class BackgroundTaskViewSetTests(
             BackgroundTask(
                 telegram_bot=self.telegram_bot,
                 name=f'Test background task #{num}',
-                interval=BackgroundTaskInterval.DAY_1,
+                interval=settings.TELEGRAM_BOT_MIN_BACKGROUND_TASK_INTERVAL,
             )
             for num in range(settings.TELEGRAM_BOT_MAX_BACKGROUND_TASKS)
         )
 
         request = self.factory.post(
             self.list_true_url,
-            {'name': 'Test name', 'interval': BackgroundTaskInterval.DAY_1},
+            {
+                'name': 'Test name',
+                'interval': settings.TELEGRAM_BOT_MIN_BACKGROUND_TASK_INTERVAL,
+            },
             format='json',
         )
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
@@ -222,7 +227,10 @@ class BackgroundTaskViewSetTests(
 
         request = self.factory.put(
             self.detail_true_url,
-            {'name': new_name, 'interval': BackgroundTaskInterval.DAY_1},
+            {
+                'name': new_name,
+                'interval': settings.TELEGRAM_BOT_MIN_BACKGROUND_TASK_INTERVAL,
+            },
             format='json',
         )
         force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
