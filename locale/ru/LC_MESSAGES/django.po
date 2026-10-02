@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 06:09+0000\n"
+"POT-Creation-Date: 2026-10-02 04:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -310,19 +310,7 @@ msgstr ""
 msgid "ИЛИ"
 msgstr ""
 
-msgid "1 день"
-msgstr ""
-
-msgid "3 дня"
-msgstr ""
-
-msgid "7 дней"
-msgstr ""
-
-msgid "14 дней"
-msgstr ""
-
-msgid "28 дней"
+msgid "Выполнение"
 msgstr ""
 
 msgid "Приватный"

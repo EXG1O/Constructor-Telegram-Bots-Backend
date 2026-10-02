@@ -41,5 +41,8 @@ class BackgroundTaskSerializer(TelegramBotMixin, BlockSerializer[BackgroundTask]
 class DiagramBackgroundTaskSerializer(DiagramSerializer[BackgroundTask]):
     class Meta(DiagramSerializer.Meta):
         model = BackgroundTask
-        fields = DiagramSerializer.Meta.fields + ['interval']
-        read_only_fields = DiagramSerializer.Meta.read_only_fields + ['interval']
+        fields = DiagramSerializer.Meta.fields + ['status', 'interval']
+        read_only_fields = DiagramSerializer.Meta.read_only_fields + [
+            'status',
+            'interval',
+        ]

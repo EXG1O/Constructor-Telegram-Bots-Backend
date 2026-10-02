@@ -1,9 +1,12 @@
+from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from django_stubs_ext.db.models import TypedModelMeta
 
-from ..enums import BackgroundTaskInterval
+from telegram_bots.enums import BackgroundTaskStatus
+
 from .base import AbstractBlock
 
 
@@ -14,8 +17,18 @@ class BackgroundTask(AbstractBlock):
         related_name='background_tasks',
         verbose_name=_('Telegram бот'),
     )
-    interval = models.PositiveSmallIntegerField(
-        _('Интервал'), choices=BackgroundTaskInterval
+    status = models.CharField(
+        _('Статус'),
+        max_length=7,
+        choices=BackgroundTaskStatus,
+        default=BackgroundTaskStatus.PENDING,
+    )
+    interval = models.PositiveIntegerField(
+        _('Интервал'),
+        validators=[
+            MinValueValidator(settings.TELEGRAM_BOT_MIN_BACKGROUND_TASK_INTERVAL),
+            MaxValueValidator(settings.TELEGRAM_BOT_MAX_BACKGROUND_TASK_INTERVAL),
+        ],
     )
     target_connections = None
 

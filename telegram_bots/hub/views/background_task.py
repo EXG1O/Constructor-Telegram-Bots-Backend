@@ -1,5 +1,6 @@
 from django.db.models import QuerySet
 
+from rest_framework.mixins import UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
@@ -29,7 +30,10 @@ class BackgroundTaskFilter(FilterSet):
 
 
 class BackgroundTaskViewSet(
-    IDLookupMixin, TelegramBotMixin, ReadOnlyModelViewSet[BackgroundTask]
+    IDLookupMixin,
+    TelegramBotMixin,
+    UpdateModelMixin,
+    ReadOnlyModelViewSet[BackgroundTask],
 ):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
