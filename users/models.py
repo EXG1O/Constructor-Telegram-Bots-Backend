@@ -47,7 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('Пользователи')
 
     def __str__(self) -> str:
-        return f'Telegram ID: {self.telegram_id}'
+        return f'{self.full_name} (Telegram ID: {self.telegram_id})'
 
     @property  # type: ignore [override]
     def password(self) -> None:

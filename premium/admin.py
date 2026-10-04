@@ -8,7 +8,6 @@ from modeltranslation.admin import TranslationAdmin
 
 from platform_bot.models import PlatformBot
 from platform_bot.service.models import RefundPayment
-from users.models import User
 
 from .enums import InvoiceStatus
 from .models import Subscription, SubscriptionInvoice, SubscriptionPrice
@@ -52,7 +51,7 @@ class SubscriptionInvoiceAdmin(admin.ModelAdmin[SubscriptionInvoice]):
     list_filter = ['status', 'created_date', 'paid_date', 'updated_date']
     list_display = [
         'id',
-        'user_id_display',
+        'user',
         'status',
         'period_months',
         'amount_stars',
@@ -86,11 +85,6 @@ class SubscriptionInvoiceAdmin(admin.ModelAdmin[SubscriptionInvoice]):
 
     def get_queryset(self, request: HttpRequest) -> QuerySet[SubscriptionInvoice]:
         return super().get_queryset(request).select_related('user')
-
-    @admin.display(description=_('ID пользователя'), ordering='user__id')
-    def user_id_display(self, invoice: SubscriptionInvoice) -> int | None:
-        user: User | None = invoice.user
-        return user.id if user else None
 
     @admin.action(description=_('Пометить выбранные счета как ожидаемые'))
     def make_pending(
@@ -179,13 +173,9 @@ class SubscriptionAdmin(admin.ModelAdmin[Subscription]):
     date_hierarchy = 'expiry_date'
     search_fields = ['owner__id']
     list_filter = ['expiry_date']
-    list_display = ['id', 'owner_id_display', 'expiry_date']
+    list_display = ['id', 'owner', 'expiry_date']
     fields = ['id', 'owner', 'expiry_date']
     readonly_fields = ['id']
 
     def get_queryset(self, request: HttpRequest) -> QuerySet[Subscription]:
         return super().get_queryset(request).select_related('owner')
-
-    @admin.display(description=_('ID владельца'), ordering='owner__id')
-    def owner_id_display(self, subscription: Subscription) -> int:
-        return subscription.owner.id
