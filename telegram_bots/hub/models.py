@@ -147,7 +147,7 @@ class TelegramBotsHub(models.Model):
         verbose_name_plural = _('Хабы')
 
     def __str__(self) -> str:
-        return self.container_id
+        return f'ID: {self.id} | Container ID: {self.container_id}'
 
     @cached_property
     def container(self) -> Container:

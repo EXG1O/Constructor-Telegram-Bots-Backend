@@ -30,7 +30,7 @@ class SubscriptionPrice(models.Model):  # type: ignore [django-manager-missing]
         ordering = ['period_months']
 
     def __str__(self) -> str:
-        return f'{self.amount_stars_per_month}/m ({self.amount_stars}/{self.period_months}m)'
+        return f'ID: {self.id}'
 
     @property
     def amount_stars(self) -> int:
@@ -77,7 +77,7 @@ class SubscriptionInvoice(models.Model):
         verbose_name_plural = _('Счета за подписки')
 
     def __str__(self) -> str:
-        return f'{self.user}: {self.amount_stars}/{self.period_months}m ({self.status})'
+        return f'ID: {self.id} | {self.amount_stars} Telegram Stars ({self.status})'
 
     def activate_subscription(self) -> Subscription:
         current_datetime: datetime = timezone.now()
@@ -116,7 +116,7 @@ class Subscription(models.Model):
         verbose_name_plural = _('Подписки')
 
     def __str__(self) -> str:
-        return f'{self.owner}: {self.expiry_date}'
+        return f'ID: {self.id}'
 
     @property
     def is_expired(self) -> bool:

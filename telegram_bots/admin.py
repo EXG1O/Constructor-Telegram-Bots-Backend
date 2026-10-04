@@ -50,6 +50,7 @@ class TelegramBotAdmin(admin.ModelAdmin[TelegramBot]):
         return (
             super()
             .get_queryset(request)
+            .select_related('owner', 'hub')
             .annotate(
                 block_count=(
                     Count('triggers', distinct=True)
@@ -59,6 +60,9 @@ class TelegramBotAdmin(admin.ModelAdmin[TelegramBot]):
                     + Count('api_requests', distinct=True)
                     + Count('database_operations', distinct=True)
                     + Count('invoices', distinct=True)
+                    + Count('temporary_variables', distinct=True)
+                    + Count('timers', distinct=True)
+                    + Count('randomizers', distinct=True)
                 ),
                 user_count=Count('users', distinct=True),
             )
@@ -134,6 +138,9 @@ class UserAdmin(admin.ModelAdmin[User]):
         'last_activity_date',
         'activated_date',
     ]
+
+    def get_queryset(self, request: HttpRequest) -> QuerySet[User]:
+        return super().get_queryset(request).select_related('telegram_bot')
 
     def has_add_permission(self, *args: Any, **kwargs: Any) -> Literal[False]:
         return False

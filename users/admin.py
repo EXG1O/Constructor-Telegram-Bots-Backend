@@ -8,6 +8,8 @@ from django.utils.translation import gettext_lazy as _
 from .models import User
 from .utils.storage import get_user_file_names
 
+from typing import Any, Literal
+
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin[User]):
@@ -25,7 +27,7 @@ class UserAdmin(admin.ModelAdmin[User]):
         'telegram_id',
         'first_name',
         'last_name',
-        'telegram_bot_count',
+        'telegram_bot_count_display',
         'accepted_terms',
         'terms_accepted_date',
         'is_staff',
@@ -37,7 +39,7 @@ class UserAdmin(admin.ModelAdmin[User]):
         'telegram_id',
         'first_name',
         'last_name',
-        'telegram_bot_count',
+        'telegram_bot_count_display',
         'groups',
         'accepted_terms',
         'terms_accepted_date',
@@ -50,7 +52,7 @@ class UserAdmin(admin.ModelAdmin[User]):
         'telegram_id',
         'first_name',
         'last_name',
-        'telegram_bot_count',
+        'telegram_bot_count_display',
         'accepted_terms',
         'terms_accepted_date',
         'last_login',
@@ -84,5 +86,8 @@ class UserAdmin(admin.ModelAdmin[User]):
             default_storage.delete(file_name)
 
     @admin.display(description=_('Telegram ботов'), ordering='telegram_bot_count')
-    def telegram_bot_count(self, user: User) -> int:
+    def telegram_bot_count_display(self, user: User) -> int:
         return user.telegram_bots.count()
+
+    def has_add_permission(self, *args: Any, **kwargs: Any) -> Literal[False]:
+        return False
