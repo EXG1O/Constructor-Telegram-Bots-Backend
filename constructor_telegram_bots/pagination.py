@@ -9,7 +9,7 @@ from typing import Any
 
 
 class LimitOffsetPagination(BaseLimitOffsetPagination):
-    max_limit: int = 100
+    max_limit: int = 150
     default_limit: int = 50
 
     def get_paginated_response(self, data: list[dict[str, Any]]) -> Response:
