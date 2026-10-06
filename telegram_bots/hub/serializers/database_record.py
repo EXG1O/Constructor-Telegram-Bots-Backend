@@ -20,6 +20,9 @@ class DatabaseRecordListSerializer(serializers.ListSerializer[list[DatabaseRecor
     ) -> list[DatabaseRecord]:
         data: Any | None = validated_data.get('data')
 
+        if data is None:
+            return records
+
         for record in records:
             record.data = deep_merge_data(record.data, data) if self.partial else data
 
@@ -58,6 +61,9 @@ class DatabaseRecordSerializer(
         self, record: DatabaseRecord, validated_data: dict[str, Any]
     ) -> DatabaseRecord:
         data: Any | None = validated_data.get('data')
+
+        if data is None:
+            return record
 
         record.data = deep_merge_data(record.data, data) if self.partial else data
         record.save(update_fields=['data'])
