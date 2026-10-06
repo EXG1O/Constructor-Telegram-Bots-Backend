@@ -1,5 +1,5 @@
 from django.contrib import admin, messages
-from django.db.models import F, QuerySet, Sum
+from django.db.models import Count, F, QuerySet, Sum
 from django.http.request import HttpRequest
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -136,7 +136,6 @@ class SubscriptionInvoiceAdmin(admin.ModelAdmin[SubscriptionInvoice]):
         self, request: HttpRequest, queryset: QuerySet[SubscriptionInvoice]
     ) -> None:
         queryset = queryset.filter(user__isnull=False, telegram_charge_id__isnull=False)
-        updated: int = queryset.update(status=InvoiceStatus.REFUNDED)
 
         with PlatformBot().get_client() as client:
             client.refund_payments(
@@ -156,10 +155,11 @@ class SubscriptionInvoiceAdmin(admin.ModelAdmin[SubscriptionInvoice]):
             request,
             message=(
                 _(
-                    'Выбранные счета (%d) были успешно помечены как возвращённые, '
-                    'а звёзды возвращены (%d).'
+                    'Выбранные счета (%(count)s) были успешно отправлены на возврат звёзд (%(amount)s).'
                 )
-                % (updated, queryset.aggregate(total=Sum('amount_stars'))['total'] or 0)
+                % queryset.aggregate(
+                    count=Count('id'), amount=Sum('amount_stars', default=0)
+                )
             ),
             level=messages.SUCCESS,
         )

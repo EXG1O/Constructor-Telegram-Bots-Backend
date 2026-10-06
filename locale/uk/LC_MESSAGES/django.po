@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 04:28+0000\n"
+"POT-Creation-Date: 2026-10-06 11:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -100,9 +100,6 @@ msgstr "Бот платформи"
 msgid "Итоговая сумма в Telegram Stars"
 msgstr "Загальна сума в Telegram Stars"
 
-msgid "ID пользователя"
-msgstr "ID користувача"
-
 msgid "Пометить выбранные счета как ожидаемые"
 msgstr "Означити вибрані рахунки як очікувані"
 
@@ -125,13 +122,11 @@ msgstr "Означити вибрані рахунки як повернуті �
 
 #, python-format
 msgid ""
-"Выбранные счета (%d) были успешно помечены как возвращённые, а звёзды "
-"возвращены (%d)."
+"Выбранные счета (%(count)s) были успешно отправлены на возврат звёзд "
+"(%(amount)s)."
 msgstr ""
-"Вибрані рахунки (%d) вспішно означені як повернуті та зірочки повернуті (%d)."
-
-msgid "ID владельца"
-msgstr "ID власника"
+"Вибрані рахунки (%(count)s) успішно відправлені на повернення зірочок "
+"(%(amount)s)."
 
 msgid "Премиум"
 msgstr "Преміум"
