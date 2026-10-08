@@ -4,6 +4,8 @@ from django.db.models import JSONField
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 
+import orjson
+
 from collections.abc import Callable
 from ipaddress import (
     IPv4Address,
@@ -15,7 +17,6 @@ from ipaddress import (
 )
 from typing import Any
 from urllib.parse import urlparse
-import json
 
 
 @deconstructible
@@ -68,7 +69,7 @@ class StrictJSONValidator:
         if not isinstance(value, self.allowed_types):
             raise ValidationError(self.message, code=self.code)
 
-        self.validate_max_length(json.dumps(value))
+        self.validate_max_length(orjson.dumps(value).decode())
 
 
 validate_no_special_chars = RegexValidator(
