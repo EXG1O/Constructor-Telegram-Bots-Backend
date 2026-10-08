@@ -33,7 +33,7 @@ class BackgroundTaskFilter(FilterSet):
 
     class Meta:
         model = BackgroundTask
-        fields = ['has_source_connections']
+        fields = ['ids', 'has_source_connections']
 
 
 class BackgroundTaskViewSet(

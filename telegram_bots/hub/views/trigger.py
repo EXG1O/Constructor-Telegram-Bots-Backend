@@ -10,6 +10,7 @@ from django_filters.rest_framework import (
     FilterSet,
 )
 
+from constructor_telegram_bots.filters import NumberInFilter
 from constructor_telegram_bots.mixins import IDLookupMixin
 
 from ...models import Trigger
@@ -19,6 +20,7 @@ from .mixins import TelegramBotMixin
 
 
 class TriggerFilter(FilterSet):
+    ids = NumberInFilter(field_name='id', lookup_expr='in')
     command = CharFilter(field_name='command__command', lookup_expr='exact')
     command_payload = CharFilter(field_name='command__payload', lookup_expr='exact')
     has_command = BooleanFilter(
@@ -54,6 +56,7 @@ class TriggerFilter(FilterSet):
     class Meta:
         model = Trigger
         fields = [
+            'ids',
             'command',
             'command_payload',
             'has_command_payload',
