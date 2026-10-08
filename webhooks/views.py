@@ -6,6 +6,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+import orjson
+
 from telegram_bots.hub.models import TelegramBotsHub
 from telegram_bots.models import TelegramBot, Trigger, TriggerWebhook
 
@@ -13,7 +15,7 @@ from .authentication import TelegramAuthentication, TriggerWebhookAuthentication
 from .exceptions import TelegramBotDisabledError
 from .parsers import TriggerWebhookParser
 
-from typing import cast
+from typing import Any, cast
 
 
 class TelegramAPIView(APIView):
@@ -46,12 +48,17 @@ class TriggerWebhookAPIView(APIView):
         if not hub:
             raise TelegramBotDisabledError()
 
+        payload: Any = request.data
+
+        if not isinstance(payload, str):
+            payload = orjson.dumps(payload).decode()
+
         with hub.get_client() as client:
             client.send_trigger(
                 bot_id=telegram_bot.id,
                 trigger=trigger,
                 trigger_has_target_connections=trigger.target_connections.exists(),
-                payload=cast(str, request.data),
+                payload=payload,
             )
 
         return Response(status=status.HTTP_202_ACCEPTED)
