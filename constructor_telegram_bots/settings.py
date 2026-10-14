@@ -56,6 +56,10 @@ FRONTEND_PATH: Final[Path] = Path(os.environ['FRONTEND_PATH'])
 TELEGRAM_LOGIN_CLIENT_ID: Final[int] = int(os.environ['TELEGRAM_LOGIN_CLIENT_ID'])
 TELEGRAM_LOGIN_CLIENT_SECRET: Final[str] = os.environ['TELEGRAM_LOGIN_CLIENT_SECRET']
 
+PREMIUM_SUBSCRIPTION_PRICE_STARS: Final[int] = int(
+    os.getenv('PREMIUM_SUBSCRIPTION_PRICE_STARS', 0)
+)
+
 PLATFORM_BOT_URL: Final[URL] = URL(os.getenv('PLATFORM_BOT_URL', 'http://localhost'))
 PLATFORM_BOT_SOCKET: Final[Path | None] = (
     Path(path) if (path := os.getenv('PLATFORM_BOT_SOCKET')) else None

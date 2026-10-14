@@ -1,5 +1,15 @@
+from django.conf import settings
 from django.contrib import admin, messages
-from django.db.models import Count, F, QuerySet, Sum
+from django.db.models import (
+    Case,
+    Count,
+    ExpressionWrapper,
+    F,
+    IntegerField,
+    QuerySet,
+    Sum,
+    When,
+)
 from django.http.request import HttpRequest
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -22,15 +32,15 @@ class SubscriptionPriceAdmin(TranslationAdmin[SubscriptionPrice]):
         'id',
         'is_active',
         'badge',
+        'discount_percentage',
         'period_months',
-        'amount_stars_per_month',
         'amount_stars_display',
     ]
     fields = [
         'id',
         'badge',
+        'discount_percentage',
         'period_months',
-        'amount_stars_per_month',
         'amount_stars_display',
         'is_active',
     ]
@@ -38,7 +48,23 @@ class SubscriptionPriceAdmin(TranslationAdmin[SubscriptionPrice]):
 
     @admin.display(
         description=_('Итоговая сумма в Telegram Stars'),
-        ordering=F('amount_stars_per_month') * F('period_months'),
+        ordering=Case(
+            When(
+                discount_percentage__isnull=False,
+                then=ExpressionWrapper(
+                    F('period_months')
+                    * settings.PREMIUM_SUBSCRIPTION_PRICE_STARS
+                    * (100 - F('discount_percentage'))
+                    / 100,
+                    output_field=IntegerField(),
+                ),
+            ),
+            default=ExpressionWrapper(
+                F('period_months') * settings.PREMIUM_SUBSCRIPTION_PRICE_STARS,
+                output_field=IntegerField(),
+            ),
+            output_field=IntegerField(),
+        ),
     )
     def amount_stars_display(self, price: SubscriptionPrice) -> str | int:
         return price.amount_stars if price.pk else '-'
