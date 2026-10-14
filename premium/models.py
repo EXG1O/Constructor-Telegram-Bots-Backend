@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core.validators import MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models, transaction
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -15,11 +15,14 @@ from datetime import datetime, timedelta
 
 class SubscriptionPrice(models.Model):  # type: ignore [django-manager-missing]
     badge = models.CharField(_('Бейдж'), max_length=64, blank=True, null=True)
+    discount_percentage = models.PositiveSmallIntegerField(
+        _('Процент скидки'),
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+    )
     period_months = models.PositiveSmallIntegerField(
         _('Период в месяцах'), validators=[MinValueValidator(1)]
-    )
-    amount_stars_per_month = models.PositiveIntegerField(
-        _('Сумма в Telegram Stars за месяц'), validators=[MinValueValidator(1)]
     )
     is_active = models.BooleanField(_('Активный'), default=True)
 
@@ -33,8 +36,18 @@ class SubscriptionPrice(models.Model):  # type: ignore [django-manager-missing]
         return f'ID: {self.id}'
 
     @property
+    def base_amount_stars(self) -> int:
+        return settings.PREMIUM_SUBSCRIPTION_PRICE_STARS * self.period_months
+
+    @property
+    def discounted_amount_stars(self) -> int | None:
+        if not self.discount_percentage:
+            return None
+        return round(self.base_amount_stars * (100 - self.discount_percentage) / 100)
+
+    @property
     def amount_stars(self) -> int:
-        return self.amount_stars_per_month * self.period_months
+        return self.discounted_amount_stars or self.base_amount_stars
 
     def get_checkout_url(self, user_id: int) -> str:
         with PlatformBot().get_client() as client:

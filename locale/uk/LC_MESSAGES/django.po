@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 11:10+0000\n"
+"POT-Creation-Date: 2026-10-14 19:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -149,11 +149,11 @@ msgstr "Повернення"
 msgid "Бейдж"
 msgstr "Бейдж"
 
+msgid "Процент скидки"
+msgstr "Відсоток знижки"
+
 msgid "Период в месяцах"
 msgstr "Період у місяцях"
-
-msgid "Сумма в Telegram Stars за месяц"
-msgstr "Умовна від Telegram Stars на місяц"
 
 msgid "Активный"
 msgstr "Активний"

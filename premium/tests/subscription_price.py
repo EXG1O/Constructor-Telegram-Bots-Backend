@@ -23,7 +23,7 @@ class SubscriptionPriceViewSetTests(UserMixin, TestCase):
 
         self.factory = APIRequestFactory()
         self.price: SubscriptionPrice = SubscriptionPrice.objects.create(
-            period_months=1, amount_stars_per_month=100
+            period_months=1
         )
 
         self.detail_url_kwargs: dict[str, Any] = {'id': self.price.id}

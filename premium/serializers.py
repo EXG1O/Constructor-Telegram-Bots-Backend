@@ -9,8 +9,9 @@ class SubscriptionPriceSerializer(serializers.ModelSerializer[SubscriptionPrice]
         fields = [
             'id',
             'badge',
+            'discount_percentage',
             'period_months',
-            'amount_stars_per_month',
+            'base_amount_stars',
             'amount_stars',
         ]
         read_only_fields = fields
