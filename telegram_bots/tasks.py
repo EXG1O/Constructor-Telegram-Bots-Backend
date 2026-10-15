@@ -9,8 +9,10 @@ if TYPE_CHECKING:
 
 
 @shared_task
-def start_telegram_bot(id: int, token: str, webhook_url: str) -> None:
-    hub: TelegramBotsHub = get_telegram_bots_hub_modal().objects.get_freest()
+def start_telegram_bot(id: int, token: str, webhook_url: str, is_premium: bool) -> None:
+    hub: TelegramBotsHub = get_telegram_bots_hub_modal().objects.get_freest(
+        is_premium=is_premium
+    )
 
     with hub.get_client() as client:
         client.start_bot(id, token=token, webhook_url=webhook_url)
