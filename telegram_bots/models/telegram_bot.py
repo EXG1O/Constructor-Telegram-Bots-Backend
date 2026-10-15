@@ -156,7 +156,10 @@ class TelegramBot(models.Model):
             self.save(update_fields=['must_be_enabled', 'is_loading'])
 
         tasks.start_telegram_bot.delay(
-            id=self.id, token=self.api_token, webhook_url=self.webhook_url
+            id=self.id,
+            token=self.api_token,
+            webhook_url=self.webhook_url,
+            is_premium=self.owner.has_subscription,
         )
 
     def restart(self, save: bool = True) -> None:

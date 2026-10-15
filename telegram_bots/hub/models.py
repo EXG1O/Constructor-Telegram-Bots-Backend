@@ -15,11 +15,14 @@ from constructor_telegram_bots.redis import get_redis_client
 
 from .service.client import ServiceClient
 
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Final, cast
 import secrets
 
 if TYPE_CHECKING:
     from ..models import TelegramBot
+
+
+_CREATION_HUB_CACHE_TTL: Final[int] = 12
 
 
 def _generate_token() -> str:
@@ -27,14 +30,23 @@ def _generate_token() -> str:
 
 
 class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
-    def create_with_container(self) -> TelegramBotsHub:
+    def create_with_container(self, is_premium: bool = False) -> TelegramBotsHub:
         redis_client: Redis = get_redis_client()
-
-        lock_key: str = 'tbh:lock:create_with_container'
-        result_key: str = 'tbh:shared_result:create_with_container'
 
         if TYPE_CHECKING:
             hub: TelegramBotsHub
+            lock_key: str
+            result_key: str
+            max_bot_count: int
+
+        if is_premium:
+            lock_key = 'tbh:premium:create_with_container:lock'
+            result_key = 'tbh:premium:create_with_container:shared_result'
+            max_bot_count = settings.TELEGRAM_BOTS_HUB_PREMIUM_MAX_BOTS
+        else:
+            lock_key = 'tbh:default:create_with_container:lock'
+            result_key = 'tbh:default:create_with_container:shared_result'
+            max_bot_count = settings.TELEGRAM_BOTS_HUB_DEFAULT_MAX_BOTS
 
         with redis_client.lock(lock_key, timeout=120, sleep=0.5):
             if cached_result := redis_client.get(result_key):
@@ -43,8 +55,8 @@ class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
                 with hub.get_client() as client:
                     bot_ids: list[int] = client.get_bot_ids()
 
-                if len(bot_ids) < settings.TELEGRAM_BOTS_HUB_MAX_BOTS:
-                    redis_client.expire(result_key, 6)
+                if len(bot_ids) < max_bot_count:
+                    redis_client.expire(result_key, _CREATION_HUB_CACHE_TTL)
                     return hub
 
             telegram_token: str = _generate_token()
@@ -57,6 +69,7 @@ class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
                 restart_policy={'Name': 'on-failure', 'MaximumRetryCount': 3},
                 environment={
                     'MODE': settings.MODE,
+                    'PREMIUM': is_premium,
                     'REDIS_URL': settings.TELEGRAM_BOTS_HUB_REDIS_URL,
                     'APP_TOKEN': microservice_token,
                     'TELEGRAM_TOKEN': telegram_token,
@@ -94,6 +107,7 @@ class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
                     telegram_token=telegram_token,
                     service_token=service_token,
                     microservice_token=microservice_token,
+                    is_premium=is_premium,
                 )
             except Exception as create_error:
                 try:
@@ -102,19 +116,26 @@ class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
                     raise docker_error from create_error
                 raise create_error
             else:
-                redis_client.set(result_key, hub.id, ex=6)
+                redis_client.set(result_key, hub.id, ex=_CREATION_HUB_CACHE_TTL)
                 return hub
 
-    def get_freest(self) -> TelegramBotsHub:
+    def get_freest(self, is_premium: bool = False) -> TelegramBotsHub:
         hub: TelegramBotsHub | None = (
             self.annotate(bot_count=Count('bots'))
-            .filter(bot_count__lt=settings.TELEGRAM_BOTS_HUB_MAX_BOTS)
+            .filter(
+                is_premium=is_premium,
+                bot_count__lt=(
+                    settings.TELEGRAM_BOTS_HUB_PREMIUM_MAX_BOTS
+                    if is_premium
+                    else settings.TELEGRAM_BOTS_HUB_DEFAULT_MAX_BOTS
+                ),
+            )
             .order_by('bot_count')
             .first()
         )
 
         if not hub:
-            return self.create_with_container()
+            return self.create_with_container(is_premium=is_premium)
 
         return hub
 
@@ -130,13 +151,14 @@ class TelegramBotsHub(models.Model):
     microservice_token = models.CharField(
         _('Токен микросервиса'), max_length=64, unique=True, default=_generate_token
     )
+    is_premium = models.BooleanField(_('Премиум'), default=False)
     idle_start_date = models.DateTimeField(
         _('Дата начала простоя'), blank=True, null=True, auto_now_add=True
     )
 
     is_authenticated = True  # Stub for IsAuthenticated permission
 
-    objects = TelegramBotsHubManager()
+    objects: TelegramBotsHubManager = TelegramBotsHubManager()
 
     if TYPE_CHECKING:
         bots: models.Manager[TelegramBot]

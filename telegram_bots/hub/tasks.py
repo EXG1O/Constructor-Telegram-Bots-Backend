@@ -12,6 +12,7 @@ from .service.schemas import BotCredentials
 from .utils.hubs import force_delete_all_hubs, force_delete_hub_docker_container
 
 from itertools import batched
+from typing import TYPE_CHECKING
 import logging
 
 logger: logging.Logger = logging.getLogger(__name__)
@@ -36,30 +37,30 @@ def delete_expired_telegram_bots_hubs() -> None:
     TelegramBotsHub.objects.filter(id__in=[hub.id for hub in hubs]).delete()
 
 
-@shared_task
-def sync_telegram_bots_hubs() -> None:
-    docker_client.images.build(
-        path=str(settings.TELEGRAM_BOTS_HUB_PATH),
-        tag=settings.TELEGRAM_BOTS_HUB_TAG,
-        rm=True,
-    )
+def _start_telegram_bots(is_premium: bool) -> None:
+    queryset: QuerySet[TelegramBot] = TelegramBot.objects.filter(must_be_enabled=True)
 
-    force_delete_all_hubs()
+    if TYPE_CHECKING:
+        max_bot_count_per_hub: int
+
+    if is_premium:
+        queryset = queryset.filter(owner__subscription__expiry_date__gt=timezone.now())
+        max_bot_count_per_hub = settings.TELEGRAM_BOTS_HUB_PREMIUM_MAX_BOTS
+    else:
+        max_bot_count_per_hub = settings.TELEGRAM_BOTS_HUB_DEFAULT_MAX_BOTS
 
     for bots in batched(
-        (
-            TelegramBot.objects.filter(must_be_enabled=True)
-            .only('id', 'api_token')
-            .iterator(chunk_size=settings.TELEGRAM_BOTS_HUB_MAX_BOTS)
-        ),
-        settings.TELEGRAM_BOTS_HUB_MAX_BOTS,
+        queryset.only('id', 'api_token').iterator(chunk_size=1000),
+        max_bot_count_per_hub,
         strict=False,
     ):
-        bot_ids: list[int] = [bot.id for bot in bots]
+        bot_ids: set[int] = {bot.id for bot in bots}
 
         TelegramBot.objects.filter(id__in=bot_ids).update(is_loading=True)
         try:
-            hub: TelegramBotsHub = TelegramBotsHub.objects.create_with_container()
+            hub: TelegramBotsHub = TelegramBotsHub.objects.create_with_container(
+                is_premium=is_premium
+            )
 
             with hub.get_client() as client:
                 client.start_bots(
@@ -72,3 +73,17 @@ def sync_telegram_bots_hubs() -> None:
                 )
         except Exception:
             logger.exception('Failed to start bots with IDs: %s', bot_ids)
+
+
+@shared_task
+def sync_telegram_bots_hubs() -> None:
+    docker_client.images.build(
+        path=str(settings.TELEGRAM_BOTS_HUB_PATH),
+        tag=settings.TELEGRAM_BOTS_HUB_TAG,
+        rm=True,
+    )
+
+    force_delete_all_hubs()
+
+    _start_telegram_bots(is_premium=True)
+    _start_telegram_bots(is_premium=False)
