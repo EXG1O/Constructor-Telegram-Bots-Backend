@@ -13,7 +13,7 @@ from constructor_telegram_bots.http.clients import telegram_client
 from constructor_telegram_bots.utils.storage import force_get_file_size
 
 from .. import tasks
-from ..hub.utils.models import get_telegram_bots_hub_modal
+from ..hub.utils.models import get_telegram_bots_hub_model
 from ..utils.storage import get_telegram_bot_file_names
 from .api_request import APIRequest
 from .background_task import BackgroundTask
@@ -136,7 +136,7 @@ class TelegramBot(models.Model):
     def is_enabled(self) -> bool:
         try:
             return bool(self.must_be_enabled and self.hub)
-        except get_telegram_bots_hub_modal().DoesNotExist:
+        except get_telegram_bots_hub_model().DoesNotExist:
             return False
 
     def update_username(self, save: bool = True) -> None:
