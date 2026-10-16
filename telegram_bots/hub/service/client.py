@@ -11,7 +11,7 @@ from types import TracebackType
 from typing import Any, Self
 
 
-class ServiceClient:
+class Client:
     def __init__(self, container_id: str, access_token: str) -> None:
         self._client = httpx.Client(
             base_url='http://localhost',
@@ -26,6 +26,9 @@ class ServiceClient:
             ),
         )
 
+    def close(self) -> None:
+        self._client.close()
+
     def __enter__(self) -> Self:
         return self
 
@@ -35,7 +38,7 @@ class ServiceClient:
         exc: BaseException | None,
         traceback: TracebackType | None,
     ) -> None:
-        self._client.close()
+        self.close()
 
     def _request(
         self,

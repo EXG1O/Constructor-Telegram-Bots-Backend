@@ -8,7 +8,7 @@ from constructor_telegram_bots.docker import docker_client
 
 from ..models import TelegramBot
 from .models import TelegramBotsHub
-from .service.schemas import BotCredentials
+from .service import BotCredentials
 from .utils.hubs import force_delete_all_hubs, force_delete_hub_docker_container
 
 from itertools import batched

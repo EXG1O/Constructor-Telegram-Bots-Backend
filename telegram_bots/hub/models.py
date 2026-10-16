@@ -13,7 +13,7 @@ from redis import Redis
 from constructor_telegram_bots.docker import docker_client
 from constructor_telegram_bots.redis import get_redis_client
 
-from .service.client import ServiceClient
+from .service import Client
 
 from typing import TYPE_CHECKING, Any, Final, cast
 import secrets
@@ -175,5 +175,5 @@ class TelegramBotsHub(models.Model):
     def container(self) -> Container:
         return docker_client.containers.get(self.container_id)
 
-    def get_client(self) -> ServiceClient:
-        return ServiceClient(self.container_id, self.microservice_token)
+    def get_client(self) -> Client:
+        return Client(self.container_id, self.microservice_token)
