@@ -8,5 +8,5 @@ if TYPE_CHECKING:
 
 
 @cache
-def get_telegram_bots_hub_modal() -> type[TelegramBotsHub]:
+def get_telegram_bots_hub_model() -> type[TelegramBotsHub]:
     return apps.get_model('telegram_bots_hub.TelegramBotsHub')

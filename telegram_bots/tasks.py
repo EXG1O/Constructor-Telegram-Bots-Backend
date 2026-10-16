@@ -1,6 +1,6 @@
 from celery import shared_task
 
-from .hub.utils.models import get_telegram_bots_hub_modal
+from .hub.utils.models import get_telegram_bots_hub_model
 
 from typing import TYPE_CHECKING
 
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 @shared_task
 def start_telegram_bot(id: int, token: str, webhook_url: str, is_premium: bool) -> None:
-    hub: TelegramBotsHub = get_telegram_bots_hub_modal().objects.get_freest(
+    hub: TelegramBotsHub = get_telegram_bots_hub_model().objects.get_freest(
         is_premium=is_premium
     )
 
@@ -20,7 +20,7 @@ def start_telegram_bot(id: int, token: str, webhook_url: str, is_premium: bool) 
 
 @shared_task
 def restart_telegram_bot(id: int, token: str, webhook_url: str) -> None:
-    hub: TelegramBotsHub = get_telegram_bots_hub_modal().objects.get(bots__id=id)
+    hub: TelegramBotsHub = get_telegram_bots_hub_model().objects.get(bots__id=id)
 
     with hub.get_client() as client:
         client.restart_bot(id, token=token, webhook_url=webhook_url)
@@ -28,7 +28,7 @@ def restart_telegram_bot(id: int, token: str, webhook_url: str) -> None:
 
 @shared_task
 def stop_telegram_bot(id: int) -> None:
-    hub: TelegramBotsHub = get_telegram_bots_hub_modal().objects.get(bots__id=id)
+    hub: TelegramBotsHub = get_telegram_bots_hub_model().objects.get(bots__id=id)
 
     with hub.get_client() as client:
         client.stop_bot(id)
