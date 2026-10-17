@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 19:47+0000\n"
+"POT-Creation-Date: 2026-10-17 13:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -112,10 +112,11 @@ msgstr "Означити вибрані рахунки як оплачені т�
 
 #, python-format
 msgid ""
-"Выбранные счета (%d) были успешно помечены как оплаченные, а подписки "
-"активированы."
+"Выбранные счета (%(updated_count)s) были успешно помечены как оплаченные, а "
+"подписки активированы (%(activated_count)s)."
 msgstr ""
-"Вибрані рахунки (%d) вспішно означені як оплачені та підписки активувано."
+"Вибрані рахунки (%(updated_count)s) вспішно означені як оплачені та підписки "
+"активувано (%(activated_count)s)."
 
 msgid "Пометить выбранные счета как возвращённые и вернуть звёзды"
 msgstr "Означити вибрані рахунки як повернуті та повернути зірочки"
