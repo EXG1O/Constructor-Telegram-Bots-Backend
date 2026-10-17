@@ -37,7 +37,7 @@ from .mixins import TelegramBotMixin
 from datetime import timedelta
 from http import HTTPMethod
 from typing import Any
-import datetime
+import datetime as dt
 
 
 class UserViewSet(
@@ -119,8 +119,8 @@ class UserViewSet(
         elif days > 90:
             raise ValidationError({'days': _('Значение должно быть не больше 90.')})
 
-        start_date: datetime.date = timezone.now().date() - timedelta(days=days)
-        timeline_data: dict[datetime.date, int] = {
+        start_date: dt.date = timezone.now().date() - timedelta(days=days)
+        timeline_data: dict[dt.date, int] = {
             item['date']: item['count']
             for item in self.get_queryset()
             .filter(**{f'{field}__date__gte': start_date})
@@ -131,7 +131,7 @@ class UserViewSet(
         result: list[dict[str, Any]] = []
 
         for day in range(days + 1):
-            date: datetime.date = start_date + timedelta(days=day)
+            date: dt.date = start_date + timedelta(days=day)
             result.append({'date': date, 'count': timeline_data.get(date, 0)})
 
         return Response(result)
