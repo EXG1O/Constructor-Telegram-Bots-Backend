@@ -19,7 +19,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING
 
 
-class InvoiceViewSetTests(InvoiceMixin, TelegramBotMixin, UserMixin, TestCase):
+class InvoiceViewSetTestCase(InvoiceMixin, TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 
@@ -383,7 +383,9 @@ class InvoiceViewSetTests(InvoiceMixin, TelegramBotMixin, UserMixin, TestCase):
             raise self.failureException('Invoice has not been deleted from database.')
 
 
-class DiagramInvoiceViewSetTests(InvoiceMixin, TelegramBotMixin, UserMixin, TestCase):
+class DiagramInvoiceViewSetTestCase(
+    InvoiceMixin, TelegramBotMixin, UserMixin, TestCase
+):
     def setUp(self) -> None:
         super().setUp()
 

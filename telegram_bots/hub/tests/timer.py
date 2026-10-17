@@ -16,7 +16,7 @@ from .mixins import HubMixin
 from typing import TYPE_CHECKING
 
 
-class TimerViewSetTests(TimerMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase):
+class TimerViewSetTestCase(TimerMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 

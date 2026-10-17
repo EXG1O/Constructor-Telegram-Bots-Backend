@@ -1,15 +1,15 @@
-from .subscription_invoice import SubscriptionInvoiceViewSetTests
-from .subscription_price import SubscriptionPriceViewSetTests
+from .subscription_invoice import SubscriptionInvoiceViewSetTestCase
+from .subscription_price import SubscriptionPriceViewSetTestCase
 from .tasks import (
-    DeleteExpiredSubscriptionsTaskTests,
-    MakePendingInvoicesExpiredTaskTests,
-    SendSubscriptionExpiryNotificationsTaskTests,
+    DeleteExpiredSubscriptionsTaskTestCase,
+    MakePendingInvoicesExpiredTaskTestCase,
+    SendSubscriptionExpiryNotificationsTaskTestCase,
 )
 
 __all__ = [
-    'SubscriptionPriceViewSetTests',
-    'SubscriptionInvoiceViewSetTests',
-    'SendSubscriptionExpiryNotificationsTaskTests',
-    'DeleteExpiredSubscriptionsTaskTests',
-    'MakePendingInvoicesExpiredTaskTests',
+    'SubscriptionPriceViewSetTestCase',
+    'SubscriptionInvoiceViewSetTestCase',
+    'SendSubscriptionExpiryNotificationsTaskTestCase',
+    'DeleteExpiredSubscriptionsTaskTestCase',
+    'MakePendingInvoicesExpiredTaskTestCase',
 ]

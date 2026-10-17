@@ -16,7 +16,9 @@ from .mixins import HubMixin
 from typing import TYPE_CHECKING
 
 
-class UserViewSetTests(BotUserMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase):
+class UserViewSetTestCase(
+    BotUserMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase
+):
     def setUp(self) -> None:
         super().setUp()
 

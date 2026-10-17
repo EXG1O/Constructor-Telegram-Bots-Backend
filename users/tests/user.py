@@ -32,7 +32,7 @@ import math
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 
-class UserViewSetTests(UserMixin, TestCase):
+class UserViewSetTestCase(UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
         self.factory = APIRequestFactory()

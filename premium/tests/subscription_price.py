@@ -17,7 +17,7 @@ from typing import Any
 from unittest.mock import patch
 
 
-class SubscriptionPriceViewSetTests(UserMixin, TestCase):
+class SubscriptionPriceViewSetTestCase(UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 

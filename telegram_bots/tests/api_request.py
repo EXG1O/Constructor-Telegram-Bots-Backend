@@ -20,7 +20,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING
 
 
-class APIRequestViewSetTests(APIRequestMixin, TelegramBotMixin, UserMixin, TestCase):
+class APIRequestViewSetTestCase(APIRequestMixin, TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 
@@ -347,7 +347,7 @@ class APIRequestViewSetTests(APIRequestMixin, TelegramBotMixin, UserMixin, TestC
             )
 
 
-class DiagramAPIRequestViewSetTests(
+class DiagramAPIRequestViewSetTestCase(
     APIRequestMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:

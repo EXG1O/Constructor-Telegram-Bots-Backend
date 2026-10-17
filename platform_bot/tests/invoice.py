@@ -20,7 +20,7 @@ from contextlib import suppress
 from typing import Any
 
 
-class PremiumInvoiceViewSetTests(UserMixin, TestCase):
+class PremiumInvoiceViewSetTestCase(UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 

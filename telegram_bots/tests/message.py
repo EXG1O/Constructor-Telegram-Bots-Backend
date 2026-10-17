@@ -19,7 +19,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING
 
 
-class MessageViewSetTests(MessageMixin, TelegramBotMixin, UserMixin, TestCase):
+class MessageViewSetTestCase(MessageMixin, TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 
@@ -418,7 +418,9 @@ class MessageViewSetTests(MessageMixin, TelegramBotMixin, UserMixin, TestCase):
             raise self.failureException('Message has not been deleted from database.')
 
 
-class DiagramMessageViewSetTests(MessageMixin, TelegramBotMixin, UserMixin, TestCase):
+class DiagramMessageViewSetTestCase(
+    MessageMixin, TelegramBotMixin, UserMixin, TestCase
+):
     def setUp(self) -> None:
         super().setUp()
 

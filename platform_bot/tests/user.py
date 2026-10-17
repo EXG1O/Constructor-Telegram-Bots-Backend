@@ -14,7 +14,7 @@ from ..models import PlatformBot
 from ..views import UserViewSet
 
 
-class UserViewSetTests(TestCase):
+class UserViewSetTestCase(TestCase):
     def setUp(self) -> None:
         self.factory = APIRequestFactory()
         self.list_url: str = reverse('api:platform-bot:user-list')

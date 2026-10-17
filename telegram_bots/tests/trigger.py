@@ -19,7 +19,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING
 
 
-class TriggerViewSetTests(TriggerMixin, TelegramBotMixin, UserMixin, TestCase):
+class TriggerViewSetTestCase(TriggerMixin, TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 
@@ -333,7 +333,9 @@ class TriggerViewSetTests(TriggerMixin, TelegramBotMixin, UserMixin, TestCase):
             raise self.failureException('Trigger has not been deleted from database.')
 
 
-class DiagramTriggerViewSetTests(TriggerMixin, TelegramBotMixin, UserMixin, TestCase):
+class DiagramTriggerViewSetTestCase(
+    TriggerMixin, TelegramBotMixin, UserMixin, TestCase
+):
     def setUp(self) -> None:
         super().setUp()
 

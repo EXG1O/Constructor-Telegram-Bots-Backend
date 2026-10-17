@@ -18,7 +18,7 @@ from .mixins import RandomizerMixin, TelegramBotMixin
 from typing import TYPE_CHECKING
 
 
-class RandomizerViewSetTests(RandomizerMixin, TelegramBotMixin, UserMixin, TestCase):
+class RandomizerViewSetTestCase(RandomizerMixin, TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 
@@ -285,7 +285,7 @@ class RandomizerViewSetTests(RandomizerMixin, TelegramBotMixin, UserMixin, TestC
         self.assertFalse(Randomizer.objects.filter(id=self.randomizer.id).exists())
 
 
-class DiagramRandomizerViewSetTests(
+class DiagramRandomizerViewSetTestCase(
     RandomizerMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:

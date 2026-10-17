@@ -1,4 +1,4 @@
-from .invoice import PremiumInvoiceViewSetTests
-from .user import UserViewSetTests
+from .invoice import PremiumInvoiceViewSetTestCase
+from .user import UserViewSetTestCase
 
-__all__ = ['UserViewSetTests', 'PremiumInvoiceViewSetTests']
+__all__ = ['UserViewSetTestCase', 'PremiumInvoiceViewSetTestCase']

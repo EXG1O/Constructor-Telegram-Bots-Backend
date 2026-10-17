@@ -1,60 +1,60 @@
-from .api_request import APIRequestViewSetTests, DiagramAPIRequestViewSetTests
+from .api_request import APIRequestViewSetTestCase, DiagramAPIRequestViewSetTestCase
 from .background_task import (
-    BackgroundTaskViewSetTests,
-    DiagramBackgroundTaskViewSetTests,
+    BackgroundTaskViewSetTestCase,
+    DiagramBackgroundTaskViewSetTestCase,
 )
-from .chat import ChatViewSetTests
-from .condition import ConditionViewSetTests, DiagramConditionViewSetTests
-from .connection import ConnectionViewSetTests
+from .chat import ChatViewSetTestCase
+from .condition import ConditionViewSetTestCase, DiagramConditionViewSetTestCase
+from .connection import ConnectionViewSetTestCase
 from .database_operation import (
-    DatabaseOperationViewSetTests,
-    DiagramDatabaseOperationViewSetTests,
+    DatabaseOperationViewSetTestCase,
+    DiagramDatabaseOperationViewSetTestCase,
 )
-from .database_record import DatabaseRecordViewSetTests
-from .enums import ConnectionObjectTypeTests
-from .invoice import DiagramInvoiceViewSetTests, InvoiceViewSetTests
-from .message import DiagramMessageViewSetTests, MessageViewSetTests
-from .randomizer import DiagramRandomizerViewSetTests, RandomizerViewSetTests
-from .stats import StatsAPIViewTests
-from .tasks import MigrateTelegramBotsTaskTests
-from .telegram_bot import TelegramBotViewSetTests
+from .database_record import DatabaseRecordViewSetTestCase
+from .enums import ConnectionObjectTypeTestCase
+from .invoice import DiagramInvoiceViewSetTestCase, InvoiceViewSetTestCase
+from .message import DiagramMessageViewSetTestCase, MessageViewSetTestCase
+from .randomizer import DiagramRandomizerViewSetTestCase, RandomizerViewSetTestCase
+from .stats import StatsAPIViewTestCase
+from .tasks import MigrateTelegramBotsTaskTestCase
+from .telegram_bot import TelegramBotViewSetTestCase
 from .temporary_variable import (
-    DiagramTemporaryVariableViewSetTests,
-    TemporaryVariableViewSetTests,
+    DiagramTemporaryVariableViewSetTestCase,
+    TemporaryVariableViewSetTestCase,
 )
-from .timer import DiagramTimerViewSetTests, TimerViewSetTests
-from .trigger import DiagramTriggerViewSetTests, TriggerViewSetTests
-from .user import UserViewSetTests
-from .variable import VariableViewSetTests
+from .timer import DiagramTimerViewSetTestCase, TimerViewSetTestCase
+from .trigger import DiagramTriggerViewSetTestCase, TriggerViewSetTestCase
+from .user import UserViewSetTestCase
+from .variable import VariableViewSetTestCase
 
 __all__ = [
-    'ConnectionObjectTypeTests',
-    'MigrateTelegramBotsTaskTests',
-    'StatsAPIViewTests',
-    'TelegramBotViewSetTests',
-    'ConnectionViewSetTests',
-    'MessageViewSetTests',
-    'DiagramMessageViewSetTests',
-    'ConditionViewSetTests',
-    'DiagramConditionViewSetTests',
-    'BackgroundTaskViewSetTests',
-    'DiagramBackgroundTaskViewSetTests',
-    'APIRequestViewSetTests',
-    'DiagramAPIRequestViewSetTests',
-    'DatabaseOperationViewSetTests',
-    'DiagramDatabaseOperationViewSetTests',
-    'TriggerViewSetTests',
-    'DiagramTriggerViewSetTests',
-    'InvoiceViewSetTests',
-    'DiagramInvoiceViewSetTests',
-    'TemporaryVariableViewSetTests',
-    'DiagramTemporaryVariableViewSetTests',
-    'TimerViewSetTests',
-    'DiagramTimerViewSetTests',
-    'RandomizerViewSetTests',
-    'DiagramRandomizerViewSetTests',
-    'VariableViewSetTests',
-    'ChatViewSetTests',
-    'UserViewSetTests',
-    'DatabaseRecordViewSetTests',
+    'ConnectionObjectTypeTestCase',
+    'MigrateTelegramBotsTaskTestCase',
+    'StatsAPIViewTestCase',
+    'TelegramBotViewSetTestCase',
+    'ConnectionViewSetTestCase',
+    'MessageViewSetTestCase',
+    'DiagramMessageViewSetTestCase',
+    'ConditionViewSetTestCase',
+    'DiagramConditionViewSetTestCase',
+    'BackgroundTaskViewSetTestCase',
+    'DiagramBackgroundTaskViewSetTestCase',
+    'APIRequestViewSetTestCase',
+    'DiagramAPIRequestViewSetTestCase',
+    'DatabaseOperationViewSetTestCase',
+    'DiagramDatabaseOperationViewSetTestCase',
+    'TriggerViewSetTestCase',
+    'DiagramTriggerViewSetTestCase',
+    'InvoiceViewSetTestCase',
+    'DiagramInvoiceViewSetTestCase',
+    'TemporaryVariableViewSetTestCase',
+    'DiagramTemporaryVariableViewSetTestCase',
+    'TimerViewSetTestCase',
+    'DiagramTimerViewSetTestCase',
+    'RandomizerViewSetTestCase',
+    'DiagramRandomizerViewSetTestCase',
+    'VariableViewSetTestCase',
+    'ChatViewSetTestCase',
+    'UserViewSetTestCase',
+    'DatabaseRecordViewSetTestCase',
 ]

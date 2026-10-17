@@ -16,7 +16,7 @@ from .mixins import HubMixin
 from typing import TYPE_CHECKING, Any
 
 
-class DatabaseRecordViewSetTests(
+class DatabaseRecordViewSetTestCase(
     DatabaseRecordMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:

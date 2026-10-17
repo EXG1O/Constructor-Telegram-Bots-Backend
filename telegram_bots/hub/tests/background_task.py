@@ -16,7 +16,7 @@ from .mixins import HubMixin
 from typing import TYPE_CHECKING
 
 
-class BackgroundTaskViewSetTests(
+class BackgroundTaskViewSetTestCase(
     BackgroundTaskMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:

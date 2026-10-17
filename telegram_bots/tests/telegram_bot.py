@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, Any
 from unittest.mock import patch
 
 
-class TelegramBotViewSetTests(HubMixin, TelegramBotMixin, UserMixin, TestCase):
+class TelegramBotViewSetTestCase(HubMixin, TelegramBotMixin, UserMixin, TestCase):
     list_url: str = reverse('api:telegram-bots:telegram-bot-list')
 
     def setUp(self) -> None:

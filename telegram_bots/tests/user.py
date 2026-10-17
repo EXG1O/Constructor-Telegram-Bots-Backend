@@ -18,7 +18,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING
 
 
-class UserViewSetTests(BotUserMixin, TelegramBotMixin, UserMixin, TestCase):
+class UserViewSetTestCase(BotUserMixin, TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 
