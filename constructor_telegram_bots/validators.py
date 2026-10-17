@@ -55,7 +55,7 @@ class PublicURLValidator:
 @deconstructible
 class StrictJSONValidator:
     code = 'invalid'
-    message = JSONField.default_error_messages[code]  # type: ignore [valid-type]
+    message = JSONField.default_error_messages[code]
 
     def __init__(
         self,
