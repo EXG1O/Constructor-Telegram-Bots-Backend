@@ -19,7 +19,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING
 
 
-class DatabaseOperationViewSetTests(
+class DatabaseOperationViewSetTestCase(
     DatabaseOperationMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:
@@ -363,7 +363,7 @@ class DatabaseOperationViewSetTests(
             )
 
 
-class DiagramDatabaseOperationViewSetTests(
+class DiagramDatabaseOperationViewSetTestCase(
     DatabaseOperationMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:

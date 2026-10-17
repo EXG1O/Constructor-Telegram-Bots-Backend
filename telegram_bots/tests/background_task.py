@@ -19,7 +19,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING
 
 
-class BackgroundTaskViewSetTests(
+class BackgroundTaskViewSetTestCase(
     BackgroundTaskMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:
@@ -341,7 +341,7 @@ class BackgroundTaskViewSetTests(
             )
 
 
-class DiagramBackgroundTaskViewSetTests(
+class DiagramBackgroundTaskViewSetTestCase(
     BackgroundTaskMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:

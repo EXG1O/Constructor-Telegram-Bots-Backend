@@ -24,7 +24,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING
 
 
-class ConditionViewSetTests(ConditionMixin, TelegramBotMixin, UserMixin, TestCase):
+class ConditionViewSetTestCase(ConditionMixin, TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 
@@ -366,7 +366,7 @@ class ConditionViewSetTests(ConditionMixin, TelegramBotMixin, UserMixin, TestCas
             raise self.failureException('Condition has not been deleted from database.')
 
 
-class DiagramConditionViewSetTests(
+class DiagramConditionViewSetTestCase(
     ConditionMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:

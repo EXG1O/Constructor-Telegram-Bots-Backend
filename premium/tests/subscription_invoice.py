@@ -15,7 +15,7 @@ from ..views import SubscriptionInvoiceViewSet
 from typing import Any
 
 
-class SubscriptionInvoiceViewSetTests(UserMixin, TestCase):
+class SubscriptionInvoiceViewSetTestCase(UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 

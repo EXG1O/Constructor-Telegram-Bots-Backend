@@ -17,7 +17,7 @@ from datetime import timedelta
 from unittest.mock import Mock, patch
 
 
-class MakePendingInvoicesExpiredTaskTests(UserMixin, TestCase):
+class MakePendingInvoicesExpiredTaskTestCase(UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 
@@ -58,7 +58,7 @@ class MakePendingInvoicesExpiredTaskTests(UserMixin, TestCase):
         self.assertEqual(invoice.status, InvoiceStatus.PAID)
 
 
-class SendSubscriptionExpiryNotificationsTaskTests(UserMixin, TestCase):
+class SendSubscriptionExpiryNotificationsTaskTestCase(UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 
@@ -114,7 +114,7 @@ class SendSubscriptionExpiryNotificationsTaskTests(UserMixin, TestCase):
         self.mock_bot_client.send_telegram_messages.assert_not_called()
 
 
-class DeleteExpiredSubscriptionsTaskTests(UserMixin, TestCase):
+class DeleteExpiredSubscriptionsTaskTestCase(UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 

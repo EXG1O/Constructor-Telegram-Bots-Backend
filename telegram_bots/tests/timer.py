@@ -18,7 +18,7 @@ from .mixins import TelegramBotMixin, TimerMixin
 from typing import TYPE_CHECKING
 
 
-class TimerViewSetTests(TimerMixin, TelegramBotMixin, UserMixin, TestCase):
+class TimerViewSetTestCase(TimerMixin, TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 
@@ -308,7 +308,7 @@ class TimerViewSetTests(TimerMixin, TelegramBotMixin, UserMixin, TestCase):
         self.assertEqual(self.telegram_bot.timers.count(), old_timer_count - 1)
 
 
-class DiagramTimerViewSetTests(TimerMixin, TelegramBotMixin, UserMixin, TestCase):
+class DiagramTimerViewSetTestCase(TimerMixin, TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 

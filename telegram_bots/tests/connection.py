@@ -19,7 +19,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING
 
 
-class ConnectionViewSetTests(TelegramBotMixin, UserMixin, TestCase):
+class ConnectionViewSetTestCase(TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 

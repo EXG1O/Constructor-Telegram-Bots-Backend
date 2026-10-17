@@ -1,36 +1,36 @@
-from .api_request import APIRequestViewSetTests
-from .background_task import BackgroundTaskViewSetTests
-from .chat import ChatViewSetTests
-from .condition import ConditionViewSetTests
-from .database_operation import DatabaseOperationViewSetTests
-from .database_record import DatabaseRecordViewSetTests
-from .invoice import InvoiceViewSetTests
-from .message import MessageKeyboardButtonViewSetTests, MessageViewSetTests
-from .randomizer import RandomizerViewSetTests
-from .tasks import EnsureIdleTelegramBotsHubsTaskTests
-from .telegram_bot import TelegramBotViewSetTests
-from .temporary_variable import TemporaryVariableViewSetTests
-from .timer import TimerViewSetTests
-from .trigger import TriggerViewSetTests
-from .user import UserViewSetTests
-from .variable import VariableViewSetTests
+from .api_request import APIRequestViewSetTestCase
+from .background_task import BackgroundTaskViewSetTestCase
+from .chat import ChatViewSetTestCase
+from .condition import ConditionViewSetTestCase
+from .database_operation import DatabaseOperationViewSetTestCase
+from .database_record import DatabaseRecordViewSetTestCase
+from .invoice import InvoiceViewSetTestCase
+from .message import MessageKeyboardButtonViewSetTestCase, MessageViewSetTestCase
+from .randomizer import RandomizerViewSetTestCase
+from .tasks import EnsureIdleTelegramBotsHubsTaskTestCase
+from .telegram_bot import TelegramBotViewSetTestCase
+from .temporary_variable import TemporaryVariableViewSetTestCase
+from .timer import TimerViewSetTestCase
+from .trigger import TriggerViewSetTestCase
+from .user import UserViewSetTestCase
+from .variable import VariableViewSetTestCase
 
 __all__ = [
-    'TelegramBotViewSetTests',
-    'MessageViewSetTests',
-    'MessageKeyboardButtonViewSetTests',
-    'ConditionViewSetTests',
-    'BackgroundTaskViewSetTests',
-    'APIRequestViewSetTests',
-    'DatabaseOperationViewSetTests',
-    'TriggerViewSetTests',
-    'InvoiceViewSetTests',
-    'TemporaryVariableViewSetTests',
-    'TimerViewSetTests',
-    'RandomizerViewSetTests',
-    'VariableViewSetTests',
-    'ChatViewSetTests',
-    'UserViewSetTests',
-    'DatabaseRecordViewSetTests',
-    'EnsureIdleTelegramBotsHubsTaskTests',
+    'TelegramBotViewSetTestCase',
+    'MessageViewSetTestCase',
+    'MessageKeyboardButtonViewSetTestCase',
+    'ConditionViewSetTestCase',
+    'BackgroundTaskViewSetTestCase',
+    'APIRequestViewSetTestCase',
+    'DatabaseOperationViewSetTestCase',
+    'TriggerViewSetTestCase',
+    'InvoiceViewSetTestCase',
+    'TemporaryVariableViewSetTestCase',
+    'TimerViewSetTestCase',
+    'RandomizerViewSetTestCase',
+    'VariableViewSetTestCase',
+    'ChatViewSetTestCase',
+    'UserViewSetTestCase',
+    'DatabaseRecordViewSetTestCase',
+    'EnsureIdleTelegramBotsHubsTaskTestCase',
 ]

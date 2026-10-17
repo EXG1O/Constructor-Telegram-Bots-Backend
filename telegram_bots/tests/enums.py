@@ -4,7 +4,7 @@ from django.test import SimpleTestCase
 from ..enums import ConnectionObjectType
 
 
-class ConnectionObjectTypeTests(SimpleTestCase):
+class ConnectionObjectTypeTestCase(SimpleTestCase):
     def test_object_type_mapping_correctness(self) -> None:
         for (
             model_label_lower,

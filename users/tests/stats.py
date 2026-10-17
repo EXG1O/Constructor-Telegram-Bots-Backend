@@ -9,7 +9,7 @@ from rest_framework.test import APIRequestFactory
 from ..views import StatsAPIView
 
 
-class StatsAPIViewTests(TestCase):
+class StatsAPIViewTestCase(TestCase):
     url: str = reverse('api:users:stats')
 
     def setUp(self) -> None:

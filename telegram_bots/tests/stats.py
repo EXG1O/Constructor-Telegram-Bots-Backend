@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 
-class StatsAPIViewTests(TestCase):
+class StatsAPIViewTestCase(TestCase):
     url: str = reverse('api:telegram-bots:stats')
 
     def setUp(self) -> None:

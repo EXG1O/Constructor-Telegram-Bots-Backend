@@ -20,7 +20,7 @@ from typing import TYPE_CHECKING
 import string
 
 
-class VariableViewSetTests(VariableMixin, TelegramBotMixin, UserMixin, TestCase):
+class VariableViewSetTestCase(VariableMixin, TelegramBotMixin, UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 

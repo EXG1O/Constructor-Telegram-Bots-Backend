@@ -13,7 +13,7 @@ from ..views import TokenViewSet
 from .mixins import UserMixin
 
 
-class TokenViewSetTests(UserMixin, TestCase):
+class TokenViewSetTestCase(UserMixin, TestCase):
     list_url: str = reverse('api:users:token-list')
 
     def setUp(self) -> None:

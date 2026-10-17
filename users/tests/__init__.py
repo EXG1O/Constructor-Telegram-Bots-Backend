@@ -1,5 +1,5 @@
-from .stats import StatsAPIViewTests
-from .token import TokenViewSetTests
-from .user import UserViewSetTests
+from .stats import StatsAPIViewTestCase
+from .token import TokenViewSetTestCase
+from .user import UserViewSetTestCase
 
-__all__ = ['StatsAPIViewTests', 'UserViewSetTests', 'TokenViewSetTests']
+__all__ = ['StatsAPIViewTestCase', 'UserViewSetTestCase', 'TokenViewSetTestCase']

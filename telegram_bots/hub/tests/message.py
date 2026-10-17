@@ -17,7 +17,7 @@ from .mixins import HubMixin
 from typing import TYPE_CHECKING
 
 
-class MessageViewSetTests(
+class MessageViewSetTestCase(
     MessageMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:
@@ -102,7 +102,7 @@ class MessageViewSetTests(
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class MessageKeyboardButtonViewSetTests(
+class MessageKeyboardButtonViewSetTestCase(
     MessageMixin, HubMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:

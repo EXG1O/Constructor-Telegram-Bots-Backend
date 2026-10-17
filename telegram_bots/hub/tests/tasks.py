@@ -11,7 +11,7 @@ from datetime import timedelta
 from unittest.mock import patch
 
 
-class EnsureIdleTelegramBotsHubsTaskTests(
+class EnsureIdleTelegramBotsHubsTaskTestCase(
     HubMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:
@@ -37,7 +37,7 @@ class EnsureIdleTelegramBotsHubsTaskTests(
         self.hub.idle_start_date = None
         self.hub.save(update_fields=['idle_start_date'])
 
-        ensure_idle_telegram_bots_hubs()
+        ensure_idle_telegram_bots_hubs.delay()
 
         self.hub.refresh_from_db()
         self.assertEqual(self.hub.idle_start_date, self.current_datetime)
@@ -50,7 +50,7 @@ class EnsureIdleTelegramBotsHubsTaskTests(
         self.telegram_bot.must_be_enabled = True
         self.telegram_bot.save(update_fields=['hub', 'must_be_enabled'])
 
-        ensure_idle_telegram_bots_hubs()
+        ensure_idle_telegram_bots_hubs.delay()
 
         self.hub.refresh_from_db()
         self.assertIsNone(self.hub.idle_start_date)
@@ -60,7 +60,7 @@ class EnsureIdleTelegramBotsHubsTaskTests(
         self.hub.idle_start_date = existing_date
         self.hub.save(update_fields=['idle_start_date'])
 
-        ensure_idle_telegram_bots_hubs()
+        ensure_idle_telegram_bots_hubs.delay()
 
         self.hub.refresh_from_db()
         self.assertEqual(self.hub.idle_start_date, existing_date)

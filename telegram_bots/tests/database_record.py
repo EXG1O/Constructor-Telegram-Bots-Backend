@@ -19,7 +19,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING, Any
 
 
-class DatabaseRecordViewSetTests(
+class DatabaseRecordViewSetTestCase(
     DatabaseRecordMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:

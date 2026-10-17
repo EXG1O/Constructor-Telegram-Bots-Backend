@@ -9,7 +9,7 @@ from ..tasks import migrate_telegram_bots
 from unittest.mock import MagicMock, call, patch
 
 
-class MigrateTelegramBotsTaskTests(UserMixin, TestCase):
+class MigrateTelegramBotsTaskTestCase(UserMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 

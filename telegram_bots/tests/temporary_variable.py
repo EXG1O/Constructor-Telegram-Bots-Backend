@@ -19,7 +19,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING
 
 
-class TemporaryVariableViewSetTests(
+class TemporaryVariableViewSetTestCase(
     TemporaryVariableMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:
@@ -335,7 +335,7 @@ class TemporaryVariableViewSetTests(
             )
 
 
-class DiagramTemporaryVariableViewSetTests(
+class DiagramTemporaryVariableViewSetTestCase(
     TemporaryVariableMixin, TelegramBotMixin, UserMixin, TestCase
 ):
     def setUp(self) -> None:
