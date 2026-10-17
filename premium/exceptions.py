@@ -1,0 +1,2 @@
+class SubscriptionActivationError(Exception):
+    pass

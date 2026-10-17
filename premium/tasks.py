@@ -12,6 +12,7 @@ from platform_bot.service import (
     SendTelegramMessage,
     TextType,
 )
+from telegram_bots.tasks import migrate_telegram_bots
 
 from .enums import InvoiceStatus
 from .models import Subscription, SubscriptionInvoice
@@ -121,16 +122,18 @@ def send_subscription_expiry_notifications() -> None:
 
 @shared_task
 def delete_expired_subscriptions() -> None:
-    expired_subscriptions: QuerySet[Subscription, tuple[int, int]] = (
+    expired_subscriptions: QuerySet[Subscription, tuple[int, int, int]] = (
         Subscription.objects.filter(expiry_date__lte=timezone.now()).values_list(
-            'id', 'owner__telegram_id'
+            'id', 'owner__id', 'owner__telegram_id'
         )
     )
 
     if not expired_subscriptions.exists():
         return
 
-    subscription_ids, owner_telegram_ids = zip(*expired_subscriptions, strict=True)
+    subscription_ids, owner_ids, owner_telegram_ids = zip(
+        *expired_subscriptions, strict=True
+    )
 
     with PlatformBot().get_client() as client:
         client.send_telegram_message(
@@ -141,3 +144,6 @@ def delete_expired_subscriptions() -> None:
         )
 
     Subscription.objects.filter(id__in=subscription_ids).delete()
+
+    for owner_id in owner_ids:
+        migrate_telegram_bots.delay(owner_id=owner_id, target_hub_is_premium=False)

@@ -7,10 +7,16 @@ from django.utils.translation import gettext_lazy as _
 from django_stubs_ext.db.models import TypedModelMeta
 
 from platform_bot.models import PlatformBot
+from telegram_bots.tasks import migrate_telegram_bots
 
 from .enums import InvoiceStatus
+from .exceptions import SubscriptionActivationError
 
 from datetime import datetime, timedelta
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from users.models import User
 
 
 class SubscriptionPrice(models.Model):  # type: ignore [django-manager-missing]
@@ -93,6 +99,13 @@ class SubscriptionInvoice(models.Model):
         return f'ID: {self.id} | {self.amount_stars} Telegram Stars ({self.status})'
 
     def activate_subscription(self) -> Subscription:
+        user: User | None = self.user
+
+        if not user:
+            raise SubscriptionActivationError(
+                'Subscription invoice has no associated user.'
+            )
+
         current_datetime: datetime = timezone.now()
         period_extension = timedelta(days=self.period_months * 30)
         expiry_date: datetime = current_datetime + period_extension
@@ -100,7 +113,7 @@ class SubscriptionInvoice(models.Model):
         with transaction.atomic():
             subscription, created = (
                 Subscription.objects.select_for_update().get_or_create(
-                    owner=self.user, defaults={'expiry_date': expiry_date}
+                    owner=user, defaults={'expiry_date': expiry_date}
                 )
             )
 
@@ -110,6 +123,8 @@ class SubscriptionInvoice(models.Model):
                 else:
                     subscription.expiry_date += period_extension
                 subscription.save(update_fields=['expiry_date'])
+
+        migrate_telegram_bots.delay(owner_id=user.id, target_hub_is_premium=True)
 
         return subscription
 

@@ -16,6 +16,7 @@ from .invoice import DiagramInvoiceViewSetTests, InvoiceViewSetTests
 from .message import DiagramMessageViewSetTests, MessageViewSetTests
 from .randomizer import DiagramRandomizerViewSetTests, RandomizerViewSetTests
 from .stats import StatsAPIViewTests
+from .tasks import MigrateTelegramBotsTaskTests
 from .telegram_bot import TelegramBotViewSetTests
 from .temporary_variable import (
     DiagramTemporaryVariableViewSetTests,
@@ -28,6 +29,7 @@ from .variable import VariableViewSetTests
 
 __all__ = [
     'ConnectionObjectTypeTests',
+    'MigrateTelegramBotsTaskTests',
     'StatsAPIViewTests',
     'TelegramBotViewSetTests',
     'ConnectionViewSetTests',

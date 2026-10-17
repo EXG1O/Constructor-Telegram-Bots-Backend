@@ -20,8 +20,10 @@ from platform_bot.models import PlatformBot
 from platform_bot.service.models import RefundPayment
 
 from .enums import InvoiceStatus
+from .exceptions import SubscriptionActivationError
 from .models import Subscription, SubscriptionInvoice, SubscriptionPrice
 
+from contextlib import suppress
 from typing import Any, Literal
 
 
@@ -133,24 +135,28 @@ class SubscriptionInvoiceAdmin(admin.ModelAdmin[SubscriptionInvoice]):
     def make_paid(
         self, request: HttpRequest, queryset: QuerySet[SubscriptionInvoice]
     ) -> None:
-        updated: int = 0
+        updated_count: int = 0
+        activated_count: int = 0
 
-        for invoice in queryset.exclude(status=InvoiceStatus.PAID).iterator():
+        for invoice in queryset.exclude(status=InvoiceStatus.PAID).all():
             invoice.status = InvoiceStatus.PAID
             invoice.telegram_charge_id = None
             invoice.paid_date = timezone.now()
             invoice.save(update_fields=['status', 'telegram_charge_id', 'paid_date'])
-            invoice.activate_subscription()
-            updated += 1
+            updated_count += 1
+
+            with suppress(SubscriptionActivationError):
+                invoice.activate_subscription()
+                activated_count += 1
 
         self.message_user(
             request,
             message=(
                 _(
-                    'Выбранные счета (%d) были успешно помечены как оплаченные, '
-                    'а подписки активированы.'
+                    'Выбранные счета (%(updated_count)s) были успешно помечены как оплаченные, '
+                    'а подписки активированы (%(activated_count)s).'
                 )
-                % updated
+                % {'updated_count': updated_count, 'activated_count': activated_count}
             ),
             level=messages.SUCCESS,
         )
