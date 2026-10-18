@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db.models import Count, QuerySet
+from django.db.models import Count, Q, QuerySet
 from django.utils import timezone
 
 from celery import shared_task
@@ -47,6 +47,10 @@ def _start_telegram_bots(is_premium: bool) -> None:
         queryset = queryset.filter(owner__subscription__expiry_date__gt=timezone.now())
         max_bot_count_per_hub = settings.TELEGRAM_BOTS_HUB_PREMIUM_MAX_BOTS
     else:
+        queryset = queryset.filter(
+            Q(owner__subscription__isnull=True)
+            | Q(owner__subscription__expiry_date__lte=timezone.now())
+        )
         max_bot_count_per_hub = settings.TELEGRAM_BOTS_HUB_DEFAULT_MAX_BOTS
 
     for bots in batched(
