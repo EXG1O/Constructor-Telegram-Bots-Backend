@@ -148,4 +148,4 @@ class Subscription(models.Model):
 
     @property
     def is_expired(self) -> bool:
-        return timezone.now() > self.expiry_date
+        return timezone.now() >= self.expiry_date
