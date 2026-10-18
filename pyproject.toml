@@ -23,6 +23,7 @@ dependencies = [
     "httpx>=0.28.1,<0.28.2",
     "pydantic>=2.13,<2.14",
     "orjson>=3.12,<3.13",
+    "drf-spectacular>=0.30,<0.31",
 ]
 
 [dependency-groups]
@@ -30,7 +31,6 @@ dev = [
     "django-silk>=5,<6",
     "django-stubs>=5.2,<5.3",
     "djangorestframework-stubs>=3.16,<3.17",
-    "drf-spectacular>=0.30,<0.31",
     "mypy>=2,<3",
     "ruff>=0,<1",
 ]
