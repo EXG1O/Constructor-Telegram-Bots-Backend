@@ -313,6 +313,7 @@ dependencies = [
     { name = "django-stubs-ext" },
     { name = "djangorestframework" },
     { name = "docker" },
+    { name = "drf-spectacular" },
     { name = "drf-standardized-errors" },
     { name = "gunicorn" },
     { name = "httpx" },
@@ -331,7 +332,6 @@ dev = [
     { name = "django-silk" },
     { name = "django-stubs" },
     { name = "djangorestframework-stubs" },
-    { name = "drf-spectacular" },
     { name = "mypy" },
     { name = "ruff" },
 ]
@@ -350,6 +350,7 @@ requires-dist = [
     { name = "django-stubs-ext", specifier = ">=5.2,<5.3" },
     { name = "djangorestframework", specifier = ">=3.16,<3.17" },
     { name = "docker", specifier = ">=7.1,<7.2" },
+    { name = "drf-spectacular", specifier = ">=0.30,<0.31" },
     { name = "drf-standardized-errors", specifier = ">=0.15,<0.16" },
     { name = "gunicorn", specifier = ">=25,<26" },
     { name = "httpx", specifier = ">=0.28.1,<0.28.2" },
@@ -368,7 +369,6 @@ dev = [
     { name = "django-silk", specifier = ">=5,<6" },
     { name = "django-stubs", specifier = ">=5.2,<5.3" },
     { name = "djangorestframework-stubs", specifier = ">=3.16,<3.17" },
-    { name = "drf-spectacular", specifier = ">=0.30,<0.31" },
     { name = "mypy", specifier = ">=2,<3" },
     { name = "ruff", specifier = ">=0,<1" },
 ]

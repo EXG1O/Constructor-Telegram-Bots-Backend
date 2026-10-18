@@ -41,15 +41,16 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
+          activate-environment: true
 
       - name: Install dependencies
         run: uv sync --locked
 
       - name: Run ruff
-        run: uv run ruff check && uv run ruff format --check
+        run: ruff check && ruff format --check
 
       - name: Run mypy
-        run: uv run mypy .
+        run: mypy .
   tests:
     name: Run Tests
     needs: code-quality
@@ -78,9 +79,10 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
+          activate-environment: true
 
       - name: Install dependencies
         run: uv sync --locked --no-dev
 
       - name: Run tests
-        run: uv run manage.py test --verbosity 3
+        run: python manage.py test --verbosity 3
