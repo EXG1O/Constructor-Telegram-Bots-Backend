@@ -83,6 +83,7 @@ def _start_telegram_bots(is_premium: bool) -> None:
 def sync_telegram_bots_hubs() -> None:
     docker_client.images.build(
         path=str(settings.TELEGRAM_BOTS_HUB_PATH),
+        buildargs={'MODE': settings.MODE},
         tag=settings.TELEGRAM_BOTS_HUB_TAG,
         rm=True,
     )

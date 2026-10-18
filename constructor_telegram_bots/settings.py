@@ -90,7 +90,11 @@ TELEGRAM_BOTS_HUB_LOGS_VOLUME: Final[str | None] = os.getenv(
 ALLOWED_HOSTS: Final[list[str]] = (
     ['constructor.exg1o.org'] if MODE == Mode.PRODUCTION else ['*']
 )
-CSRF_TRUSTED_ORIGINS: Final[list[str]] = ['https://*.exg1o.org']
+CSRF_TRUSTED_ORIGINS: Final[list[str]] = (
+    ['https://*.exg1o.org']
+    if MODE == Mode.PRODUCTION
+    else ['http://localhost:8000', 'http://127.0.0.1:8000']
+)
 
 CSRF_COOKIE_AGE: Final[int] = int(timedelta(weeks=4).total_seconds())
 SESSION_COOKIE_AGE: Final[int] = int(timedelta(weeks=4).total_seconds())
