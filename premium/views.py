@@ -3,6 +3,7 @@ from django.db.models import QuerySet
 
 from rest_framework import serializers, status
 from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -74,8 +75,9 @@ class SubscriptionInvoiceViewSet(
     permission_classes = [IsAuthenticated]
     serializer_class = SubscriptionInvoiceSerializer
     pagination_class = LimitOffsetPagination
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = SubscriptionInvoiceFilter
+    ordering = ['-id']
 
     # Stub for OpenAPI schema generation
     if settings.MODE == Mode.DEBUG:
