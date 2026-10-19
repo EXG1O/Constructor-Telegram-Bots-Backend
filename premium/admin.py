@@ -118,13 +118,16 @@ class SubscriptionInvoiceAdmin(admin.ModelAdmin[SubscriptionInvoice]):
     def make_pending(
         self, request: HttpRequest, queryset: QuerySet[SubscriptionInvoice]
     ) -> None:
-        updated: int = queryset.update(
-            subscription=None, status=InvoiceStatus.PENDING, telegram_charge_id=None
+        updated_count: int = queryset.update(
+            status=InvoiceStatus.PENDING,
+            telegram_charge_id=None,
+            updated_date=timezone.now(),
         )
         self.message_user(
             request,
             message=(
-                _('Выбранные счета (%d) были успешно помечены как ожидаемые.') % updated
+                _('Выбранные счета (%(count)s) были успешно помечены как ожидаемые.')
+                % {'count': updated_count}
             ),
             level=messages.SUCCESS,
         )
@@ -142,7 +145,14 @@ class SubscriptionInvoiceAdmin(admin.ModelAdmin[SubscriptionInvoice]):
             invoice.status = InvoiceStatus.PAID
             invoice.telegram_charge_id = None
             invoice.paid_date = timezone.now()
-            invoice.save(update_fields=['status', 'telegram_charge_id', 'paid_date'])
+            invoice.save(
+                update_fields=[
+                    'status',
+                    'telegram_charge_id',
+                    'paid_date',
+                    'updated_date',
+                ]
+            )
             updated_count += 1
 
             with suppress(SubscriptionActivationError):
