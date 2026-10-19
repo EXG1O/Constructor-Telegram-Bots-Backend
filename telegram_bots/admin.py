@@ -1,14 +1,30 @@
 from django.contrib import admin
-from django.db.models import Count
+from django.db.models import Count, IntegerField, Model, OuterRef, Subquery
+from django.db.models.functions import Coalesce
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from constructor_telegram_bots.utils.html import format_html_link
 
-from .models import TelegramBot, User
+from .models import (
+    APIRequest,
+    BackgroundTask,
+    Condition,
+    DatabaseOperation,
+    Invoice,
+    Message,
+    Randomizer,
+    TelegramBot,
+    TemporaryVariable,
+    Timer,
+    Trigger,
+    User,
+)
 
+from functools import reduce
 from typing import Any, Literal
+import operator
 
 
 @admin.register(TelegramBot)
@@ -46,25 +62,43 @@ class TelegramBotAdmin(admin.ModelAdmin[TelegramBot]):
         'added_date',
     ]
 
+    def _build_count_per_bot_subquery(self, queryset: QuerySet[Model]) -> Coalesce:
+        return Coalesce(
+            Subquery(
+                queryset.filter(telegram_bot=OuterRef('id'))
+                .values('telegram_bot')
+                .annotate(count=Count('id'))
+                .values('count'),
+                output_field=IntegerField(),
+            ),
+            0,
+        )
+
     def get_queryset(self, request: HttpRequest) -> QuerySet[TelegramBot]:
         return (
             super()
             .get_queryset(request)
             .select_related('owner', 'hub')
             .annotate(
-                block_count=(
-                    Count('triggers', distinct=True)
-                    + Count('messages', distinct=True)
-                    + Count('conditions', distinct=True)
-                    + Count('background_tasks', distinct=True)
-                    + Count('api_requests', distinct=True)
-                    + Count('database_operations', distinct=True)
-                    + Count('invoices', distinct=True)
-                    + Count('temporary_variables', distinct=True)
-                    + Count('timers', distinct=True)
-                    + Count('randomizers', distinct=True)
+                block_count=reduce(
+                    operator.add,
+                    (
+                        self._build_count_per_bot_subquery(model.objects.all())
+                        for model in (
+                            Trigger,
+                            Message,
+                            Condition,
+                            BackgroundTask,
+                            APIRequest,
+                            DatabaseOperation,
+                            Invoice,
+                            TemporaryVariable,
+                            Timer,
+                            Randomizer,
+                        )
+                    ),
                 ),
-                user_count=Count('users', distinct=True),
+                user_count=self._build_count_per_bot_subquery(User.objects.all()),
             )
         )
 
