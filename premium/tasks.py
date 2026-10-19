@@ -66,7 +66,7 @@ def make_pending_invoices_expired() -> None:
     SubscriptionInvoice.objects.filter(
         status=InvoiceStatus.PENDING,
         created_date__lt=timezone.now() - settings.PREMIUM_INVOICE_PENDING_TIMEOUT,
-    ).update(status=InvoiceStatus.EXPIRED)
+    ).update(status=InvoiceStatus.EXPIRED, updated_date=timezone.now())
 
 
 @shared_task
