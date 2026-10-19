@@ -104,7 +104,9 @@ class PremiumInvoiceSerializer(serializers.ModelSerializer[SubscriptionInvoice])
             'telegram_charge_id', invoice.telegram_charge_id
         )
         invoice.paid_date = timezone.now()
-        invoice.save(update_fields=['status', 'telegram_charge_id', 'paid_date'])
+        invoice.save(
+            update_fields=['status', 'telegram_charge_id', 'paid_date', 'updated_date']
+        )
 
         if new_status == InvoiceStatus.PAID:
             invoice.activate_subscription()
