@@ -1,0 +1,17 @@
+changelog:
+  categories:
+    - title: Features
+      labels:
+        - feature
+    - title: Enhancements
+      labels:
+        - enhancement
+    - title: Fixes
+      labels:
+        - bug
+    - title: Refactors
+      labels:
+        - refactor
+    - title: Other changes
+      labels:
+        - "*"
