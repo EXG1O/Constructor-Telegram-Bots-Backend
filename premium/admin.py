@@ -10,6 +10,7 @@ from django.db.models import (
     Sum,
     When,
 )
+from django.forms import ModelForm
 from django.http.request import HttpRequest
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -18,6 +19,7 @@ from modeltranslation.admin import TranslationAdmin
 
 from platform_bot.models import PlatformBot
 from platform_bot.service.models import RefundPayment
+from telegram_bots.tasks import migrate_telegram_bots
 
 from .enums import InvoiceStatus
 from .exceptions import SubscriptionActivationError
@@ -221,3 +223,34 @@ class SubscriptionAdmin(admin.ModelAdmin[Subscription]):
 
     def get_queryset(self, request: HttpRequest) -> QuerySet[Subscription]:
         return super().get_queryset(request).select_related('owner')
+
+    def save_model(
+        self,
+        request: HttpRequest,
+        subscription: Subscription,
+        form: ModelForm[Any],
+        change: bool,
+    ) -> None:
+        super().save_model(request, subscription, form, change)
+
+        if not change and not subscription.is_expired:
+            migrate_telegram_bots.delay(
+                owner_id=subscription.owner.id, target_hub_is_premium=True
+            )
+
+    def delete_model(self, request: HttpRequest, subscription: Subscription) -> None:
+        owner_id: int = subscription.owner.id
+
+        super().delete_model(request, subscription)
+
+        migrate_telegram_bots.delay(owner_id=owner_id, target_hub_is_premium=False)
+
+    def delete_queryset(
+        self, request: HttpRequest, queryset: QuerySet[Subscription]
+    ) -> None:
+        owner_ids: set[int] = set(queryset.values_list('owner__id', flat=True))
+
+        super().delete_queryset(request, queryset)
+
+        for owner_id in owner_ids:
+            migrate_telegram_bots.delay(owner_id=owner_id, target_hub_is_premium=False)

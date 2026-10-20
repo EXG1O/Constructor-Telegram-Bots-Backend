@@ -77,7 +77,7 @@ class UserAdmin(admin.ModelAdmin[User]):
     def delete_queryset(self, request: HttpRequest, queryset: QuerySet[User]) -> None:
         file_names: set[str] = set()
 
-        for user in queryset:
+        for user in queryset.iterator():
             file_names.update(get_user_file_names(user))
 
         super().delete_queryset(request, queryset)
