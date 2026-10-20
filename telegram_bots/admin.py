@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.core.files.storage import default_storage
 from django.db.models import Count, IntegerField, Model, OuterRef, Subquery
 from django.db.models.functions import Coalesce
 from django.db.models.query import QuerySet
@@ -21,6 +22,7 @@ from .models import (
     Trigger,
     User,
 )
+from .utils.storage import get_telegram_bot_file_names
 
 from functools import reduce
 from typing import Any, Literal
@@ -131,6 +133,27 @@ class TelegramBotAdmin(admin.ModelAdmin[TelegramBot]):
     @admin.display(description=_('Включен'), boolean=True)
     def is_enabled_display(self, telegram_bot: TelegramBot) -> bool:
         return telegram_bot.is_enabled
+
+    def delete_model(self, request: HttpRequest, bot: TelegramBot) -> None:
+        file_names: set[str] = get_telegram_bot_file_names(telegram_bot=bot)
+
+        super().delete_model(request, bot)
+
+        for file_name in file_names:
+            default_storage.delete(file_name)
+
+    def delete_queryset(
+        self, request: HttpRequest, queryset: QuerySet[TelegramBot]
+    ) -> None:
+        file_names: set[str] = set()
+
+        for bot in queryset.iterator():
+            file_names.update(get_telegram_bot_file_names(telegram_bot=bot))
+
+        super().delete_queryset(request, queryset)
+
+        for file_name in file_names:
+            default_storage.delete(file_name)
 
     def has_add_permission(self, *args: Any, **kwargs: Any) -> Literal[False]:
         return False
