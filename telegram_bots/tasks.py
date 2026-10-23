@@ -5,6 +5,8 @@ from celery import shared_task
 from .hub.utils.models import get_telegram_bots_hub_model
 from .utils.models import get_telegram_bot_model
 
+from collections.abc import Generator
+from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -12,30 +14,42 @@ if TYPE_CHECKING:
     from .hub.service import Client
 
 
+@contextmanager
+def _reset_bot_loading_on_error(id: int) -> Generator[None]:
+    try:
+        yield
+    except Exception:
+        get_telegram_bot_model().objects.filter(id=id).update(is_loading=False)
+        raise
+
+
 @shared_task
 def start_telegram_bot(id: int, token: str, webhook_url: str, is_premium: bool) -> None:
-    hub: TelegramBotsHub = get_telegram_bots_hub_model().objects.get_freest(
-        is_premium=is_premium
-    )
+    with _reset_bot_loading_on_error(id):
+        hub: TelegramBotsHub = get_telegram_bots_hub_model().objects.get_freest(
+            is_premium=is_premium
+        )
 
-    with hub.get_client() as client:
-        client.start_bot(id, token=token, webhook_url=webhook_url)
+        with hub.get_client() as client:
+            client.start_bot(id, token=token, webhook_url=webhook_url)
 
 
 @shared_task
 def restart_telegram_bot(id: int, token: str, webhook_url: str) -> None:
-    hub: TelegramBotsHub = get_telegram_bots_hub_model().objects.get(bots__id=id)
+    with _reset_bot_loading_on_error(id):
+        hub: TelegramBotsHub = get_telegram_bots_hub_model().objects.get(bots__id=id)
 
-    with hub.get_client() as client:
-        client.restart_bot(id, token=token, webhook_url=webhook_url)
+        with hub.get_client() as client:
+            client.restart_bot(id, token=token, webhook_url=webhook_url)
 
 
 @shared_task
 def stop_telegram_bot(id: int) -> None:
-    hub: TelegramBotsHub = get_telegram_bots_hub_model().objects.get(bots__id=id)
+    with _reset_bot_loading_on_error(id):
+        hub: TelegramBotsHub = get_telegram_bots_hub_model().objects.get(bots__id=id)
 
-    with hub.get_client() as client:
-        client.stop_bot(id)
+        with hub.get_client() as client:
+            client.stop_bot(id)
 
 
 @shared_task

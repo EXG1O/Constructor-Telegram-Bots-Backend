@@ -16,7 +16,12 @@ from .invoice import DiagramInvoiceViewSetTestCase, InvoiceViewSetTestCase
 from .message import DiagramMessageViewSetTestCase, MessageViewSetTestCase
 from .randomizer import DiagramRandomizerViewSetTestCase, RandomizerViewSetTestCase
 from .stats import StatsAPIViewTestCase
-from .tasks import MigrateTelegramBotsTaskTestCase
+from .tasks import (
+    MigrateTelegramBotsTaskTestCase,
+    RestartTelegramBotTaskTestCase,
+    StartTelegramBotTaskTestCase,
+    StopTelegramBotTaskTestCase,
+)
 from .telegram_bot import TelegramBotViewSetTestCase
 from .temporary_variable import (
     DiagramTemporaryVariableViewSetTestCase,
@@ -29,6 +34,9 @@ from .variable import VariableViewSetTestCase
 
 __all__ = [
     'ConnectionObjectTypeTestCase',
+    'StartTelegramBotTaskTestCase',
+    'RestartTelegramBotTaskTestCase',
+    'StopTelegramBotTaskTestCase',
     'MigrateTelegramBotsTaskTestCase',
     'StatsAPIViewTestCase',
     'TelegramBotViewSetTestCase',
