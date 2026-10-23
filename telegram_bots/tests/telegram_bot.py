@@ -273,7 +273,10 @@ class TelegramBotViewSetTestCase(HubMixin, TelegramBotMixin, UserMixin, TestCase
         self.telegram_bot.hub = self.hub
         self.telegram_bot.save(update_fields=['hub'])
 
-        with patch.object(telegram_client, 'request') as mock_request:
+        with (
+            patch.object(telegram_client, 'request') as mock_request,
+            self.captureOnCommitCallbacks(execute=True),
+        ):
             mock_request.return_value = httpx.Response(status_code=httpx.codes.OK)
             response = view(request, id=self.telegram_bot.id)
 
@@ -322,7 +325,10 @@ class TelegramBotViewSetTestCase(HubMixin, TelegramBotMixin, UserMixin, TestCase
         self.telegram_bot.hub = self.hub
         self.telegram_bot.save(update_fields=['hub'])
 
-        with patch.object(telegram_client, 'request') as mock_request:
+        with (
+            patch.object(telegram_client, 'request') as mock_request,
+            self.captureOnCommitCallbacks(execute=True),
+        ):
             mock_request.return_value = httpx.Response(status_code=httpx.codes.OK)
             response = view(request, id=self.telegram_bot.id)
 
