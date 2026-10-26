@@ -61,9 +61,6 @@ class DiagramInvoiceViewSet(
         invoices: QuerySet[Invoice] = self.telegram_bot.invoices.all()
 
         if self.action in ['list', 'retrieve']:
-            return invoices.prefetch_related(
-                'source_connections__source_object',
-                'source_connections__target_object',
-            )
+            return invoices.prefetch_related('source_connections')
 
         return invoices

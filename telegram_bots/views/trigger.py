@@ -36,9 +36,6 @@ class DiagramTriggerViewSet(IDLookupMixin, TelegramBotMixin, ModelViewSet[Trigge
         triggers: QuerySet[Trigger] = self.telegram_bot.triggers.all()
 
         if self.action in ['list', 'retrieve']:
-            return triggers.prefetch_related(
-                'source_connections__source_object',
-                'source_connections__target_object',
-            )
+            return triggers.prefetch_related('source_connections')
 
         return triggers

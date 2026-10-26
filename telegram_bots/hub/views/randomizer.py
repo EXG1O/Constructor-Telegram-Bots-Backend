@@ -22,8 +22,6 @@ class RandomizerViewSet(
         randomizers: QuerySet[Randomizer] = self.telegram_bot.randomizers.all()
 
         if self.action in ['list', 'retrieve']:
-            return randomizers.prefetch_related(
-                'source_connections__source_object', 'source_connections__target_object'
-            )
+            return randomizers.prefetch_related('source_connections')
 
         return randomizers

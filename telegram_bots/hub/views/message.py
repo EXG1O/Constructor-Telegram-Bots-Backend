@@ -27,10 +27,8 @@ class MessageViewSet(IDLookupMixin, TelegramBotMixin, ReadOnlyModelViewSet[Messa
             return messages.select_related('settings', 'keyboard').prefetch_related(
                 'images',
                 'documents',
-                'keyboard__buttons__source_connections__source_object',
-                'keyboard__buttons__source_connections__target_object',
-                'source_connections__source_object',
-                'source_connections__target_object',
+                'keyboard__buttons__source_connections',
+                'source_connections',
             )
 
         return messages
@@ -57,7 +55,4 @@ class MessageKeyboardButtonViewSet(
     def get_queryset(self) -> QuerySet[MessageKeyboardButton]:
         return MessageKeyboardButton.objects.filter(
             keyboard__message__telegram_bot=self.telegram_bot
-        ).prefetch_related(
-            'source_connections__source_object',
-            'source_connections__target_object',
-        )
+        ).prefetch_related('source_connections')

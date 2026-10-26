@@ -79,8 +79,7 @@ class TriggerViewSet(IDLookupMixin, TelegramBotMixin, ReadOnlyModelViewSet[Trigg
 
         if self.action in ['list', 'retrieve']:
             return triggers.select_related('command', 'message').prefetch_related(
-                'source_connections__source_object',
-                'source_connections__target_object',
+                'source_connections'
             )
 
         return triggers

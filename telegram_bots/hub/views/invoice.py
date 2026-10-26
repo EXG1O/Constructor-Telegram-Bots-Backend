@@ -21,9 +21,7 @@ class InvoiceViewSet(IDLookupMixin, TelegramBotMixin, ReadOnlyModelViewSet[Invoi
 
         if self.action in ['list', 'retrieve']:
             return invoices.select_related('image').prefetch_related(
-                'prices',
-                'source_connections__source_object',
-                'source_connections__target_object',
+                'prices', 'source_connections'
             )
 
         return invoices
