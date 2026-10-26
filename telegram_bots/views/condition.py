@@ -44,9 +44,6 @@ class DiagramConditionViewSet(
         conditions: QuerySet[Condition] = self.telegram_bot.conditions.all()
 
         if self.action in ['list', 'retrieve']:
-            return conditions.prefetch_related(
-                'source_connections__source_object',
-                'source_connections__target_object',
-            )
+            return conditions.prefetch_related('source_connections')
 
         return conditions

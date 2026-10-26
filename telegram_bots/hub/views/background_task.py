@@ -54,10 +54,7 @@ class BackgroundTaskViewSet(
         )
 
         if self.action in ['list', 'retrieve']:
-            return background_tasks.prefetch_related(
-                'source_connections__source_object',
-                'source_connections__target_object',
-            )
+            return background_tasks.prefetch_related('source_connections')
 
         return background_tasks
 

@@ -61,10 +61,7 @@ class DiagramMessageViewSet(
 
         if self.action in ['list', 'retrieve']:
             return messages.select_related('keyboard').prefetch_related(
-                'keyboard__buttons__source_connections__source_object',
-                'keyboard__buttons__source_connections__target_object',
-                'source_connections__source_object',
-                'source_connections__target_object',
+                'keyboard__buttons__source_connections', 'source_connections'
             )
 
         return messages

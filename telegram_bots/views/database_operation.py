@@ -53,9 +53,6 @@ class DiagramDatabaseOperationViewSet(
         )
 
         if self.action in ['list', 'retrieve']:
-            return operations.prefetch_related(
-                'source_connections__source_object',
-                'source_connections__target_object',
-            )
+            return operations.prefetch_related('source_connections')
 
         return operations

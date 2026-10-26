@@ -53,20 +53,22 @@ class Connection(models.Model):
             f'{self.target_content_type}:{self.target_object_id}'
         )
 
-    @property
-    def source_object_type(self) -> ConnectionObjectType:
-        model: type[models.Model] | None = self.source_content_type.model_class()
+    def _get_object_type(self, content_type_id: int) -> ConnectionObjectType:
+        model: type[models.Model] | None = ContentType.objects.get_for_id(
+            content_type_id
+        ).model_class()
 
         if not model:
-            raise ValueError('Unknown source content type model.')
+            raise ValueError(
+                f'Could not get model for content type (id={content_type_id}).'
+            )
 
         return ConnectionObjectType.from_model(model)
+
+    @property
+    def source_object_type(self) -> ConnectionObjectType:
+        return self._get_object_type(content_type_id=self.source_content_type_id)
 
     @property
     def target_object_type(self) -> ConnectionObjectType:
-        model: type[models.Model] | None = self.target_content_type.model_class()
-
-        if not model:
-            raise ValueError('Unknown target content type model.')
-
-        return ConnectionObjectType.from_model(model)
+        return self._get_object_type(content_type_id=self.target_content_type_id)

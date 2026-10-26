@@ -22,9 +22,6 @@ class APIRequestViewSet(
         api_requests: QuerySet[APIRequest] = self.telegram_bot.api_requests.all()
 
         if self.action in ['list', 'retrieve']:
-            return api_requests.prefetch_related(
-                'source_connections__source_object',
-                'source_connections__target_object',
-            )
+            return api_requests.prefetch_related('source_connections')
 
         return api_requests

@@ -43,4 +43,11 @@ class DiagramTemporaryVariableViewSet(
     serializer_class = DiagramTemporaryVariableSerializer
 
     def get_queryset(self) -> QuerySet[TemporaryVariable]:
-        return self.telegram_bot.temporary_variables.all()
+        temporary_variables: QuerySet[TemporaryVariable] = (
+            self.telegram_bot.temporary_variables.all()
+        )
+
+        if self.action in ['list', 'retrieve']:
+            return temporary_variables.prefetch_related('source_connections')
+
+        return temporary_variables
