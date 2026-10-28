@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-19 17:07+0000\n"
+"POT-Creation-Date: 2026-10-28 11:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -253,6 +253,9 @@ msgstr ""
 msgid "Рандомайзер"
 msgstr ""
 
+msgid "Действие"
+msgstr ""
+
 msgid "Обычный"
 msgstr ""
 
@@ -349,7 +352,25 @@ msgstr ""
 msgid "Пользователи не найдены."
 msgstr ""
 
+msgid "Цель"
+msgstr ""
+
+msgid "Действие по удалению сообщения"
+msgstr ""
+
+msgid "Действия по удалению сообщений"
+msgstr ""
+
+msgid "Действие по удалению обычной клавиатуры"
+msgstr ""
+
+msgid "Действия по удалению обычных клавиатур"
+msgstr ""
+
 msgid "Telegram бот"
+msgstr ""
+
+msgid "Действия"
 msgstr ""
 
 msgid "URL-адрес"
@@ -506,9 +527,6 @@ msgid "Счета"
 msgstr ""
 
 msgid "Ответить на сообщение пользователя"
-msgstr ""
-
-msgid "Удалить сообщение пользователя"
 msgstr ""
 
 msgid "Отправить сообщение как новое"

@@ -3,6 +3,7 @@ from django.urls import path
 from rest_framework.routers import SimpleRouter
 
 from .views import (
+    ActionViewSet,
     APIRequestViewSet,
     BackgroundTaskViewSet,
     ChatViewSet,
@@ -10,6 +11,7 @@ from .views import (
     ConnectionViewSet,
     DatabaseOperationViewSet,
     DatabaseRecordViewSet,
+    DiagramActionViewSet,
     DiagramAPIRequestViewSet,
     DiagramBackgroundTaskViewSet,
     DiagramConditionViewSet,
@@ -154,6 +156,17 @@ router.register(
     f'{base_diagram_path}/randomizers',
     DiagramRandomizerViewSet,
     basename=f'{base_diagram_name}-randomizer',
+)
+
+router.register(
+    f'{base_path}/actions',
+    ActionViewSet,
+    basename=f'{base_name}-action',
+)
+router.register(
+    f'{base_diagram_path}/actions',
+    DiagramActionViewSet,
+    basename=f'{base_diagram_name}-action',
 )
 
 router.register(

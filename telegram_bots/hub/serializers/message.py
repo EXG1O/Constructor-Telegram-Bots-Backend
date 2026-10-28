@@ -15,7 +15,7 @@ from .connection import ConnectionSerializer
 class MessageSettingsSerializer(serializers.ModelSerializer[MessageSettings]):
     class Meta:
         model = MessageSettings
-        fields = ['reply_to_user_message', 'delete_user_message', 'send_as_new_message']
+        fields = ['reply_to_user_message', 'send_as_new_message']
 
 
 class MessageImageSerializer(MessageMediaSerializer[MessageImage]):

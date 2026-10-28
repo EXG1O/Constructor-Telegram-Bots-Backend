@@ -32,6 +32,7 @@ class ConnectionObjectType(TextChoices):
     TEMPORARY_VARIABLE = 'temporary_variable', _('Временная переменная')
     TIMER = 'timer', _('Таймер')
     RANDOMIZER = 'randomizer', _('Рандомайзер')
+    ACTION = 'action', _('Действие')
 
     SOURCE_CHOICES = nonmember(
         [
@@ -46,6 +47,7 @@ class ConnectionObjectType(TextChoices):
             TEMPORARY_VARIABLE,
             TIMER,
             RANDOMIZER,
+            ACTION,
         ]
     )
     TARGET_CHOICES = nonmember(
@@ -59,6 +61,7 @@ class ConnectionObjectType(TextChoices):
             TEMPORARY_VARIABLE,
             TIMER,
             RANDOMIZER,
+            ACTION,
         ]
     )
 
@@ -75,6 +78,7 @@ class ConnectionObjectType(TextChoices):
             'telegram_bots.temporaryvariable': TEMPORARY_VARIABLE[0],
             'telegram_bots.timer': TIMER[0],
             'telegram_bots.randomizer': RANDOMIZER[0],
+            'telegram_bots.action': ACTION[0],
         }
     )
 
@@ -120,6 +124,11 @@ class ConditionPartNextPartOperator(TextChoices):
 class BackgroundTaskStatus(TextChoices):
     PENDING = 'pending', _('Ожидание')
     RUNNING = 'running', _('Выполнение')
+
+
+class ActionMessageDeletionTarget(TextChoices):
+    USER_MESSAGE = 'user_message'
+    LAST_BOT_MESSAGES = 'last_bot_messages'
 
 
 class ChatType(TextChoices):

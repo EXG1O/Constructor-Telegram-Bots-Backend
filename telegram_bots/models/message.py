@@ -22,9 +22,6 @@ class MessageSettings(models.Model):
     reply_to_user_message = models.BooleanField(
         _('Ответить на сообщение пользователя'), default=False
     )
-    delete_user_message = models.BooleanField(
-        _('Удалить сообщение пользователя'), default=False
-    )
     send_as_new_message = models.BooleanField(
         _('Отправить сообщение как новое'), default=True
     )

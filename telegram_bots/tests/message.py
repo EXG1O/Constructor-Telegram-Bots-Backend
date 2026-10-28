@@ -112,7 +112,6 @@ class MessageViewSetTestCase(MessageMixin, TelegramBotMixin, UserMixin, TestCase
                 'name': 'Test name',
                 'settings': {
                     'reply_to_user_message': False,
-                    'delete_user_message': False,
                     'send_as_new_message': False,
                 },
             },
@@ -129,7 +128,6 @@ class MessageViewSetTestCase(MessageMixin, TelegramBotMixin, UserMixin, TestCase
                 'name': 'Test name',
                 'settings': {
                     'reply_to_user_message': False,
-                    'delete_user_message': False,
                     'send_as_new_message': False,
                 },
                 'keyboard': {
@@ -149,7 +147,6 @@ class MessageViewSetTestCase(MessageMixin, TelegramBotMixin, UserMixin, TestCase
                 'name': 'Test name',
                 'settings': {
                     'reply_to_user_message': False,
-                    'delete_user_message': False,
                     'send_as_new_message': False,
                 },
                 'keyboard': {
@@ -175,7 +172,6 @@ class MessageViewSetTestCase(MessageMixin, TelegramBotMixin, UserMixin, TestCase
                 'name': 'Test name',
                 'settings': {
                     'reply_to_user_message': False,
-                    'delete_user_message': False,
                     'send_as_new_message': False,
                 },
                 'text': 'The test message :)',
@@ -206,7 +202,6 @@ class MessageViewSetTestCase(MessageMixin, TelegramBotMixin, UserMixin, TestCase
                 'name': 'Test name',
                 'settings': {
                     'reply_to_user_message': False,
-                    'delete_user_message': False,
                     'send_as_new_message': False,
                 },
                 'text': 'The test message text :)',
@@ -305,7 +300,6 @@ class MessageViewSetTestCase(MessageMixin, TelegramBotMixin, UserMixin, TestCase
                 'name': new_name,
                 'settings': {
                     'reply_to_user_message': False,
-                    'delete_user_message': False,
                     'send_as_new_message': False,
                 },
                 'text': 'The test message text :)',

@@ -152,7 +152,7 @@ def migrate_command_models(apps: Apps, schema_editor: BaseDatabaseSchemaEditor) 
         message_settings_model.objects.create(
             message=message,
             reply_to_user_message=command.settings.reply_to_user_message,
-            delete_user_message=command.settings.delete_user_message,
+            delete_user_message=command.settings.delete_user_message,  # type: ignore [misc]
             send_as_new_message=command.settings.send_as_new_message,
         )
         message_image_model.objects.bulk_create(
