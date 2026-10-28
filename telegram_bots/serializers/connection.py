@@ -5,6 +5,7 @@ from rest_framework import serializers
 
 from ..enums import ConnectionObjectType
 from ..models import (
+    Action,
     APIRequest,
     BackgroundTask,
     Condition,
@@ -91,6 +92,10 @@ class ConnectionSerializer(TelegramBotMixin, serializers.ModelSerializer[Connect
         ConnectionObjectType.RANDOMIZER: _ObjectTypeConfig(
             model=Randomizer,
             get_queryset=lambda self: self.telegram_bot.randomizers.all(),
+        ),
+        ConnectionObjectType.ACTION: _ObjectTypeConfig(
+            model=Action,
+            get_queryset=lambda self: self.telegram_bot.actions.all(),
         ),
     }
 
