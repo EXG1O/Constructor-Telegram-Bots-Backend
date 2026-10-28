@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from constructor_telegram_bots.utils.html import format_html_link
 
 from .models import (
+    Action,
     APIRequest,
     BackgroundTask,
     Condition,
@@ -97,6 +98,7 @@ class TelegramBotAdmin(admin.ModelAdmin[TelegramBot]):
                             TemporaryVariable,
                             Timer,
                             Randomizer,
+                            Action,
                         )
                     ),
                 ),

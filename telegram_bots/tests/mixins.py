@@ -2,6 +2,7 @@ from users.models import User
 
 from ..enums import ChatType, ConditionPartOperatorType, ConditionPartType
 from ..models import (
+    Action,
     APIRequest,
     BackgroundTask,
     Condition,
@@ -173,6 +174,15 @@ class RandomizerMixin:
         self.randomizer: Randomizer = self.telegram_bot.randomizers.create(
             name='Test randomizer'
         )
+
+
+class ActionMixin:
+    if TYPE_CHECKING:
+        telegram_bot: TelegramBot
+
+    def setUp(self) -> None:
+        super().setUp()  # type: ignore [misc]
+        self.action: Action = self.telegram_bot.actions.create(name='Test name')
 
 
 class VariableMixin:

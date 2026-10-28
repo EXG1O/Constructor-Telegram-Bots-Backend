@@ -1,3 +1,8 @@
+from .action import (
+    ActionDefaultKeyboardRemovalSerializer,
+    ActionMessageDeletionSerializer,
+    ActionSerializer,
+)
 from .api_request import APIRequestSerializer
 from .background_task import BackgroundTaskSerializer
 from .chat import ChatSerializer, ChatUserSerializer
@@ -58,6 +63,9 @@ __all__ = [
     'TemporaryVariableSerializer',
     'TimerSerializer',
     'RandomizerSerializer',
+    'ActionSerializer',
+    'ActionMessageDeletionSerializer',
+    'ActionDefaultKeyboardRemovalSerializer',
     'VariableSerializer',
     'ChatSerializer',
     'ChatUserSerializer',

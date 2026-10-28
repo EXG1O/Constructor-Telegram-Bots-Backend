@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-19 17:07+0000\n"
+"POT-Creation-Date: 2026-10-28 11:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -258,6 +258,9 @@ msgstr "Таймер"
 msgid "Рандомайзер"
 msgstr "Рандомайзер"
 
+msgid "Действие"
+msgstr "Дія"
+
 msgid "Обычный"
 msgstr "Звичайний"
 
@@ -354,8 +357,26 @@ msgstr "Вкажіть значення для полів 'id' або 'telegram_
 msgid "Пользователи не найдены."
 msgstr "Користувачів не знайдено."
 
+msgid "Цель"
+msgstr "Ціль"
+
+msgid "Действие по удалению сообщения"
+msgstr "Дія видалення повідомлення"
+
+msgid "Действия по удалению сообщений"
+msgstr "Дії видалення повідомлень"
+
+msgid "Действие по удалению обычной клавиатуры"
+msgstr "Дія видалення звичайної клавіатури"
+
+msgid "Действия по удалению обычных клавиатур"
+msgstr "Дії видалення звичайних клавіатур"
+
 msgid "Telegram бот"
 msgstr "Telegram бот"
+
+msgid "Действия"
+msgstr "Дії"
 
 msgid "URL-адрес"
 msgstr "URL-адрес"
@@ -512,9 +533,6 @@ msgstr "Рахунки"
 
 msgid "Ответить на сообщение пользователя"
 msgstr "Відповісти на повідомлення користувача"
-
-msgid "Удалить сообщение пользователя"
-msgstr "Видалити повідомлення користувача"
 
 msgid "Отправить сообщение как новое"
 msgstr "Відправити повідомлення як нове"

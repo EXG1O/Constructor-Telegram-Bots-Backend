@@ -1,3 +1,4 @@
+from .action import ActionViewSetTestCase, DiagramActionViewSetTestCase
 from .api_request import APIRequestViewSetTestCase, DiagramAPIRequestViewSetTestCase
 from .background_task import (
     BackgroundTaskViewSetTestCase,
@@ -61,6 +62,8 @@ __all__ = [
     'DiagramTimerViewSetTestCase',
     'RandomizerViewSetTestCase',
     'DiagramRandomizerViewSetTestCase',
+    'ActionViewSetTestCase',
+    'DiagramActionViewSetTestCase',
     'VariableViewSetTestCase',
     'ChatViewSetTestCase',
     'UserViewSetTestCase',

@@ -1,3 +1,4 @@
+from .action import ActionViewSet
 from .api_request import APIRequestViewSet
 from .background_task import BackgroundTaskViewSet
 from .chat import ChatViewSet
@@ -27,6 +28,7 @@ __all__ = [
     'TemporaryVariableViewSet',
     'TimerViewSet',
     'RandomizerViewSet',
+    'ActionViewSet',
     'VariableViewSet',
     'ChatViewSet',
     'UserViewSet',

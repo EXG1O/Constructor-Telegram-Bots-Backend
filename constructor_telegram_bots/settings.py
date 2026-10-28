@@ -126,6 +126,7 @@ TELEGRAM_BOT_MAX_INVOICE_PRICES: Final[int] = 1
 TELEGRAM_BOT_MAX_TEMPORARY_VARIABLES: Final[int] = 250
 TELEGRAM_BOT_MAX_TIMERS: Final[int] = 500
 TELEGRAM_BOT_MAX_RANDOMIZERS: Final[int] = 500
+TELEGRAM_BOT_MAX_ACTIONS: Final[int] = 500
 TELEGRAM_BOT_MAX_VARIABLES: Final[int] = 100
 TELEGRAM_BOT_MAX_DATABASE_RECORDS: Final[int] = 10000
 
@@ -257,6 +258,7 @@ if MODE == Mode.DEBUG:
             'ConditionPartNextPartOperator': 'telegram_bots.enums.ConditionPartNextPartOperator',
             'APIRequestMethod': 'telegram_bots.enums.APIRequestMethod',
             'BackgroundTaskStatus': 'telegram_bots.enums.BackgroundTaskStatus',
+            'ActionMessageDeletionTarget': 'telegram_bots.enums.ActionMessageDeletionTarget',
             'ChatType': 'telegram_bots.enums.ChatType',
         },
         'PREPROCESSING_HOOKS': [

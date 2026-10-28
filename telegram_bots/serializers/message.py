@@ -37,7 +37,7 @@ import functools
 class MessageSettingsSerializer(serializers.ModelSerializer[MessageSettings]):
     class Meta:
         model = MessageSettings
-        fields = ['reply_to_user_message', 'delete_user_message', 'send_as_new_message']
+        fields = ['reply_to_user_message', 'send_as_new_message']
 
 
 class MessageImageSerializer(MessageMediaSerializer[MessageImage]):
@@ -330,19 +330,10 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
         settings.reply_to_user_message = data.get(
             'reply_to_user_message', settings.reply_to_user_message
         )
-        settings.delete_user_message = data.get(
-            'delete_user_message', settings.delete_user_message
-        )
         settings.send_as_new_message = data.get(
             'send_as_new_message', settings.send_as_new_message
         )
-        settings.save(
-            update_fields=[
-                'reply_to_user_message',
-                'delete_user_message',
-                'send_as_new_message',
-            ]
-        )
+        settings.save(update_fields=['reply_to_user_message', 'send_as_new_message'])
 
         return settings
 

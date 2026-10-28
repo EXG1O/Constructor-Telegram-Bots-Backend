@@ -1,3 +1,9 @@
+from .action import (
+    ActionDefaultKeyboardRemovalSerializer,
+    ActionMessageDeletionSerializer,
+    ActionSerializer,
+    DiagramActionSerializer,
+)
 from .api_request import APIRequestSerializer, DiagramAPIRequestSerializer
 from .background_task import BackgroundTaskSerializer, DiagramBackgroundTaskSerializer
 from .chat import ChatSerializer
@@ -84,6 +90,10 @@ __all__ = [
     'DiagramTimerSerializer',
     'RandomizerSerializer',
     'DiagramRandomizerSerializer',
+    'ActionSerializer',
+    'ActionMessageDeletionSerializer',
+    'ActionDefaultKeyboardRemovalSerializer',
+    'DiagramActionSerializer',
     'VariableSerializer',
     'ChatSerializer',
     'UserSerializer',

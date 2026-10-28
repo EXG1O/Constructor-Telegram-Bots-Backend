@@ -1,3 +1,4 @@
+from .action import Action, ActionDefaultKeyboardRemoval, ActionMessageDeletion
 from .api_request import APIRequest
 from .background_task import BackgroundTask
 from .chat import Chat
@@ -52,6 +53,9 @@ __all__ = [
     'TemporaryVariable',
     'Timer',
     'Randomizer',
+    'Action',
+    'ActionMessageDeletion',
+    'ActionDefaultKeyboardRemoval',
     'Variable',
     'Chat',
     'User',

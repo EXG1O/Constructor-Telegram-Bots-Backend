@@ -15,6 +15,7 @@ from constructor_telegram_bots.utils.storage import force_get_file_size
 from .. import tasks
 from ..hub.utils.models import get_telegram_bots_hub_model
 from ..utils.storage import get_telegram_bot_file_names
+from .action import Action
 from .api_request import APIRequest
 from .background_task import BackgroundTask
 from .chat import Chat
@@ -98,6 +99,7 @@ class TelegramBot(models.Model):
         temporary_variables: models.Manager[TemporaryVariable]
         timers: models.Manager[Timer]
         randomizers: models.Manager[Randomizer]
+        actions: models.Manager[Action]
         variables: models.Manager[Variable]
         chats: models.Manager[Chat]
         users: models.Manager[User]

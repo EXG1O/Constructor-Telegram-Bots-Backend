@@ -1,3 +1,4 @@
+from .action import ActionViewSet, DiagramActionViewSet
 from .api_request import APIRequestViewSet, DiagramAPIRequestViewSet
 from .background_task import BackgroundTaskViewSet, DiagramBackgroundTaskViewSet
 from .chat import ChatViewSet
@@ -46,6 +47,8 @@ __all__ = [
     'DiagramTimerViewSet',
     'RandomizerViewSet',
     'DiagramRandomizerViewSet',
+    'ActionViewSet',
+    'DiagramActionViewSet',
     'VariableViewSet',
     'ChatViewSet',
     'UserViewSet',

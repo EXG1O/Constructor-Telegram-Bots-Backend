@@ -1,6 +1,7 @@
 from rest_framework.routers import SimpleRouter
 
 from .views import (
+    ActionViewSet,
     APIRequestViewSet,
     BackgroundTaskViewSet,
     ChatViewSet,
@@ -78,6 +79,11 @@ router.register(
     f'{base_path}/randomizers',
     RandomizerViewSet,
     basename=f'{base_name}-randomizer',
+)
+router.register(
+    f'{base_path}/actions',
+    ActionViewSet,
+    basename=f'{base_name}-action',
 )
 router.register(
     f'{base_path}/variables',

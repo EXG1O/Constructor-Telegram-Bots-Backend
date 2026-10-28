@@ -1,3 +1,4 @@
+from .action import ActionViewSetTestCase
 from .api_request import APIRequestViewSetTestCase
 from .background_task import BackgroundTaskViewSetTestCase
 from .chat import ChatViewSetTestCase
@@ -28,6 +29,7 @@ __all__ = [
     'TemporaryVariableViewSetTestCase',
     'TimerViewSetTestCase',
     'RandomizerViewSetTestCase',
+    'ActionViewSetTestCase',
     'VariableViewSetTestCase',
     'ChatViewSetTestCase',
     'UserViewSetTestCase',
