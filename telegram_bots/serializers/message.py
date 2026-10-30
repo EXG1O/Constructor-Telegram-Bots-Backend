@@ -204,7 +204,7 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
         if not data:
             return None
 
-        buttons_data: list[dict[str, Any]] | None = data.get('buttons', None)
+        buttons_data: list[dict[str, Any]] | None = data.get('buttons')
 
         if self._get_effective_keyboard_type(data) == KeyboardType.REMOVAL:
             if 'buttons' in data:
