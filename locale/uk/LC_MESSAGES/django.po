@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 11:24+0000\n"
+"POT-Creation-Date: 2026-10-30 14:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -261,14 +261,17 @@ msgstr "Рандомайзер"
 msgid "Действие"
 msgstr "Дія"
 
-msgid "Обычный"
-msgstr "Звичайний"
+msgid "Обычная"
+msgstr "Звичайна"
 
-msgid "Встроенный"
-msgstr "Вбудований"
+msgid "Встроенная"
+msgstr "Вбудована"
 
-msgid "Платёжный"
-msgstr "Платіжний"
+msgid "Платёжная"
+msgstr "Платіжна"
+
+msgid "Удаляющая"
+msgstr "Видаляюча"
 
 msgid "По умолчанию"
 msgstr "За замовчуванням"
@@ -365,12 +368,6 @@ msgstr "Дія видалення повідомлення"
 
 msgid "Действия по удалению сообщений"
 msgstr "Дії видалення повідомлень"
-
-msgid "Действие по удалению обычной клавиатуры"
-msgstr "Дія видалення звичайної клавіатури"
-
-msgid "Действия по удалению обычных клавиатур"
-msgstr "Дії видалення звичайних клавіатур"
 
 msgid "Telegram бот"
 msgstr "Telegram бот"
@@ -567,9 +564,6 @@ msgstr "Стиль"
 msgid "Кнопки клавиатур сообщений"
 msgstr "Кнопки клавіатур повідомлень"
 
-msgid "Режим"
-msgstr "Режим"
-
 msgid "Клавиатура сообщения"
 msgstr "Клавіатура повідомлення"
 
@@ -691,6 +685,9 @@ msgstr "Перевищено ліміт сховища."
 
 msgid "Счёт должен содержать хотя бы одну цену."
 msgstr "Рахунок повинен містити принаймні одну ціну."
+
+msgid "Клавиатура типа 'removal' не может иметь кнопок."
+msgstr "Клавіатура типу 'removal' не може мати кнопок."
 
 msgid ""
 "Необходимо указать значение как минимум для одного из полей: 'text', "

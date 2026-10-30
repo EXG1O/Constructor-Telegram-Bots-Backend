@@ -20,8 +20,8 @@ class ActionViewSet(IDLookupMixin, TelegramBotMixin, ReadOnlyModelViewSet[Action
         actions: QuerySet[Action] = self.telegram_bot.actions.all()
 
         if self.action in ['list', 'retrieve']:
-            return actions.select_related(
-                'message_deletion', 'default_keyboard_removal'
-            ).prefetch_related('source_connections')
+            return actions.select_related('message_deletion').prefetch_related(
+                'source_connections'
+            )
 
         return actions

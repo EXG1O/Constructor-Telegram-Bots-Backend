@@ -8,12 +8,17 @@ from django.utils.translation import gettext as _
 
 from rest_framework import serializers
 
+from drf_spectacular.extensions import OpenApiSerializerExtension
+from drf_spectacular.openapi import AutoSchema
+from drf_spectacular.utils import Direction
+
 from constructor_telegram_bots.utils.serializers import (
     validate_exclusive_fields,
     validate_max_count,
 )
 from constructor_telegram_bots.utils.storage import force_get_file_size
 
+from ..enums import KeyboardType
 from ..models import (
     Message,
     MessageDocument,
@@ -66,6 +71,67 @@ class MessageKeyboardSerializer(serializers.ModelSerializer[MessageKeyboard]):
         model = MessageKeyboard
         fields = ['type', 'buttons']
 
+    def to_internal_value(self, data: dict[str, Any]) -> dict[str, Any]:
+        parent: Any = self.parent
+
+        if isinstance(parent, MessageSerializer):
+            is_removal_type: bool = (
+                parent._get_effective_keyboard_type(data) == KeyboardType.REMOVAL
+            )
+
+            buttons_field = cast(
+                serializers.ListSerializer[MessageKeyboardButton],
+                self.fields['buttons'],
+            )
+            buttons_field.required = not is_removal_type
+            buttons_field.allow_empty = is_removal_type
+
+        return super().to_internal_value(data)
+
+
+class MessageKeyboardSerializerExtension(OpenApiSerializerExtension):  # type: ignore [no-untyped-call]
+    target_class = MessageKeyboardSerializer
+
+    def map_serializer(
+        self, auto_schema: AutoSchema, direction: Direction
+    ) -> dict[str, Any]:
+        schema: dict[str, Any] = super().map_serializer(auto_schema, direction)
+
+        if direction == 'response':
+            return schema
+
+        buttons_schema: dict[str, Any] = schema['properties']['buttons']
+
+        return {
+            'oneOf': [
+                {
+                    'type': 'object',
+                    'properties': {
+                        'type': {
+                            'type': 'string',
+                            'const': KeyboardType.REMOVAL,
+                        },
+                    },
+                    'required': ['type'],
+                },
+                {
+                    'type': 'object',
+                    'properties': {
+                        'type': {
+                            'type': 'string',
+                            'enum': [
+                                choice
+                                for choice in KeyboardType
+                                if choice != KeyboardType.REMOVAL
+                            ],
+                        },
+                        'buttons': {**buttons_schema, 'minItems': 1},
+                    },
+                    'required': ['buttons'],
+                },
+            ],
+        }
+
 
 class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
     settings = MessageSettingsSerializer()
@@ -82,6 +148,17 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
             'documents',
             'keyboard',
         ]
+
+    def _get_effective_keyboard_type(self, data: dict[str, Any]) -> KeyboardType:
+        result: KeyboardType = KeyboardType.DEFAULT
+
+        if value := data.get('type'):
+            result = value
+        elif self.instance:
+            with suppress(MessageKeyboard.DoesNotExist):
+                result = cast(KeyboardType, self.instance.keyboard.type)
+
+        return result
 
     def _validate_media(
         self,
@@ -129,20 +206,27 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
 
         buttons_data: list[dict[str, Any]] | None = data.get('buttons')
 
-        if not buttons_data:
-            return None
-
-        validate_max_count(
-            (
-                (
-                    self.instance.keyboard.buttons.count()
-                    + sum('id' not in button_data for button_data in buttons_data)
+        if self._get_effective_keyboard_type(data) == KeyboardType.REMOVAL:
+            if 'buttons' in data:
+                raise serializers.ValidationError(
+                    _("Клавиатура типа 'removal' не может иметь кнопок."),
+                    code='invalid',
                 )
-                if self.instance and self.partial
-                else len(buttons_data)
-            ),
-            settings.TELEGRAM_BOT_MAX_MESSAGE_KEYBOARD_BUTTONS,
-        )
+
+            return data
+
+        if buttons_data:
+            validate_max_count(
+                (
+                    (
+                        self.instance.keyboard.buttons.count()
+                        + sum('id' not in button_data for button_data in buttons_data)
+                    )
+                    if self.instance and self.partial
+                    else len(buttons_data)
+                ),
+                settings.TELEGRAM_BOT_MAX_MESSAGE_KEYBOARD_BUTTONS,
+            )
 
         return data
 
@@ -267,27 +351,34 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
     ) -> list[MessageDocument]:
         return self._create_media(message, MessageDocument, data)
 
+    def _create_keyboard_buttons(
+        self, keyboard: MessageKeyboard, data: list[dict[str, Any]]
+    ) -> list[MessageKeyboardButton] | None:
+        if not data:
+            return None
+
+        create_buttons: list[MessageKeyboardButton] = []
+
+        for item in data:
+            item.pop('id', None)
+            create_buttons.append(MessageKeyboardButton(keyboard=keyboard, **item))
+
+        return MessageKeyboardButton.objects.bulk_create(create_buttons)
+
     def create_keyboard(
         self, message: Message, data: dict[str, Any]
     ) -> MessageKeyboard | None:
-        buttons_data: list[dict[str, Any]] | None = data.pop('buttons', None)
+        buttons_data: list[dict[str, Any]] = data.pop('buttons', None)
 
-        if not buttons_data:
+        if not buttons_data and data.get('type') != KeyboardType.REMOVAL:
             return None
 
         keyboard: MessageKeyboard = MessageKeyboard.objects.create(
             message=message, **data
         )
 
-        create_buttons: list[MessageKeyboardButton] = []
-
-        for button_data in buttons_data:
-            button_data.pop('id', None)
-            create_buttons.append(
-                MessageKeyboardButton(keyboard=keyboard, **button_data)
-            )
-
-        MessageKeyboardButton.objects.bulk_create(create_buttons)
+        if keyboard.type != KeyboardType.REMOVAL:
+            self._create_keyboard_buttons(keyboard, buttons_data)
 
         return keyboard
 
@@ -430,6 +521,51 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
     ) -> list[MessageDocument] | None:
         return self._update_media(message, MessageDocument, data)
 
+    def _update_keyboard_buttons(
+        self, keyboard: MessageKeyboard, data: list[dict[str, Any]] | None
+    ) -> list[MessageKeyboardButton] | None:
+        if not data:
+            return None
+
+        create_buttons: list[MessageKeyboardButton] = []
+        update_buttons: list[MessageKeyboardButton] = []
+
+        for item in data:
+            try:
+                button: MessageKeyboardButton = keyboard.buttons.get(id=item.pop('id'))
+            except KeyError, MessageKeyboardButton.DoesNotExist:
+                if keyboard.type != KeyboardType.DEFAULT:
+                    item['url'] = None
+
+                create_buttons.append(MessageKeyboardButton(keyboard=keyboard, **item))
+            else:
+                button.row = item.get('row', button.row)
+                button.position = item.get('position', button.position)
+                button.text = item.get('text', button.text)
+                button.url = (
+                    item.get('url', button.url)
+                    if keyboard.type != KeyboardType.DEFAULT
+                    else None
+                )
+                button.style = item.get('style', button.style)
+                update_buttons.append(button)
+
+        new_buttons: list[MessageKeyboardButton] = (
+            MessageKeyboardButton.objects.bulk_create(create_buttons)
+        )
+        MessageKeyboardButton.objects.bulk_update(
+            update_buttons, fields=['row', 'position', 'text', 'url', 'style']
+        )
+
+        final_buttons: list[MessageKeyboardButton] = new_buttons + update_buttons
+
+        if not self.partial:
+            keyboard.buttons.exclude(
+                id__in=[button.id for button in final_buttons]
+            ).delete()
+
+        return final_buttons
+
     def update_keyboard(
         self, message: Message, data: dict[str, Any] | None
     ) -> MessageKeyboard | None:
@@ -444,54 +580,19 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
             keyboard: MessageKeyboard = message.keyboard
         except MessageKeyboard.DoesNotExist:
             return self.create_keyboard(message, data)
+        else:
+            keyboard_type: KeyboardType = data.get('type', keyboard.type)
 
-        keyboard_type: str = data.get('type', keyboard.type)
+            keyboard.type = keyboard_type
+            keyboard.save(update_fields=['type'])
 
-        keyboard.type = keyboard_type
-        keyboard.save(update_fields=['type'])
-
-        create_buttons: list[MessageKeyboardButton] = []
-        update_buttons: list[MessageKeyboardButton] = []
-
-        buttons_data: list[dict[str, Any]] = data.get('buttons', [])
-
-        for button_data in buttons_data:
-            try:
-                button: MessageKeyboardButton = keyboard.buttons.get(
-                    id=button_data.pop('id')
-                )
-            except KeyError, MessageKeyboardButton.DoesNotExist:
-                if keyboard_type != 'default':
-                    button_data['url'] = None
-
-                create_buttons.append(
-                    MessageKeyboardButton(keyboard=keyboard, **button_data)
-                )
+            if keyboard_type == KeyboardType.REMOVAL:
+                keyboard.buttons.all().delete()
+                return keyboard
             else:
-                button.row = button_data.get('row', button.row)
-                button.position = button_data.get('position', button.position)
-                button.text = button_data.get('text', button.text)
-                button.url = (
-                    button_data.get('url', button.url)
-                    if keyboard_type != 'default'
-                    else None
-                )
-                button.style = button_data.get('style', button.style)
-                update_buttons.append(button)
+                self._update_keyboard_buttons(keyboard, data.get('buttons'))
 
-        new_buttons: list[MessageKeyboardButton] = (
-            MessageKeyboardButton.objects.bulk_create(create_buttons)
-        )
-        MessageKeyboardButton.objects.bulk_update(
-            update_buttons, fields=['row', 'position', 'text', 'url', 'style']
-        )
-
-        if not self.partial:
-            keyboard.buttons.exclude(
-                id__in=[button.id for button in new_buttons + update_buttons]
-            ).delete()
-
-        return keyboard
+            return keyboard
 
     def update(self, message: Message, validated_data: dict[str, Any]) -> Message:  # type: ignore[override]
         settings_data: dict[str, Any] | None = validated_data.get('settings')
@@ -508,8 +609,8 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
                 message.save(update_fields={*self._UPDATE_FIELDS, 'text'})
 
                 self.update_settings(message, settings_data)
-                media += self.update_images(message, images_data) or []
-                media += self.update_documents(message, documents_data) or []
+                media.extend(self.update_images(message, images_data) or [])
+                media.extend(self.update_documents(message, documents_data) or [])
                 self.update_keyboard(message, keyboard_data)
         except Exception as error:
             for item in media:

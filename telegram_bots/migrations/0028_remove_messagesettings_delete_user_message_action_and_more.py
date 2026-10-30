@@ -147,34 +147,6 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='ActionDefaultKeyboardRemoval',
-            fields=[
-                (
-                    'id',
-                    models.BigAutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name='ID',
-                    ),
-                ),
-                (
-                    'action',
-                    models.OneToOneField(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name='default_keyboard_removal',
-                        to='telegram_bots.action',
-                        verbose_name='Действие',
-                    ),
-                ),
-            ],
-            options={
-                'verbose_name': 'Действие по скрытию обычной клавиатуры',
-                'verbose_name_plural': 'Действия по скрытию обычных клавиатур',
-                'db_table': 'telegram_bot_action_default_keyboard_removal',
-            },
-        ),
-        migrations.CreateModel(
             name='ActionMessageDeletion',
             fields=[
                 (

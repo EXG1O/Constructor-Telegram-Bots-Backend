@@ -29,23 +29,6 @@ class ActionMessageDeletion(models.Model):
         return f'ID: {self.id}'
 
 
-class ActionDefaultKeyboardRemoval(models.Model):
-    action = models.OneToOneField(
-        'Action',
-        on_delete=models.CASCADE,
-        related_name='default_keyboard_removal',
-        verbose_name=_('Действие'),
-    )
-
-    class Meta(TypedModelMeta):
-        db_table = 'telegram_bot_action_default_keyboard_removal'
-        verbose_name = _('Действие по удалению обычной клавиатуры')
-        verbose_name_plural = _('Действия по удалению обычных клавиатур')
-
-    def __str__(self) -> str:
-        return f'ID: {self.id}'
-
-
 class Action(AbstractBlock):
     telegram_bot = models.ForeignKey(
         'TelegramBot',
@@ -56,7 +39,6 @@ class Action(AbstractBlock):
 
     if TYPE_CHECKING:
         message_deletion: ActionMessageDeletion
-        default_keyboard_removal: ActionDefaultKeyboardRemoval
 
     class Meta(TypedModelMeta):
         db_table = 'telegram_bot_action'

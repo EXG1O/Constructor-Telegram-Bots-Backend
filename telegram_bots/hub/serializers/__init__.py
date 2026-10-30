@@ -1,8 +1,4 @@
-from .action import (
-    ActionDefaultKeyboardRemovalSerializer,
-    ActionMessageDeletionSerializer,
-    ActionSerializer,
-)
+from .action import ActionMessageDeletionSerializer, ActionSerializer
 from .api_request import APIRequestSerializer
 from .background_task import BackgroundTaskSerializer
 from .chat import ChatSerializer, ChatUserSerializer
@@ -65,7 +61,6 @@ __all__ = [
     'RandomizerSerializer',
     'ActionSerializer',
     'ActionMessageDeletionSerializer',
-    'ActionDefaultKeyboardRemovalSerializer',
     'VariableSerializer',
     'ChatSerializer',
     'ChatUserSerializer',

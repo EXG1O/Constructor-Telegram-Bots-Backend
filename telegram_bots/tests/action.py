@@ -80,24 +80,24 @@ class ActionViewSetTestCase(ActionMixin, TelegramBotMixin, UserMixin, TestCase):
         response: Response = view(request, **self.list_url_kwargs)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_create_with_both_exclusive_fields(self) -> None:
-        view = ActionViewSet.as_view({'post': 'create'})
+    # def test_create_with_both_exclusive_fields(self) -> None:
+    #     view = ActionViewSet.as_view({'post': 'create'})
 
-        request: Request = self.factory.post(
-            self.list_url,
-            {
-                'name': 'Test action',
-                'message_deletion': {
-                    'target': ActionMessageDeletionTarget.USER_MESSAGE
-                },
-                'default_keyboard_removal': {},
-            },
-            format='json',
-        )
-        force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
+    #     request: Request = self.factory.post(
+    #         self.list_url,
+    #         {
+    #             'name': 'Test action',
+    #             'message_deletion': {
+    #                 'target': ActionMessageDeletionTarget.USER_MESSAGE
+    #             },
+    #             'default_keyboard_removal': {},
+    #         },
+    #         format='json',
+    #     )
+    #     force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
 
-        response: Response = view(request, **self.list_url_kwargs)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #     response: Response = view(request, **self.list_url_kwargs)
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_without_exclusive_fields(self) -> None:
         view = ActionViewSet.as_view({'post': 'create'})
