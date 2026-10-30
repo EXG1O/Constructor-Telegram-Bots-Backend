@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 11:24+0000\n"
+"POT-Creation-Date: 2026-10-30 14:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -259,14 +259,17 @@ msgstr "Randomizer"
 msgid "Действие"
 msgstr "Action"
 
-msgid "Обычный"
+msgid "Обычная"
 msgstr "Default"
 
-msgid "Встроенный"
+msgid "Встроенная"
 msgstr "Inline"
 
-msgid "Платёжный"
+msgid "Платёжная"
 msgstr "Payment"
+
+msgid "Удаляющая"
+msgstr "Removal"
 
 msgid "По умолчанию"
 msgstr "Default"
@@ -363,12 +366,6 @@ msgstr "Delete message action"
 
 msgid "Действия по удалению сообщений"
 msgstr "Delete message actions"
-
-msgid "Действие по удалению обычной клавиатуры"
-msgstr "Delete default keyboard action"
-
-msgid "Действия по удалению обычных клавиатур"
-msgstr "Delete default keyboard actions"
 
 msgid "Telegram бот"
 msgstr "Telegram bot"
@@ -565,9 +562,6 @@ msgstr "Style"
 msgid "Кнопки клавиатур сообщений"
 msgstr "Keyboard buttons of messages"
 
-msgid "Режим"
-msgstr "Type"
-
 msgid "Клавиатура сообщения"
 msgstr "Message keyboard"
 
@@ -689,6 +683,9 @@ msgstr "Storage limit exceeded."
 
 msgid "Счёт должен содержать хотя бы одну цену."
 msgstr "Invoice must contain at least one price."
+
+msgid "Клавиатура типа 'removal' не может иметь кнопок."
+msgstr "Keyboard of type 'removal' cannot have buttons."
 
 #, fuzzy
 msgid ""

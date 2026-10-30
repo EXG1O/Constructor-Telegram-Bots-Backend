@@ -126,7 +126,7 @@ class MessageKeyboard(models.Model):
         verbose_name=_('Сообщение'),
     )
     type = models.CharField(
-        _('Режим'), max_length=7, choices=KeyboardType, default=KeyboardType.DEFAULT
+        _('Тип'), max_length=7, choices=KeyboardType, default=KeyboardType.DEFAULT
     )
 
     if TYPE_CHECKING:

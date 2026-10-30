@@ -90,9 +90,10 @@ class ConnectionObjectType(TextChoices):
 
 
 class KeyboardType(TextChoices):
-    DEFAULT = 'default', _('Обычный')
-    INLINE = 'inline', _('Встроенный')
-    PAYMENT = 'payment', _('Платёжный')
+    DEFAULT = 'default', _('Обычная')
+    INLINE = 'inline', _('Встроенная')
+    PAYMENT = 'payment', _('Платёжная')
+    REMOVAL = 'removal', _('Удаляющая')
 
 
 class KeyboardButtonStyle(TextChoices):

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 11:28+0000\n"
+"POT-Creation-Date: 2026-10-30 14:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -256,13 +256,16 @@ msgstr ""
 msgid "Действие"
 msgstr ""
 
-msgid "Обычный"
+msgid "Обычная"
 msgstr ""
 
-msgid "Встроенный"
+msgid "Встроенная"
 msgstr ""
 
-msgid "Платёжный"
+msgid "Платёжная"
+msgstr ""
+
+msgid "Удаляющая"
 msgstr ""
 
 msgid "По умолчанию"
@@ -359,12 +362,6 @@ msgid "Действие по удалению сообщения"
 msgstr ""
 
 msgid "Действия по удалению сообщений"
-msgstr ""
-
-msgid "Действие по удалению обычной клавиатуры"
-msgstr ""
-
-msgid "Действия по удалению обычных клавиатур"
 msgstr ""
 
 msgid "Telegram бот"
@@ -562,9 +559,6 @@ msgstr ""
 msgid "Кнопки клавиатур сообщений"
 msgstr ""
 
-msgid "Режим"
-msgstr ""
-
 msgid "Клавиатура сообщения"
 msgstr ""
 
@@ -685,6 +679,9 @@ msgid "Превышен лимит хранилища."
 msgstr ""
 
 msgid "Счёт должен содержать хотя бы одну цену."
+msgstr ""
+
+msgid "Клавиатура типа 'removal' не может иметь кнопок."
 msgstr ""
 
 msgid ""

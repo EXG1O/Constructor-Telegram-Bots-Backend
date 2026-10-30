@@ -1,5 +1,4 @@
 from .action import (
-    ActionDefaultKeyboardRemovalSerializer,
     ActionMessageDeletionSerializer,
     ActionSerializer,
     DiagramActionSerializer,
@@ -92,7 +91,6 @@ __all__ = [
     'DiagramRandomizerSerializer',
     'ActionSerializer',
     'ActionMessageDeletionSerializer',
-    'ActionDefaultKeyboardRemovalSerializer',
     'DiagramActionSerializer',
     'VariableSerializer',
     'ChatSerializer',
