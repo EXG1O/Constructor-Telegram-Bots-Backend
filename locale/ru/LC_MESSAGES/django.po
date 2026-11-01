@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-30 14:57+0000\n"
+"POT-Creation-Date: 2026-10-30 20:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -559,6 +559,18 @@ msgstr ""
 msgid "Кнопки клавиатур сообщений"
 msgstr ""
 
+msgid "Компактная"
+msgstr ""
+
+msgid "Скрывать после нажатия"
+msgstr ""
+
+msgid "Запретить скрытие"
+msgstr ""
+
+msgid "Текст-заглушка в поле ввода"
+msgstr ""
+
 msgid "Клавиатура сообщения"
 msgstr ""
 
@@ -681,7 +693,10 @@ msgstr ""
 msgid "Счёт должен содержать хотя бы одну цену."
 msgstr ""
 
-msgid "Клавиатура типа 'removal' не может иметь кнопок."
+msgid "Поле доступно только для клавиатуры типа 'default'."
+msgstr ""
+
+msgid "Поле недоступно для клавиатуры типа 'removal'."
 msgstr ""
 
 msgid ""

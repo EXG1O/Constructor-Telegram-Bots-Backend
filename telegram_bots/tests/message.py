@@ -208,6 +208,107 @@ class MessageViewSetTestCase(MessageMixin, TelegramBotMixin, UserMixin, TestCase
         response: Response = view(request, **self.list_url_kwargs)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_create_default_keyboard_without_default_only_fields(self) -> None:
+        view = MessageViewSet.as_view({'post': 'create'})
+
+        request: Request = self.factory.post(
+            self.list_url,
+            {
+                'name': 'Test name',
+                'settings': {
+                    'reply_to_user_message': False,
+                    'send_as_new_message': False,
+                },
+                'keyboard': {
+                    'type': KeyboardType.DEFAULT,
+                    'buttons': [{'row': 0, 'position': 0, 'text': 'Test button text'}],
+                },
+                'text': 'The test message :)',
+            },
+            format='json',
+        )
+        force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
+
+        response: Response = view(request, **self.list_url_kwargs)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_default_keyboard_with_default_only_fields(self) -> None:
+        view = MessageViewSet.as_view({'post': 'create'})
+
+        request: Request = self.factory.post(
+            self.list_url,
+            {
+                'name': 'Test name',
+                'settings': {
+                    'reply_to_user_message': False,
+                    'send_as_new_message': False,
+                },
+                'keyboard': {
+                    'type': KeyboardType.DEFAULT,
+                    'buttons': [{'row': 0, 'position': 0, 'text': 'Test button text'}],
+                    'is_compact': False,
+                    'hide_on_click': True,
+                    'is_persistent': True,
+                    'input_placeholder': 'Test placeholder',
+                },
+                'text': 'The test message :)',
+            },
+            format='json',
+        )
+        force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
+
+        response: Response = view(request, **self.list_url_kwargs)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_non_default_keyboard_with_default_only_fields(self) -> None:
+        view = MessageViewSet.as_view({'post': 'create'})
+
+        request: Request = self.factory.post(
+            self.list_url,
+            {
+                'name': 'Test name',
+                'settings': {
+                    'reply_to_user_message': False,
+                    'send_as_new_message': False,
+                },
+                'keyboard': {
+                    'type': KeyboardType.INLINE,
+                    'buttons': [{'row': 0, 'position': 0, 'text': 'Test button text'}],
+                    'is_compact': False,
+                },
+                'text': 'The test message :)',
+            },
+            format='json',
+        )
+        force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
+
+        response: Response = view(request, **self.list_url_kwargs)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_non_default_keyboard_without_default_only_fields(self) -> None:
+        view = MessageViewSet.as_view({'post': 'create'})
+
+        request: Request = self.factory.post(
+            self.list_url,
+            {
+                'name': 'Test name',
+                'settings': {
+                    'reply_to_user_message': False,
+                    'send_as_new_message': False,
+                },
+                'keyboard': {
+                    'type': KeyboardType.INLINE,
+                    'buttons': [{'row': 0, 'position': 0, 'text': 'Test button text'}],
+                },
+                'text': 'The test message :)',
+            },
+            format='json',
+        )
+        force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
+
+        response: Response = view(request, **self.list_url_kwargs)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
     def test_create_removal_keyboard_with_buttons(self) -> None:
         view = MessageViewSet.as_view({'post': 'create'})
 
@@ -256,6 +357,30 @@ class MessageViewSetTestCase(MessageMixin, TelegramBotMixin, UserMixin, TestCase
         new_message: Message = self.telegram_bot.messages.latest('id')
         self.assertEqual(new_message.keyboard.type, KeyboardType.REMOVAL)
         self.assertFalse(new_message.keyboard.buttons.exists())
+
+    def test_create_removal_keyboard_with_default_only_fields(self) -> None:
+        view = MessageViewSet.as_view({'post': 'create'})
+
+        request: Request = self.factory.post(
+            self.list_url,
+            {
+                'name': 'Test name',
+                'settings': {
+                    'reply_to_user_message': False,
+                    'send_as_new_message': False,
+                },
+                'keyboard': {
+                    'type': KeyboardType.REMOVAL,
+                    'hide_on_click': True,
+                },
+                'text': 'The test message :)',
+            },
+            format='json',
+        )
+        force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
+
+        response: Response = view(request, **self.list_url_kwargs)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_over_limit(self) -> None:
         view = MessageViewSet.as_view({'post': 'create'})
@@ -329,6 +454,83 @@ class MessageViewSetTestCase(MessageMixin, TelegramBotMixin, UserMixin, TestCase
 
         response: Response = view(request, **self.detail_url_kwargs)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_non_default_keyboard_with_default_only_fields(self) -> None:
+        view = MessageViewSet.as_view({'put': 'update'})
+
+        request: Request = self.factory.put(
+            self.detail_url,
+            {
+                'name': 'Test name 2',
+                'settings': {
+                    'reply_to_user_message': False,
+                    'send_as_new_message': False,
+                },
+                'text': 'The test message text :)',
+                'keyboard': {
+                    'type': KeyboardType.PAYMENT,
+                    'buttons': [{'row': 0, 'position': 0, 'text': 'Test button text'}],
+                    'input_placeholder': 'Test placeholder',
+                },
+            },
+            format='json',
+        )
+        force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
+
+        response: Response = view(request, **self.detail_url_kwargs)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_default_keyboard_without_default_only_fields(self) -> None:
+        view = MessageViewSet.as_view({'put': 'update'})
+
+        request: Request = self.factory.put(
+            self.detail_url,
+            {
+                'name': 'Test name 2',
+                'settings': {
+                    'reply_to_user_message': False,
+                    'send_as_new_message': False,
+                },
+                'text': 'The test message text :)',
+                'keyboard': {
+                    'type': KeyboardType.DEFAULT,
+                    'buttons': [{'row': 0, 'position': 0, 'text': 'Test button text'}],
+                },
+            },
+            format='json',
+        )
+        force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
+
+        response: Response = view(request, **self.detail_url_kwargs)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_default_keyboard_with_default_only_fields(self) -> None:
+        view = MessageViewSet.as_view({'put': 'update'})
+
+        request: Request = self.factory.put(
+            self.detail_url,
+            {
+                'name': 'Test name 2',
+                'settings': {
+                    'reply_to_user_message': False,
+                    'send_as_new_message': False,
+                },
+                'text': 'The test message text :)',
+                'keyboard': {
+                    'type': KeyboardType.DEFAULT,
+                    'buttons': [{'row': 0, 'position': 0, 'text': 'Test button text'}],
+                    'is_compact': True,
+                    'hide_on_click': True,
+                    'is_persistent': False,
+                    'input_placeholder': 'Test placeholder',
+                },
+            },
+            format='json',
+        )
+        force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
+
+        response: Response = view(request, **self.detail_url_kwargs)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_removal_keyboard_with_buttons(self) -> None:
         view = MessageViewSet.as_view({'put': 'update'})
@@ -465,6 +667,32 @@ class MessageViewSetTestCase(MessageMixin, TelegramBotMixin, UserMixin, TestCase
         self.keyboard.refresh_from_db()
         self.assertEqual(self.keyboard.type, KeyboardType.REMOVAL)
         self.assertFalse(self.keyboard.buttons.exists())
+
+    def test_partial_update_non_default_keyboard_with_default_only_fields(self) -> None:
+        view = MessageViewSet.as_view({'patch': 'partial_update'})
+
+        request: Request = self.factory.patch(
+            self.detail_url,
+            {'keyboard': {'type': KeyboardType.INLINE, 'is_persistent': True}},
+            format='json',
+        )
+        force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
+
+        response: Response = view(request, **self.detail_url_kwargs)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_partial_update_default_keyboard_with_default_only_fields(self) -> None:
+        view = MessageViewSet.as_view({'patch': 'partial_update'})
+
+        request: Request = self.factory.patch(
+            self.detail_url,
+            {'keyboard': {'hide_on_click': True, 'is_persistent': True}},
+            format='json',
+        )
+        force_authenticate(request, self.user, self.user_access_token)  # type: ignore [arg-type]
+
+        response: Response = view(request, **self.detail_url_kwargs)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_partial_update(self) -> None:
         view = MessageViewSet.as_view({'patch': 'partial_update'})

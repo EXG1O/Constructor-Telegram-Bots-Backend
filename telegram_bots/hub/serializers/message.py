@@ -43,7 +43,14 @@ class MessageKeyboardSerializer(serializers.ModelSerializer[MessageKeyboard]):
 
     class Meta:
         model = MessageKeyboard
-        fields = ['type', 'buttons']
+        fields = [
+            'type',
+            'is_compact',
+            'hide_on_click',
+            'is_persistent',
+            'input_placeholder',
+            'buttons',
+        ]
 
 
 class MessageSerializer(serializers.ModelSerializer[Message]):
