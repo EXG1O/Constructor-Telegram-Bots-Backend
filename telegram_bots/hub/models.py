@@ -50,14 +50,17 @@ class TelegramBotsHubManager(models.Manager['TelegramBotsHub']):
 
         with redis_client.lock(lock_key, timeout=120, sleep=0.5):
             if cached_result := redis_client.get(result_key):
-                hub = self.get(id=int(cast(Any, cached_result)))
+                try:
+                    hub = self.get(id=int(cast(Any, cached_result)))
+                except TelegramBotsHub.DoesNotExist:
+                    pass
+                else:
+                    with hub.get_client() as client:
+                        bot_ids: list[int] = client.get_bot_ids()
 
-                with hub.get_client() as client:
-                    bot_ids: list[int] = client.get_bot_ids()
-
-                if len(bot_ids) < max_bot_count:
-                    redis_client.expire(result_key, _CREATION_HUB_CACHE_TTL)
-                    return hub
+                    if len(bot_ids) < max_bot_count:
+                        redis_client.expire(result_key, _CREATION_HUB_CACHE_TTL)
+                        return hub
 
             telegram_token: str = _generate_token()
             service_token: str = _generate_token()
