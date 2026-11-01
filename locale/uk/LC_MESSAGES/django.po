@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-30 14:57+0000\n"
+"POT-Creation-Date: 2026-10-30 20:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -564,6 +564,18 @@ msgstr "Стиль"
 msgid "Кнопки клавиатур сообщений"
 msgstr "Кнопки клавіатур повідомлень"
 
+msgid "Компактная"
+msgstr "Компактна"
+
+msgid "Скрывать после нажатия"
+msgstr "Приховувати після натискання"
+
+msgid "Запретить скрытие"
+msgstr "Заборонити приховування"
+
+msgid "Текст-заглушка в поле ввода"
+msgstr "Текст-заповнювач у полі введення"
+
 msgid "Клавиатура сообщения"
 msgstr "Клавіатура повідомлення"
 
@@ -686,8 +698,11 @@ msgstr "Перевищено ліміт сховища."
 msgid "Счёт должен содержать хотя бы одну цену."
 msgstr "Рахунок повинен містити принаймні одну ціну."
 
-msgid "Клавиатура типа 'removal' не может иметь кнопок."
-msgstr "Клавіатура типу 'removal' не може мати кнопок."
+msgid "Поле доступно только для клавиатуры типа 'default'."
+msgstr "Поле доступне лише для клавіатури типу 'default'."
+
+msgid "Поле недоступно для клавиатуры типа 'removal'."
+msgstr "Поле недоступне для клавіатури типу 'removal'."
 
 msgid ""
 "Необходимо указать значение как минимум для одного из полей: 'text', "

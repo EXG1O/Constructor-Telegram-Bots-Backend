@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-30 14:57+0000\n"
+"POT-Creation-Date: 2026-10-30 20:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -562,6 +562,18 @@ msgstr "Style"
 msgid "Кнопки клавиатур сообщений"
 msgstr "Keyboard buttons of messages"
 
+msgid "Компактная"
+msgstr "Compact"
+
+msgid "Скрывать после нажатия"
+msgstr "Hide after click"
+
+msgid "Запретить скрытие"
+msgstr "Prevent hiding"
+
+msgid "Текст-заглушка в поле ввода"
+msgstr "Input field placeholder"
+
 msgid "Клавиатура сообщения"
 msgstr "Message keyboard"
 
@@ -684,8 +696,11 @@ msgstr "Storage limit exceeded."
 msgid "Счёт должен содержать хотя бы одну цену."
 msgstr "Invoice must contain at least one price."
 
-msgid "Клавиатура типа 'removal' не может иметь кнопок."
-msgstr "Keyboard of type 'removal' cannot have buttons."
+msgid "Поле доступно только для клавиатуры типа 'default'."
+msgstr "Field is available only for 'default' type keyboard."
+
+msgid "Поле недоступно для клавиатуры типа 'removal'."
+msgstr "Field is not available for 'removal' type keyboard."
 
 #, fuzzy
 msgid ""

@@ -128,6 +128,12 @@ class MessageKeyboard(models.Model):
     type = models.CharField(
         _('Тип'), max_length=7, choices=KeyboardType, default=KeyboardType.DEFAULT
     )
+    is_compact = models.BooleanField(_('Компактная'), default=True)
+    hide_on_click = models.BooleanField(_('Скрывать после нажатия'), default=False)
+    is_persistent = models.BooleanField(_('Запретить скрытие'), default=False)
+    input_placeholder = models.CharField(
+        _('Текст-заглушка в поле ввода'), max_length=64, blank=True, null=True
+    )
 
     if TYPE_CHECKING:
         buttons: models.Manager[MessageKeyboardButton]

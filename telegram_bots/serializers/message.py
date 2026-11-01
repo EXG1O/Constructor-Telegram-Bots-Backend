@@ -1,9 +1,11 @@
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import UploadedFile
 from django.db import transaction
-from django.db.models import QuerySet
+from django.db.models import Field, QuerySet
 from django.db.models.fields.files import FieldFile
+from django.db.models.fields.reverse_related import ForeignObjectRel
 from django.utils.translation import gettext as _
 
 from rest_framework import serializers
@@ -69,7 +71,13 @@ class MessageKeyboardSerializer(serializers.ModelSerializer[MessageKeyboard]):
 
     class Meta:
         model = MessageKeyboard
-        fields = ['type', 'buttons']
+        default_type_only_fields = [
+            'is_compact',
+            'hide_on_click',
+            'is_persistent',
+            'input_placeholder',
+        ]
+        fields = ['type', 'buttons'] + default_type_only_fields
 
     def to_internal_value(self, data: dict[str, Any]) -> dict[str, Any]:
         parent: Any = self.parent
@@ -100,10 +108,43 @@ class MessageKeyboardSerializerExtension(OpenApiSerializerExtension):  # type: i
         if direction == 'response':
             return schema
 
-        buttons_schema: dict[str, Any] = schema['properties']['buttons']
+        properties: dict[str, Any] = schema['properties']
+        buttons_schema: dict[str, Any] = properties['buttons']
+        default_type_only_properties: dict[str, Any] = {
+            field_name: properties[field_name]
+            for field_name in MessageKeyboardSerializer.Meta.default_type_only_fields
+        }
 
         return {
             'oneOf': [
+                {
+                    'type': 'object',
+                    'properties': {
+                        'type': {
+                            'type': 'string',
+                            'enum': [
+                                choice
+                                for choice in KeyboardType
+                                if choice
+                                not in (KeyboardType.DEFAULT, KeyboardType.REMOVAL)
+                            ],
+                        },
+                        'buttons': {**buttons_schema, 'minItems': 1},
+                    },
+                    'required': ['type', 'buttons'],
+                },
+                {
+                    'type': 'object',
+                    'properties': {
+                        'type': {
+                            'type': 'string',
+                            'const': KeyboardType.DEFAULT,
+                        },
+                        'buttons': {**buttons_schema, 'minItems': 1},
+                        **default_type_only_properties,
+                    },
+                    'required': ['type', 'buttons'],
+                },
                 {
                     'type': 'object',
                     'properties': {
@@ -113,21 +154,6 @@ class MessageKeyboardSerializerExtension(OpenApiSerializerExtension):  # type: i
                         },
                     },
                     'required': ['type'],
-                },
-                {
-                    'type': 'object',
-                    'properties': {
-                        'type': {
-                            'type': 'string',
-                            'enum': [
-                                choice
-                                for choice in KeyboardType
-                                if choice != KeyboardType.REMOVAL
-                            ],
-                        },
-                        'buttons': {**buttons_schema, 'minItems': 1},
-                    },
-                    'required': ['buttons'],
                 },
             ],
         }
@@ -204,13 +230,23 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
         if not data:
             return None
 
+        keyboard_type: KeyboardType = self._get_effective_keyboard_type(data)
         buttons_data: list[dict[str, Any]] | None = data.get('buttons')
 
-        if self._get_effective_keyboard_type(data) == KeyboardType.REMOVAL:
-            if 'buttons' in data:
+        if keyboard_type != KeyboardType.DEFAULT:
+            errors: dict[str, list[str]] = {
+                field_name: [_("Поле доступно только для клавиатуры типа 'default'.")]
+                for field_name in MessageKeyboardSerializer.Meta.default_type_only_fields
+                if field_name in data
+            }
+
+            if errors:
+                raise serializers.ValidationError(errors)
+
+        if keyboard_type == KeyboardType.REMOVAL:
+            if buttons_data:
                 raise serializers.ValidationError(
-                    _("Клавиатура типа 'removal' не может иметь кнопок."),
-                    code='invalid',
+                    {'buttons': [_("Поле недоступно для клавиатуры типа 'removal'.")]}
                 )
 
             return data
@@ -582,9 +618,28 @@ class MessageSerializer(TelegramBotMixin, BlockSerializer[Message]):
             return self.create_keyboard(message, data)
         else:
             keyboard_type: KeyboardType = data.get('type', keyboard.type)
+            default_type_only_fields: list[str] = (
+                MessageKeyboardSerializer.Meta.default_type_only_fields
+            )
 
             keyboard.type = keyboard_type
-            keyboard.save(update_fields=['type'])
+
+            for field_name in default_type_only_fields:
+                if keyboard_type == KeyboardType.DEFAULT:
+                    value = data.get(field_name, getattr(keyboard, field_name))
+                else:
+                    model_field: (
+                        Field[Any, Any] | ForeignObjectRel | GenericForeignKey
+                    ) = MessageKeyboard._meta.get_field(field_name)
+
+                    if not isinstance(model_field, Field):
+                        raise RuntimeError(f'Field {field_name} is not a model field.')
+
+                    value = model_field.get_default()
+
+                setattr(keyboard, field_name, value)
+
+            keyboard.save(update_fields=['type'] + default_type_only_fields)
 
             if keyboard_type == KeyboardType.REMOVAL:
                 keyboard.buttons.all().delete()
